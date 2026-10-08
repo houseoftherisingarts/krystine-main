@@ -7,7 +7,6 @@ import {
   type BookingStatus,
 } from '../../../firebase/firestore';
 import { Card, DangerButton, EmptyState, GhostButton } from '../primitives';
-import DemandesPresse from './DemandesPresse';
 
 const STATUS_OPTIONS: { id: BookingStatus; label: string; color: string }[] = [
   { id: 'new',         label: 'Nouveau',     color: 'bg-[#BA7B39]/10 text-[#8B4A2F]' },
@@ -104,7 +103,7 @@ const DetailRow: React.FC<{ label: string; value?: string | null }> = ({ label, 
   );
 };
 
-const DemandesConferences: React.FC = () => {
+const BookingsSection: React.FC = () => {
   const [items, setItems] = useState<BookingRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -216,14 +215,5 @@ const DemandesConferences: React.FC = () => {
     </div>
   );
 };
-
-// Les demandes de kit de presse passent en tête (8 oct. 2026); elles
-// disparaissent d'elles-mêmes tant qu'il n'y en a aucune.
-const BookingsSection: React.FC = () => (
-  <>
-    <DemandesPresse />
-    <DemandesConferences />
-  </>
-);
 
 export default BookingsSection;

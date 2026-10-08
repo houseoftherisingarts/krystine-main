@@ -420,7 +420,6 @@ export interface LiveEvent {
   replayAt?: Timestamp;              // l'envoi de la rediffusion ne part pas avant cette date
   envoisDesactives?: boolean;        // coupe tous les envois automatiques du direct
   tag: string;
-  serie?: string;                    // « dimanches-origine » : directs à part, hors du bloc du podcast
   reminders?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', Timestamp>>;
   stats?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', number>>;
   // Combien d'heures avant le direct chaque rappel part. Sans réglage, la

@@ -108,7 +108,7 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/presse': {
     title: `Salle de presse · ${SITE}`,
-    description: 'Les visuels, les portraits, les faits et le kit de presse de Krystine St-Laurent, auteure et conférencière en Ayurveda. Kit de presse sur demande.',
+    description: 'Les visuels, les portraits, les faits et le kit de presse de Krystine St-Laurent, auteure et conférencière en ayurveda. Téléchargement libre.',
   },
 };
 

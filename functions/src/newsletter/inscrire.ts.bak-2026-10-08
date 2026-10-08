@@ -3,9 +3,7 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import * as crypto from 'crypto';
 import { RECAPTCHA_SECRET, verifierJeton } from '../captcha';
 import { champsRobot, limiterParIp, MESSAGE_CADENCE } from './robots';
-import { MAIL_SECRETS, createTransporter } from './mail';
-import { findEventByTags, sendLiveMail } from './live';
-import { SERIE_DIMANCHES } from './dimanches';
+import { MAIL_SECRETS } from './mail';
 import { CONFIRMATIONS_LISTES, envoyerConfirmationListe } from './welcome';
 
 // ─── La seule porte d'entrée de la collection `newsletter` ───────────────────
@@ -184,21 +182,6 @@ export async function enregistrerInscription(d: Record<string, unknown>, uid?: s
         try {
           await envoyerConfirmationListe(cible.ref, { email, firstName: (avant.firstName || fiche.firstName) as string | undefined, unsubscribeToken: avant.unsubscribeToken, confirmationsEnvoyees: avant.confirmationsEnvoyees }, t);
         } catch (e) { console.error('[inscrire] confirmation', t, e); }
-      }
-      // Une abonnée déjà connue qui s'inscrit aux Dimanches d'Origine reçoit
-      // aussi sa confirmation (la fiche existe, sendWelcomeEmail ne part pas).
-      // Une seule fois par série, verrouillée dans confirmationsEnvoyees.
-      if (source === SERIE_DIMANCHES && nouvelles.length && !avant.confirmationsEnvoyees?.[SERIE_DIMANCHES]) {
-        try {
-          const ev = await findEventByTags(nouvelles);
-          if (ev) {
-            await cible.ref.update({ [`confirmationsEnvoyees.${SERIE_DIMANCHES}`]: FieldValue.serverTimestamp() });
-            const transporter = createTransporter();
-            try {
-              await sendLiveMail(transporter, 'confirm', ev, { email, firstName: (avant.firstName || fiche.firstName) as string | undefined, unsubscribeToken: avant.unsubscribeToken, ref: cible.ref });
-            } finally { transporter.close(); }
-          }
-        } catch (e) { console.error('[inscrire] confirmation des Dimanches', e); }
       }
     }
     return { ok: true, id: cible.id, status: statut };

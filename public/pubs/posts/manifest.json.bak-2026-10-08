@@ -14,6 +14,20 @@
     "publieeLe": null
   },
   {
+    "id": "A02",
+    "serie": "A",
+    "titre": "Dix ans infirmière d'urgence, avant les plateaux.",
+    "legende": "Avant d'animer trois saisons de Santé La Vie, Krystine a passé dix ans comme infirmière d'urgence, à regarder des corps parler quand les mots n'y arrivaient plus. Cette rigueur clinique reste le socle de tout ce qu'elle transmet aujourd'hui en Ayurveda, en herboristerie et en aromathérapie. Son parcours complet se découvre sur krystinestlaurent.ca/krystine.",
+    "lien": "https://www.krystinestlaurent.ca/krystine",
+    "fichiers": {
+      "portrait": "/pubs/posts/A02-portrait.png",
+      "carre": "/pubs/posts/A02-carre.png"
+    },
+    "vignette": "/pubs/posts/A02-vignette.webp",
+    "etat": "a_publier",
+    "publieeLe": null
+  },
+  {
     "id": "A03",
     "serie": "A",
     "titre": "Le vent d'automne teste les nerfs.",

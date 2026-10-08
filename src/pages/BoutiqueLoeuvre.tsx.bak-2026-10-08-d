@@ -17,9 +17,6 @@ import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '.
 import { modeApercu } from '../lib/apercuBoutique';
 import NewsletterSignup from '../components/NewsletterSignup';
 import RituelPdf from '../components/v2/RituelPdf';
-
-// Éteint jusqu'à ce que les 3 rituels du moment soient prêts.
-const AFFICHER_RITUEL_PDF = false;
 import { CaseProduit, CarteProduit, BoutonAjouter, GrilleProduits, taille, guideFormats, PictoDosha, NOM_DOSHA, doshaDe, photoProduit, type DoshaProduit } from '../components/v2/Produit';
 import { COLLECTIONS, assignCollection } from '../lib/collections';
 import { saisonCourante, ORDRE_FAMILLES, USAGES, SAISONS } from '../lib/saisonBoutique';
@@ -537,50 +534,6 @@ const BoutiqueLoeuvre: React.FC = () => {
     );
   }
 
-  // L'accueil de la nouvelle venue : sous les photos au téléphone, sous le texte sur ordinateur.
-  const accueil = (
-    <>
-    {/* L'accueil de la nouvelle venue (8 oct. 2026, « inaperçu ») : une carte douce
-                au fondu des cartes /medias, puis l'appel au quiz, dessiné et visible. */}
-            <aside className="relative mt-7 overflow-hidden rounded-[20px] border border-[#9c7a44]/30 p-[clamp(1.15rem,2.4vw,1.6rem)]" style={{ background: 'linear-gradient(140deg, #faf6ee 0%, #f3ebdd 55%, #ead9bf 100%)' }}>
-              <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full blur-[50px]" style={{ background: 'radial-gradient(closest-side, rgba(186,123,57,0.22), rgba(186,123,57,0))' }} />
-              <div className="relative">
-                <p className="text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">{fr ? 'Pour commencer' : 'To begin'}</p>
-                <h2 className="mt-1.5 v2-serif font-light text-[clamp(1.45rem,2vw,1.7rem)] leading-[1.15] text-[#1c1712]">{fr ? 'Nouvelle ici ?' : 'New here?'}</h2>
-                <p className="mt-2.5 text-[1rem] sm:text-[1.0625rem] leading-[1.65] text-[#3a2f23]">
-                  {fr
-                    ? "Vous n'avez pas besoin de savoir « quel type » vous êtes. La saison nous influence déjà, et l'huile ci-dessous a été pensée pour ce moment de l'année."
-                    : 'You do not need to know yours to begin: the oil below goes with the current season.'}
-                </p>
-                <Link
-                  to="/quiz"
-                  className="group mt-5 block rounded-[14px] border border-[#1c1712]/15 bg-[#fbf8f2]/85 p-4 shadow-[0_14px_30px_-24px_rgba(28,23,18,0.45)] transition-[border-color,transform,box-shadow] duration-200 ease-out active:scale-[0.985] [@media(hover:hover)]:hover:border-[#9c7a44] [@media(hover:hover)]:hover:shadow-[0_18px_34px_-22px_rgba(28,23,18,0.5)]"
-                >
-                  <span className="flex items-center gap-3.5">
-                    <span className="flex shrink-0 -space-x-2" aria-hidden>
-                      {(['vata', 'pitta', 'kapha'] as const).map(d => (
-                        <span key={d} className="grid h-12 w-12 place-items-center rounded-full border border-[#9c7a44]/30 bg-[#f4efe6]">
-                          <PictoDosha dosha={d} className="h-9 w-9" />
-                        </span>
-                      ))}
-                    </span>
-                    <span className="v2-serif font-light text-[clamp(1.2rem,1.6vw,1.35rem)] leading-[1.2] text-[#1c1712]">{fr ? 'Me situer en ce moment' : 'Where am I right now'}</span>
-                  </span>
-                  <span className="mt-2.5 block text-[1rem] leading-[1.55] text-[#3a2f23]">
-                    {fr ? 'Voyez ce qui domine, ce qui l’accentue et la direction qui mérite votre attention.' : 'See what dominates, what amplifies it and the direction that deserves your attention.'}
-                  </span>
-                  <span className="mt-3.5 flex items-center justify-between gap-3">
-                    <span className="whitespace-nowrap text-[0.66rem] uppercase tracking-[0.2em] text-[#7d6330]">3 minutes</span>
-                    <span className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap bg-[#1c1712] px-4 sm:px-5 text-[0.66rem] uppercase tracking-[0.14em] text-[#f4efe6] transition-colors duration-200 group-hover:bg-[#9c7a44]">
-                      {fr ? 'Faire le quiz' : 'Take the quiz'} <ArrowRight size={14} className="transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
-                    </span>
-                  </span>
-                </Link>
-              </div>
-            </aside>
-    </>
-  );
-
   return (
     <div
       className="relative w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden"
@@ -614,7 +567,6 @@ const BoutiqueLoeuvre: React.FC = () => {
             >
               {fr ? 'La boutique INSPIRATA AYURVEDA' : 'The INSPIRATA AYURVEDA shop'}
             </motion.p>
-            <div className="flex items-center gap-[clamp(0.6rem,1.4vw,1.1rem)]">
             <h1 className="v2-serif font-light leading-[0.92] tracking-[-0.015em] text-[#1c1712] text-[clamp(2.4rem,4.6vw,4.1rem)]">
               {(fr ? ['Les essentiels', 'de la saison'] : ['The essentials', 'of the season']).map((ligne, i) => (
                 <span key={ligne} className="block overflow-hidden pb-[0.08em]">
@@ -629,22 +581,11 @@ const BoutiqueLoeuvre: React.FC = () => {
                 </span>
               ))}
             </h1>
-            {/* Le picto du dosha de la saison (Krystine, 8 oct. 2026), le même que dans « Selon ce qui est présent » */}
-            <motion.span
-              aria-hidden
-              className="shrink-0"
-              initial={reduce ? false : { opacity: 0, scale: 0.94, filter: 'blur(6px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.45 }}
-            >
-              <PictoDosha dosha={saison.dosha} className="h-[clamp(3.25rem,6vw,5rem)] w-[clamp(3.25rem,6vw,5rem)]" />
-            </motion.span>
-            </div>
             <motion.p
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.5 }}
-              className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.74rem] uppercase tracking-[0.12em] sm:tracking-[0.22em] text-[#1c1712]"
+              className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.74rem] uppercase tracking-[0.22em] text-[#1c1712]"
             >
               <span>
                 <span className="mr-3 inline-block h-2.5 w-2.5 rounded-full align-[0.05em]" style={{ background: saison.couleur }} aria-hidden />
@@ -652,17 +593,6 @@ const BoutiqueLoeuvre: React.FC = () => {
               </span>
               <span className="text-[#1c1712]/75 normal-case tracking-[0.04em] text-[0.9rem]">{fr ? saison.periodeFR : saison.periodeEN}</span>
             </motion.p>
-            {/* L'huile de la saison en une ligne, avec la formule de Krystine (8 oct. 2026), mot pour mot */}
-            {fr && vedette && (
-              <motion.p
-                initial={reduce ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.6 }}
-                className="mt-3 max-w-[60ch] text-[1rem] leading-[1.6] text-[#3a2f23]"
-              >
-                <Link to={`/boutique/produit/${vedette.handle}`} className="text-[#1c1712] border-b border-[#1c1712]/30 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">{vedette.title}</Link> : des plantes d’ici infusées à la main, puis, dans un mélange d’huiles choisies.
-              </motion.p>
-            )}
           </div>
 
           {/* La planche : la photo réelle de l'huile de la saison, plein cadre */}
@@ -725,12 +655,11 @@ const BoutiqueLoeuvre: React.FC = () => {
                 </figcaption>
               </figure>
               )}
-              <div className="lg:hidden">{accueil}</div>
             </motion.div>
           )}
 
           <motion.div
-            className={vedette ? 'lg:col-start-1 lg:row-start-2 lg:self-start lg:mt-4' : 'lg:col-start-2 lg:row-start-1'}
+            className={vedette ? 'lg:col-start-1 lg:row-start-2 lg:self-end' : 'lg:col-start-2 lg:row-start-1'}
             initial={reduce ? false : { opacity: 0, y: 22, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.55 }}
@@ -738,7 +667,23 @@ const BoutiqueLoeuvre: React.FC = () => {
             <p className="v2-serif text-[clamp(1.1rem,1.35vw,1.2rem)] font-light leading-[1.6] text-[#3a2f23] max-w-[48ch]">
               {fr ? saison.introFR : saison.introEN}
             </p>
-            <div className="hidden lg:block max-w-[520px]">{accueil}</div>
+            {/* Nouvelle ici ? · ce qu'il faut savoir avant d'acheter, en deux phrases (4 oct. 2026) */}
+            <aside className="mt-7 border-t border-[#9c7a44]/40 pt-5 max-w-[52ch]">
+              <p className="text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">{fr ? 'Nouvelle ici ?' : 'New here?'}</p>
+              <p className="mt-2.5 text-[1rem] sm:text-[1.0625rem] leading-[1.7] text-[#3a2f23]">
+                {fr
+                  ? "Vous n'avez pas besoin de savoir « quel type » vous êtes. La saison nous influence déjà : en ce moment, l'air froid et sec assèche la peau, rend le sommeil plus léger et fait courir le mental. L'huile ci-dessous a été pensée pour ce moment de l'année."
+                  : 'INSPIRATA AYURVEDA is a line of oils and care products designed by Krystine St-Laurent, with local plants infused by hand in oil. Ayurveda, a care tradition born in India, sees three dominances, Vata (Wind and Space), Pitta (Fire and Water) and Kapha (Water and Earth): each season awakens one, and each oil is made for one of them.'}
+              </p>
+              <p className="mt-2.5 text-[1rem] sm:text-[1.0625rem] leading-[1.7] text-[#3a2f23]">
+                {fr
+                  ? "Les huiles INSPIRATA AYURVEDA sont conçues par Krystine St-Laurent, avec des plantes d'ici infusées à la main dans l'huile. Pour aller plus loin, à votre rythme : "
+                  : 'You do not need to know yours to begin: the oil below goes with the current season. '}
+                <Link to="/quiz" className="whitespace-nowrap text-[#1c1712] border-b border-[#1c1712]/40 pb-0.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+                  {fr ? 'Me situer en ce moment · 3 min' : 'Where am I right now · 3 min'} <ArrowRight size={14} className="inline align-[-0.1em]" />
+                </Link>
+              </p>
+            </aside>
             {vedette && (
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <a href="#saison" className="group inline-flex min-h-[46px] items-center justify-center gap-2.5 bg-[#1c1712] px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-[background-color,transform] duration-200 ease-out active:scale-[0.97] hover:bg-[#9c7a44]">
@@ -898,8 +843,7 @@ const BoutiqueLoeuvre: React.FC = () => {
                               </li>
                             ))}
                           </ul>
-                          {/* Le PDF « Les 3 rituels du moment » attend son contenu (Krystine, 8 oct. 2026). */}
-                          {fr && AFFICHER_RITUEL_PDF && <RituelPdf />}
+                          {fr && <RituelPdf />}
                         </li>
                         <li>
                           <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? 'Combien de temps' : 'How long'}</p>

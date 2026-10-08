@@ -9,7 +9,6 @@ import {
   fromAddr,
   unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
 import { findEventByTags, sendLiveMail } from './live';
-import { SERIE_DIMANCHES } from './dimanches';
 
 // ─── Courriel de bienvenue ───────────────────────────────────────────────────
 // Déclenché à la création d'un document dans `newsletter` (formulaire public
@@ -54,10 +53,6 @@ export interface ContenuConfirmation {
   titre: string;
   apercu: string;
   corps: string[];
-  /** Un bouton sous le corps (ex. le lien d'un PDF à télécharger). */
-  lien?: { libelle: string; url: string };
-  /** La formule et la signature, si elles diffèrent de « À bientôt, Krystine St-Laurent ». */
-  signature?: [string, string];
 }
 
 const CONTENU_GENERAL: ContenuConfirmation = {
@@ -88,20 +83,6 @@ export const CONFIRMATIONS_LISTES: Record<string, ContenuConfirmation> = {
       'Les portes ouvriront bientôt. Vous recevrez l\'invitation avant toute annonce publique, et vous n\'avez rien d\'autre à faire d\'ici là.',
     ],
   },
-  // Le rituel d'automassage en PDF, demandé depuis /boutique (8 oct. 2026).
-  // Texte à faire approuver par Krystine avant la mise en ligne.
-  'boutique-rituel-automassage': {
-    sujet: 'Votre rituel d\'automassage',
-    surtitre: 'INSPIRATA AYURVEDA',
-    titre: 'Votre rituel d\'automassage',
-    apercu: 'Le PDF vous attend : la fréquence selon ce qui est présent, et le temps qu\'il faut.',
-    corps: [
-      'Voici le rituel d\'automassage que vous avez demandé sur la boutique.',
-      'Vous y trouverez, en une page, la fréquence selon ce qui est présent en ce moment, Vata (Vent et Espace), Pitta (Feu et Eau) ou Kapha (Eau et Terre), et le temps qu\'il faut, tirés de Nature & Ayurveda.',
-    ],
-    lien: { libelle: 'Télécharger le rituel en PDF', url: `${PUBLIC_BASE_URL}/boutique/rituel-automassage.pdf` },
-    signature: ['Notre équipe est là pour vous,', 'L\'équipe'],
-  },
 };
 
 /** Le courriel propre à une liste portée par ces étiquettes, s'il y en a un. */
@@ -115,16 +96,14 @@ export function confirmationPourTags(tags?: string[]): { tag: string; contenu: C
 // Texte du courriel, une seule fois, servi en HTML et en texte brut.
 function paragraphs(firstName?: string, contenu: ContenuConfirmation = CONTENU_GENERAL): string[] {
   const salut = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
-  const [formule, nom] = contenu.signature || ['À bientôt,', 'Krystine St-Laurent'];
-  return [salut, ...contenu.corps, ...(contenu.lien ? [`${contenu.lien.libelle} : ${contenu.lien.url}`] : []), formule, nom];
+  return [salut, ...contenu.corps, 'À bientôt,', 'Krystine St-Laurent'];
 }
 
 export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: string; postalAddress: string; contenu?: ContenuConfirmation }): string {
   const contenu = opts.contenu || CONTENU_GENERAL;
   const [salut, ...reste] = paragraphs(opts.firstName, contenu);
   const signature = reste.slice(-2);
-  // Le lien, s'il y en a un, se rend en bouton plutôt qu'en paragraphe.
-  const corps = reste.slice(0, contenu.lien ? -3 : -2);
+  const corps = reste.slice(0, -2);
   const p = (t: string) =>
     `<tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:16px;line-height:1.7;color:${CHARTE.espresso};">${esc(t)}</td></tr>`;
 
@@ -150,7 +129,6 @@ export function renderWelcomeHtml(opts: { firstName?: string; unsubscribeUrl: st
             <tr><td style="padding:0 0 26px;"><div style="height:1px;width:64px;background:${CHARTE.brass};"></div></td></tr>
             ${p(salut)}
             ${corps.map(p).join('\n')}
-            ${contenu.lien ? `<tr><td style="padding:4px 0 26px;"><a href="${esc(contenu.lien.url)}" style="display:inline-block;background:#1c1712;color:#f4efe6;font-family:${CHARTE.sans};font-size:13px;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;padding:15px 26px;">${esc(contenu.lien.libelle)}</a></td></tr>` : ''}
             <tr><td style="padding:8px 0 0;font-family:${CHARTE.sans};font-size:16px;line-height:1.7;color:${CHARTE.espresso};">${esc(signature[0])}<br /><span style="font-family:${CHARTE.serif};font-size:22px;color:${CHARTE.brassInk};">${esc(signature[1])}</span></td></tr>
           </table>
         </td></tr>
@@ -199,11 +177,10 @@ export const sendWelcomeEmail = onDocumentCreated(
     try {
       // Inscription à un direct du podcast : la confirmation du direct
       // remplace le mot de bienvenue (date, lien, agenda).
-      // Les Dimanches d'Origine passent par la même porte (dimanches.ts).
-      if (d.source === 'podcast-live' || d.source === SERIE_DIMANCHES) {
+      if (d.source === 'podcast-live') {
         const ev = await findEventByTags(d.tags);
         if (ev) {
-          await sendLiveMail(transporter, 'confirm', ev, { email: d.email, firstName: d.firstName, unsubscribeToken: jeton, ref: snap.ref });
+          await sendLiveMail(transporter, 'confirm', ev, { email: d.email, firstName: d.firstName, unsubscribeToken: jeton });
           return;
         }
       }

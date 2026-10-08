@@ -10,7 +10,7 @@ import { useProduitsPerso, appliquerPerso, estVisible } from '../firebase/boutiq
 import { htmlPropre } from '../lib/htmlPropre';
 import { lireAvis, type ResumeAvis } from '../lib/okendo';
 import { modeApercu, urlProduitHistorique } from '../lib/apercuBoutique';
-import { CaseProduit, taille, guideFormats, PictoDosha, NOM_DOSHA, doshaDe } from '../components/v2/Produit';
+import { CaseProduit, taille, guideFormats } from '../components/v2/Produit';
 import { BoutonAviser } from '../components/v2/AvisStock';
 import { StyleV2, Kicker, Reveal, TitreChapitre, CarteVerte, BoutonCuivre, Filet, GOUTTIERE } from '../components/v2/Magazine';
 
@@ -137,8 +137,7 @@ const ProduitPage: React.FC = () => {
   const prix = variante ? formatMoney(variante.price, lang) : formatMoney(p.priceRange.minVariantPrice, lang);
   const disponible = !!variante?.availableForSale;
   const formats = p.variants.filter(v => libelleFormat(v.title));
-  // Jamais d'image générée (8 oct. 2026) : les fichiers dont le nom trahit l'IA sont écartés.
-  const photos = Array.from(new Map([p.featuredImage, ...p.images].filter(i => !!i && !/gemini|dall|midjourney|firefly|generated/i.test(i.url)).map(i => [i!.url, i!])).values());
+  const photos = Array.from(new Map([p.featuredImage, ...p.images].filter(Boolean).map(i => [i!.url, i!])).values());
   const photoActive = photos[Math.min(photo, photos.length - 1)];
   const type = libelleEtiquette(p.productType, lang);
 
@@ -239,13 +238,6 @@ const ProduitPage: React.FC = () => {
           <div className="min-w-0 lg:sticky lg:top-28">
             <Kicker className="mb-5">INSPIRATA AYURVEDA{type ? ` · ${type}` : ''}</Kicker>
             <h1 className="v2-serif font-light leading-[1.04] text-[clamp(2.2rem,4vw,3.6rem)] text-[#1c1712]">{p.title}</h1>
-            {/* Le picto du dosha de l'huile (Krystine, 8 oct. 2026 : « remettre les pictos par huile ») */}
-            {doshaDe(p) && (
-              <p className="mt-3 flex items-center gap-2.5 text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712]">
-                <PictoDosha dosha={doshaDe(p)!} className="h-9 w-9" />
-                {NOM_DOSHA[doshaDe(p)!][fr ? 'FR' : 'EN']}
-              </p>
-            )}
             {p.accroche && (
               <p className="mt-5 v2-serif font-light text-[clamp(1.15rem,1.8vw,1.45rem)] leading-[1.4] text-[#3a2f23] max-w-[40ch]">{p.accroche}</p>
             )}

@@ -18,40 +18,6 @@ import { BoutonAviser } from './AvisStock';
 export const taille = (url: string, w: number) =>
   /cdn\.shopify\.com/.test(url) ? `${url}${url.includes('?') ? '&' : '?'}width=${w}` : url;
 
-/** Le dosha d'une huile, lu dans son nom (« L'Apaisante Vata », « La
- *  Rafraîchissante Pitta », « L'Énergisante Kapha »). Krystine, 8 oct. 2026 :
- *  « remettre les pictos par huile ». */
-export type DoshaProduit = 'vata' | 'pitta' | 'kapha';
-export function doshaDe(p: Pick<ShopifyProduct, 'title' | 'handle'>): DoshaProduit | null {
-  const t = `${p.handle} ${p.title}`.toLowerCase();
-  if (/\bvata\b/.test(t)) return 'vata';
-  if (/\bpitta\b/.test(t)) return 'pitta';
-  if (/\bkapha\b/.test(t)) return 'kapha';
-  return null;
-}
-
-export const NOM_DOSHA: Record<DoshaProduit, { FR: string; EN: string }> = {
-  vata: { FR: 'Vata (Vent et Espace)', EN: 'Vata (Wind and Space)' },
-  pitta: { FR: 'Pitta (Feu et Eau)', EN: 'Pitta (Fire and Water)' },
-  kapha: { FR: 'Kapha (Eau et Terre)', EN: 'Kapha (Water and Earth)' },
-};
-
-/** Le picto aquarelle de Krystine (public/quiz/pictos/, version crème : ce qui se lit). */
-export const PictoDosha: React.FC<{ dosha: DoshaProduit; className?: string; titre?: string }> = ({ dosha, className = 'h-8 w-8', titre }) => (
-  <img src={`/quiz/pictos/${dosha}.png`} alt={titre || ''} aria-hidden={titre ? undefined : true} title={titre} loading="lazy" className={`object-contain ${className}`} />
-);
-
-/** La photo d'une carte produit (8 oct. 2026) : jamais d'image générée par IA
- *  (nom Gemini, DALL, Midjourney, firefly, generated); et lorsqu'il y a le choix,
- *  la photo du produit passe avant une capture d'écran datée ou un visuel de
- *  publication (souvent des arrêts sur image flous). */
-export function photoProduit(p: Pick<ShopifyProduct, 'featuredImage' | 'images'>): string | undefined {
-  const reelles = [p.featuredImage?.url, ...p.images.map(i => i.url)]
-    .filter((u): u is string => !!u && !/gemini|dall|midjourney|firefly|generated/i.test(u));
-  const capture = (u: string) => /\/\d{4}-\d{2}-\d{2}_[\d-]+\.|publications?-rs/i.test(u);
-  return reelles.find(u => !capture(u)) || reelles[0];
-}
-
 /** La case d'une photo produit : fond #efe6d7 uniforme, image entière, cadre fileté d'or. */
 export const CaseProduit: React.FC<{
   src?: string | null;
@@ -156,38 +122,36 @@ export const CarteProduit: React.FC<{
   const fr = lang === 'FR';
   const variante = variantePremiere(p);
   const prix = formatMoney(variante ? variante.price : p.priceRange.minVariantPrice, lang);
-  const image = photoProduit(p);
+  const image = p.featuredImage?.url || p.images[0]?.url;
   const type = libelleEtiquette(p.productType, lang);
   const fiche = `/boutique/produit/${p.handle}`;
   const disponible = p.availableForSale && !!variante;
   // Le format qui part au panier, et les autres offerts sur la fiche.
   const format = libelleFormat(variante?.title);
   const autres = p.variants.filter(v => v.availableForSale && v.id !== variante?.id).map(v => libelleFormat(v.title)).filter(Boolean);
-  const dosha = doshaDe(p);
 
   return (
     <article className="group flex h-full flex-col">
-      <Link to={fiche} aria-label={p.title} className="relative block">
+      <Link to={fiche} aria-label={p.title} className="block">
         <CaseProduit src={image} alt={p.featuredImage?.altText || p.title} etiquette={p.availableForSale ? null : (fr ? 'Épuisé' : 'Sold out')} />
-        {dosha && <PictoDosha dosha={dosha} className="absolute right-2.5 top-2.5 h-9 w-9 sm:h-10 sm:w-10" />}
       </Link>
       <div className="flex flex-1 flex-col pt-6">
-        <p className="truncate text-[0.58rem] uppercase tracking-[0.26em] text-[#7d6330]">{dosha ? NOM_DOSHA[dosha][lang] : (type || 'INSPIRATA')}</p>
-        <h3 className="mt-2.5 v2-serif font-light text-[clamp(1.1rem,1.5vw,1.25rem)] leading-[1.2] text-[#1c1712] line-clamp-2">
+        <p className="truncate text-[0.58rem] uppercase tracking-[0.26em] text-[#7d6330]">{type || 'INSPIRATA'}</p>
+        <h3 className="mt-2.5 v2-serif font-light text-[clamp(1.1rem,2.2vw,1.4rem)] leading-[1.15] text-[#1c1712] line-clamp-2">
           <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
         </h3>
-        <p className="mt-2 v2-serif font-light text-[1.1rem] text-[#7d6330] tabular-nums">
+        <p className="mt-2 v2-serif font-light text-[1.2rem] text-[#7d6330] tabular-nums">
           {prix}
-          {format && <span className="ml-2 text-[0.78rem] text-[#1c1712]/80" style={{ fontFamily: '"Inter", system-ui, sans-serif' }}>{format}</span>}
+          {format && <span className="ml-2 text-[0.78rem] text-[#1c1712]/70" style={{ fontFamily: '"Inter", system-ui, sans-serif' }}>{format}</span>}
         </p>
         {format && autres.length > 0 && (
-          <p className="mt-1 text-[1rem] leading-[1.5] text-[#1c1712]/75">
+          <p className="mt-1 text-[0.74rem] leading-snug text-[#1c1712]/60">
             {fr ? 'Aussi en' : 'Also in'} {autres.join(fr ? ' et ' : ' and ')}{fr ? ', sur la fiche' : ', on the product page'}
           </p>
         )}
         <div className="mt-auto pt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
           <BoutonAjouter disponible={disponible} ajoute={ajoute} lang={lang} titre={p.title} format={format} handle={p.handle} onClick={e => onAjouter(p, e)} />
-          <Link to={fiche} className="group/l inline-flex min-h-[44px] items-center gap-2 text-[0.64rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712]/40 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+          <Link to={fiche} className="group/l inline-flex items-center gap-2 text-[0.64rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712]/40 pb-1 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
             {fr ? 'Voir' : 'View'} <ArrowRight size={12} className="transition-transform duration-300 group-hover/l:translate-x-0.5" />
           </Link>
         </div>

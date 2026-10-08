@@ -16,13 +16,9 @@ import {
 import { useProduitsPerso, appliquerPerso, estVisible, trierSelonPerso } from '../firebase/boutiqueProduits';
 import { modeApercu } from '../lib/apercuBoutique';
 import NewsletterSignup from '../components/NewsletterSignup';
-import RituelPdf from '../components/v2/RituelPdf';
-
-// Éteint jusqu'à ce que les 3 rituels du moment soient prêts.
-const AFFICHER_RITUEL_PDF = false;
-import { CaseProduit, CarteProduit, BoutonAjouter, GrilleProduits, taille, guideFormats, PictoDosha, NOM_DOSHA, doshaDe, photoProduit, type DoshaProduit } from '../components/v2/Produit';
+import { CaseProduit, CarteProduit, BoutonAjouter, GrilleProduits, taille, guideFormats } from '../components/v2/Produit';
 import { COLLECTIONS, assignCollection } from '../lib/collections';
-import { saisonCourante, ORDRE_FAMILLES, USAGES, SAISONS } from '../lib/saisonBoutique';
+import { saisonCourante, ORDRE_FAMILLES, USAGES } from '../lib/saisonBoutique';
 import { getFormationsPubliees, type Formation } from '../firebase/formations';
 import { prixEnVigueur } from '../lib/versements';
 
@@ -53,8 +49,7 @@ type ShopifyVariant = ShopifyProduct['variants'][number];
 const estIA = (u?: string | null) => !!u && /gemini|dall|midjourney|firefly|generated/i.test(u);
 function sansIA<T extends ShopifyProduct>(p: T): T {
   const images = p.images.filter(i => !estIA(i.url));
-  const choisie = photoProduit(p);
-  const featuredImage = choisie ? ([p.featuredImage, ...p.images].find(i => i?.url === choisie) || null) : null;
+  const featuredImage = p.featuredImage && !estIA(p.featuredImage.url) ? p.featuredImage : images[0] || null;
   return { ...p, images, featuredImage };
 }
 
@@ -121,27 +116,6 @@ const ModeEmploi: React.FC<{ lang: 'FR' | 'EN'; pourquoi: string; usage?: string
   );
 };
 
-/* Le fondu de la carte vedette : vert profond adouci vers crème lumineuse,
- * lissé comme le voile des cartes de presse (6t⁵ − 15t⁴ + 10t³, aucune arête),
- * mélangé en oklab pour ne jamais passer par un gris ou un brun terne. */
-const lisse = (x: number) => x * x * x * (x * (x * 6 - 15) + 10);
-function fonduCarte(sens: 'to left' | 'to bottom'): string {
-  // sens « to left » : la crème est à droite (0 %), le vert à gauche (100 %).
-  // « to bottom » : la crème en haut (0 %), le vert en bas.
-  const debut = sens === 'to left' ? 0.18 : 0.14;  // crème pleine jusque-là
-  const fin = sens === 'to left' ? 0.6 : 0.3;      // vert plein dès là
-  const creme = [238, 231, 219], vert = [47, 63, 55];
-  const arrets: string[] = [];
-  for (let i = 0; i <= 20; i += 1) {
-    const t = i / 20;
-    const k = t <= debut ? 0 : t >= fin ? 1 : lisse((t - debut) / (fin - debut));
-    const c = creme.map((v, j) => Math.round(v + (vert[j] - v) * k));
-    arrets.push(`rgb(${c.join(',')}) ${(t * 100).toFixed(1)}%`);
-  }
-  const dir = sens === 'to left' ? 'to left' : 'to bottom';
-  return `linear-gradient(in oklab ${dir}, ${arrets.join(', ')})`;
-}
-
 /* ── Produit vedette · la carte vert profond unique de la page ──
  * Refaite le 8 oct. 2026 (« c'est laid ça », Krystine) : la vraie photo du
  * flacon DANS la carte, sur un panneau ivoire; plus de halo, plus de vide;
@@ -172,28 +146,20 @@ const FeaturedProduct: React.FC<{
   const fr = lang === 'FR';
 
   return (
-    <div className="relative isolate overflow-hidden rounded-[24px] border border-[#9c7a44]/35 bg-[#2f3f37] text-[#EEE7DB] shadow-[0_34px_70px_-48px_rgba(41,48,39,0.55)] p-[clamp(1.25rem,3vw,2.5rem)]">
-      {/* Le fondu (8 oct. 2026, « le vert uni est carré et froid ») : comme les
-          cartes de presse et des médias, la photo se fond dans la couleur. Le
-          vert adouci porte le texte, puis glisse sans arête vers une crème
-          lumineuse où le flacon est posé; une lueur cuivre très douce à la
-          couture. Au téléphone, le fondu descend du haut vers le bas. */}
-      <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden md:block" style={{ background: fonduCarte('to left') }} />
-      <span aria-hidden className="pointer-events-none absolute inset-0 -z-10 md:hidden" style={{ background: fonduCarte('to bottom') }} />
-      <span aria-hidden className="pointer-events-none absolute -z-10 hidden md:block right-[24%] top-1/2 h-[120%] w-[40%] -translate-y-1/2 rounded-full blur-[70px]" style={{ background: 'radial-gradient(closest-side, rgba(217,160,91,0.22), rgba(217,160,91,0))' }} />
-      <span className="pointer-events-none absolute inset-2.5 rounded-[18px] border border-[#BA7B39]/30" aria-hidden />
-      <div className="relative grid gap-x-[clamp(1.5rem,3.5vw,3.25rem)] gap-y-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center">
-        {/* Le flacon, posé dans la crème du fondu */}
-        <Link to={fiche} aria-label={p.title} className="group relative block md:order-2 aspect-square md:aspect-[4/5]">
-          <img src={taille(photo, 900)} alt={p.title} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 h-full w-full object-contain p-[4%] mix-blend-multiply transition-transform duration-[1200ms] ease-out [@media(hover:hover)]:group-hover:scale-[1.03]" />
-          <span className="absolute top-1 right-1 text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">INSPIRATA AYURVEDA</span>
+    <div className="relative rounded-[15px] bg-[#28352F] text-[#EEE7DB] shadow-[0_30px_60px_-45px_rgba(41,48,39,0.7)] p-[clamp(1.1rem,2.6vw,2rem)]">
+      <span className="pointer-events-none absolute inset-2 rounded-[11px] border border-[#BA7B39]/35" aria-hidden />
+      <div className="relative grid gap-x-[clamp(1.5rem,3.5vw,3.25rem)] gap-y-7 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] md:items-start">
+        {/* La photo du flacon, sur un panneau ivoire */}
+        <Link to={fiche} aria-label={p.title} className="group relative block overflow-hidden rounded-[9px] bg-[#EEE7DB] aspect-[4/3] md:aspect-square">
+          <img src={taille(photo, 900)} alt={p.title} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 h-full w-full object-contain px-[3%] pb-[3%] pt-[17%] md:p-[3%] mix-blend-multiply transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]" />
+          <span className="absolute top-0 left-0 flex items-center gap-2 bg-[#1c1712] px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.22em] text-[#f4efe6]">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ background: couleur }} aria-hidden />
+            {libelle}
+          </span>
         </Link>
 
-        <div className="pb-1 md:order-1 md:py-[clamp(0.5rem,1.5vw,1.25rem)]">
-          <p className="flex items-center gap-2.5 text-[0.66rem] uppercase tracking-[0.16em] sm:tracking-[0.28em] text-[#d9a05b]">
-            <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ background: couleur }} aria-hidden />
-            {libelle}
-          </p>
+        <div className="pb-1 md:pr-[clamp(0.5rem,1.5vw,1.25rem)]">
+          <p className="text-[0.66rem] uppercase tracking-[0.28em] text-[#d9a05b]">INSPIRATA AYURVEDA</p>
           <h2 className="mt-3 v2-serif font-light leading-[1.08] text-[#EEE7DB] text-[clamp(1.6rem,2.4vw,2.1rem)]">
             <Link to={fiche} className="hover:text-[#d9a05b] transition-colors duration-300">{p.title}</Link>
           </h2>
@@ -244,125 +210,6 @@ const FeaturedProduct: React.FC<{
       </div>
     </div>
   );
-};
-
-/* ── Un bienfait à la fois (8 oct. 2026, « un texte qui s'écrit ») ──
- * Chaque lettre apparaît en fondu (rythme du site, cubic-bezier(.16,.8,.24,1)),
- * la ligne reste, s'efface doucement, puis la suivante s'écrit, en boucle.
- * Ne tourne que lorsque la section est à l'écran. Lecteurs d'écran : la liste
- * complète en texte; l'animation est aria-hidden. Mouvement réduit : liste fixe. */
-const BIENFAITS_FR = [
-  // Fragments mot pour mot de Nature & Ayurveda (Krystine St-Laurent, 2018), choisis par Krystine.
-  'apaiser vata',
-  'apaiser la tête',
-  'apaiser le cœur, les émotions',
-  'apaiser le corps en entier',
-  'le système circulatoire',
-  'le système lymphatique',
-  'le système nerveux',
-  'au même titre que se nourrir, dormir, bouger',
-];
-
-const MachineAEcrire: React.FC<{ lignes: string[] }> = ({ lignes }) => {
-  const reduce = useReducedMotion();
-  const hote = React.useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  const [i, setI] = useState(0);
-  const [n, setN] = useState(0);
-  const [efface, setEfface] = useState(false);
-
-  useEffect(() => {
-    const el = hote.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (reduce || !visible) return;
-    const ligne = lignes[i];
-    let t: number;
-    if (efface) {
-      t = window.setTimeout(() => { setEfface(false); setN(0); setI(k => (k + 1) % lignes.length); }, 900);
-    } else if (n < ligne.length) {
-      // un peu plus lent après la ponctuation, pour respirer
-      const pause = /[,.:;]/.test(ligne[n - 1] || '') ? 260 : 70;
-      t = window.setTimeout(() => setN(k => k + 1), pause);
-    } else {
-      t = window.setTimeout(() => setEfface(true), 2400);
-    }
-    return () => window.clearTimeout(t);
-  }, [reduce, visible, i, n, efface, lignes]);
-
-  if (reduce) {
-    return (
-      <ul className="flex flex-wrap gap-x-2 gap-y-1 v2-serif font-light text-[1.0625rem] leading-[1.55] text-[#1c1712]">
-        {lignes.map((l, k) => <li key={l}>{l}{k < lignes.length - 1 ? ' ·' : ''}</li>)}
-      </ul>
-    );
-  }
-
-  const ligne = lignes[i];
-  return (
-    <div ref={hote}>
-      <ul className="sr-only">{lignes.map(l => <li key={l}>{l}</li>)}</ul>
-      <p
-        aria-hidden
-        className="min-h-[1.6em] v2-serif font-light text-[clamp(1.1rem,1.4vw,1.25rem)] leading-[1.6] text-[#1c1712] transition-[opacity,filter] duration-[900ms] ease-[cubic-bezier(.16,.8,.24,1)]"
-        style={{ opacity: efface ? 0 : 1, filter: efface ? 'blur(3px)' : 'blur(0px)' }}
-      >
-        {Array.from(ligne).flatMap((c, k) => {
-          const lettre = <span key={`${i}-${k}`} className="transition-opacity duration-[420ms] ease-[cubic-bezier(.16,.8,.24,1)]" style={{ opacity: k < n ? 1 : 0 }}>{c}</span>;
-          return k === n ? [<span key="curseur" className="ml-[1px] inline-block h-[1.05em] w-[1.5px] translate-y-[0.18em] bg-[#BA7B39] animate-[curseur_1.1s_cubic-bezier(.16,.8,.24,1)_infinite]" />, lettre] : [lettre];
-        })}
-        {n >= ligne.length && <span className="ml-[1px] inline-block h-[1.05em] w-[1.5px] translate-y-[0.18em] bg-[#BA7B39] animate-[curseur_1.1s_cubic-bezier(.16,.8,.24,1)_infinite]" />}
-      </p>
-    </div>
-  );
-};
-
-/* ── Les documents de VATA Essentiel, comme sur la page de vente /vata ──
- * (Krystine, 8 oct. 2026) : le guide de 204 pages au centre, les fiches en
- * éventail; les vraies couvertures de public/vata/couvertures. Boutique seulement. */
-const EVENTAIL_VATA: Array<[string, number, string, string]> = [
-  ['img-006', -17, '-118%', '9%'],
-  ['img-012', -11, '-80%', '4%'],
-  ['img-029', -5, '-41%', '1%'],
-  ['img-041', 5, '41%', '1%'],
-  ['img-048', 11, '80%', '4%'],
-  ['img-021', 17, '118%', '9%'],
-];
-const DocVata: React.FC<{ id: string }> = ({ id }) => (
-  <img src={`/vata/couvertures/${id}.jpg`} alt="" loading="lazy" decoding="async" className="block w-full h-auto aspect-[707/1000] object-cover rounded-[3px] border border-[#1c1712]/10 shadow-[0_16px_32px_-18px_rgba(28,23,18,0.5),0_2px_5px_rgba(28,23,18,0.08)]" />
-);
-const EventailVata: React.FC = () => (
-  <span aria-hidden className="absolute inset-0 block bg-[#efe6d7]">
-    <span className="absolute inset-x-[6%] bottom-0 top-[4%] block">
-      {EVENTAIL_VATA.map(([id, rot, x, y], i) => (
-        <span key={id} className="absolute bottom-[16%] left-1/2 -ml-[11%] block w-[22%]" style={{ zIndex: 6 - Math.abs(i - 2.5) * 2, transform: `translate(${x}, ${y}) rotate(${rot}deg)`, transformOrigin: 'bottom center' }}>
-          <DocVata id={id} />
-        </span>
-      ))}
-      <span className="absolute bottom-[12%] left-1/2 -ml-[14%] block w-[28%]" style={{ zIndex: 10 }}>
-        <DocVata id="guide" />
-      </span>
-    </span>
-    <span className="absolute top-2 right-3 z-20 hidden sm:block text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/80">Guide de 204 pages</span>
-  </span>
-);
-
-/* Les photos de séance INSPIRATA (photographe, ~/Downloads/VATA/), par huile vedette. */
-type PhotoSeance = { src: string; focus: string; alt: { FR: string; EN: string } };
-const SEANCE_PHOTO: Record<string, { grande: PhotoSeance; paire: PhotoSeance[] }> = {
-  'huile-corporelle-apaisante-vata-3': {
-    // inspirata_100, recadrée en 5:4 et éclaircie avec mesure (+4 %, un soupçon de chaleur), 8 oct. 2026.
-    grande: { src: '/boutique/vata-inspirata-100.jpg', focus: '45% 50%', alt: { FR: "Le flacon de L'Apaisante Vata tenu dans les mains, vêtements blancs et lumière du jour", EN: 'The L’Apaisante Vata bottle held in the hands, white clothes and daylight' } },
-    paire: [
-      { src: '/boutique/vata-inspirata-103.jpg', focus: '50% 55%', alt: { FR: "Les mains qui pompent L'Apaisante Vata", EN: 'Hands pumping L’Apaisante Vata' } },
-      { src: '/boutique/vata-inspirata-55.jpg', focus: '45% 55%', alt: { FR: "Le flacon de L'Apaisante Vata tenu dans les mains, sur un tricot crème", EN: 'The L’Apaisante Vata bottle held on a cream knit' } },
-    ],
-  },
 };
 
 /* ════════════════════════ Page ════════════════════════ */
@@ -487,28 +334,6 @@ const BoutiqueLoeuvre: React.FC = () => {
     return { vedette: v, essentiels: rangee, familles: groupes.filter(g => g.produits.length > 0) };
   }, [visibleProducts, saison, fr]);
 
-  // ── Le repérage par dosha (8 oct. 2026) : « pour que la cliente puisse
-  // retrouver ». Un clic garde, dans chaque famille, les produits liés à ce
-  // qui est présent : l'huile qui porte son nom et les essentiels choisis
-  // pour lui (lib/saisonBoutique.ts). Sans recharger la page.
-  const [filtre, setFiltre] = useState<DoshaProduit | null>(null);
-  const famillesAffichees = useMemo(() => {
-    if (!filtre) return familles;
-    const s0 = SAISONS[filtre];
-    const lies = new Set([s0.vedette.handle, ...s0.essentiels.map(e => e.handle)]);
-    const garde = (p: ShopifyProduct) => doshaDe(p) === filtre || lies.has(p.handle);
-    return ORDRE_FAMILLES
-      .map(id => COLLECTIONS.find(c => c.id === id))
-      .filter((c): c is NonNullable<typeof c> => !!c)
-      .map(c => ({
-        id: c.id, slug: c.slug as string | null,
-        label: fr ? c.labelFR : c.labelEN,
-        tagline: fr ? c.taglineFR : c.taglineEN,
-        produits: visibleProducts.filter(p => assignCollection(p)?.id === c.id && garde(p)),
-      }))
-      .filter(g => g.produits.length > 0);
-  }, [filtre, familles, visibleProducts, fr]);
-
   // La galerie de l'ouverture (8 oct. 2026). Jamais d'image générée : tout
   // fichier Shopify dont le nom trahit l'IA est écarté. La grande case montre
   // la première photo réelle de l'huile; les vignettes : le geste de
@@ -517,12 +342,12 @@ const BoutiqueLoeuvre: React.FC = () => {
     ? [vedette.featuredImage?.url, ...vedette.images.map(i => i.url)].filter((u, i, a): u is string => !!u && !estIA(u) && a.indexOf(u) === i)
     : [];
   const photoVedette = photosVedette[0] || '';
-  // Les photos de l'ouverture (8 oct. 2026, « arrête de mettre ces photos ») :
-  // seulement les vraies photos de la séance INSPIRATA, copiées dans
-  // public/boutique/ depuis ~/Downloads/VATA/. Pour une saison sans séance
-  // photo, la grande case garde la photo Shopify et la paire disparaît.
-  const seance = vedette ? SEANCE_PHOTO[vedette.handle] : undefined;
-  const galerie = seance?.paire ?? [];
+  const galerie: { src: string; alt: string; legende: string; produit: boolean }[] = [
+    { src: '/rituels-vivants/automassage-bras.webp', alt: fr ? "Le geste de l'automassage, la main sur l'épaule" : 'The self-massage gesture, a hand on the shoulder', legende: fr ? "L'automassage" : 'Self-massage', produit: false },
+    photosVedette[1]
+      ? { src: taille(photosVedette[1], 600), alt: vedette?.title || '', legende: fr ? 'Un autre format' : 'Another size', produit: true }
+      : { src: '/rituels-vivants/mains.webp', alt: fr ? 'Les mains huilées sur le cou' : 'Oiled hands on the neck', legende: fr ? 'Matin et soir' : 'Morning and evening', produit: false },
+  ];
 
 
   // Pendant le chargement du flag de redirection, afficher un voile sobre
@@ -537,50 +362,6 @@ const BoutiqueLoeuvre: React.FC = () => {
     );
   }
 
-  // L'accueil de la nouvelle venue : sous les photos au téléphone, sous le texte sur ordinateur.
-  const accueil = (
-    <>
-    {/* L'accueil de la nouvelle venue (8 oct. 2026, « inaperçu ») : une carte douce
-                au fondu des cartes /medias, puis l'appel au quiz, dessiné et visible. */}
-            <aside className="relative mt-7 overflow-hidden rounded-[20px] border border-[#9c7a44]/30 p-[clamp(1.15rem,2.4vw,1.6rem)]" style={{ background: 'linear-gradient(140deg, #faf6ee 0%, #f3ebdd 55%, #ead9bf 100%)' }}>
-              <span aria-hidden className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full blur-[50px]" style={{ background: 'radial-gradient(closest-side, rgba(186,123,57,0.22), rgba(186,123,57,0))' }} />
-              <div className="relative">
-                <p className="text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">{fr ? 'Pour commencer' : 'To begin'}</p>
-                <h2 className="mt-1.5 v2-serif font-light text-[clamp(1.45rem,2vw,1.7rem)] leading-[1.15] text-[#1c1712]">{fr ? 'Nouvelle ici ?' : 'New here?'}</h2>
-                <p className="mt-2.5 text-[1rem] sm:text-[1.0625rem] leading-[1.65] text-[#3a2f23]">
-                  {fr
-                    ? "Vous n'avez pas besoin de savoir « quel type » vous êtes. La saison nous influence déjà, et l'huile ci-dessous a été pensée pour ce moment de l'année."
-                    : 'You do not need to know yours to begin: the oil below goes with the current season.'}
-                </p>
-                <Link
-                  to="/quiz"
-                  className="group mt-5 block rounded-[14px] border border-[#1c1712]/15 bg-[#fbf8f2]/85 p-4 shadow-[0_14px_30px_-24px_rgba(28,23,18,0.45)] transition-[border-color,transform,box-shadow] duration-200 ease-out active:scale-[0.985] [@media(hover:hover)]:hover:border-[#9c7a44] [@media(hover:hover)]:hover:shadow-[0_18px_34px_-22px_rgba(28,23,18,0.5)]"
-                >
-                  <span className="flex items-center gap-3.5">
-                    <span className="flex shrink-0 -space-x-2" aria-hidden>
-                      {(['vata', 'pitta', 'kapha'] as const).map(d => (
-                        <span key={d} className="grid h-12 w-12 place-items-center rounded-full border border-[#9c7a44]/30 bg-[#f4efe6]">
-                          <PictoDosha dosha={d} className="h-9 w-9" />
-                        </span>
-                      ))}
-                    </span>
-                    <span className="v2-serif font-light text-[clamp(1.2rem,1.6vw,1.35rem)] leading-[1.2] text-[#1c1712]">{fr ? 'Me situer en ce moment' : 'Where am I right now'}</span>
-                  </span>
-                  <span className="mt-2.5 block text-[1rem] leading-[1.55] text-[#3a2f23]">
-                    {fr ? 'Voyez ce qui domine, ce qui l’accentue et la direction qui mérite votre attention.' : 'See what dominates, what amplifies it and the direction that deserves your attention.'}
-                  </span>
-                  <span className="mt-3.5 flex items-center justify-between gap-3">
-                    <span className="whitespace-nowrap text-[0.66rem] uppercase tracking-[0.2em] text-[#7d6330]">3 minutes</span>
-                    <span className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap bg-[#1c1712] px-4 sm:px-5 text-[0.66rem] uppercase tracking-[0.14em] text-[#f4efe6] transition-colors duration-200 group-hover:bg-[#9c7a44]">
-                      {fr ? 'Faire le quiz' : 'Take the quiz'} <ArrowRight size={14} className="transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
-                    </span>
-                  </span>
-                </Link>
-              </div>
-            </aside>
-    </>
-  );
-
   return (
     <div
       className="relative w-full bg-[#f4efe6] text-[#1c1712] antialiased overflow-x-hidden"
@@ -589,7 +370,6 @@ const BoutiqueLoeuvre: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500&display=swap');
         .v2-serif { font-family: "Fraunces", Georgia, serif; }
-        @keyframes curseur { 0%, 45% { opacity: 1 } 55%, 100% { opacity: 0 } }
         .v2-grain {
           position: fixed; inset: 0; z-index: 60; pointer-events: none;
           opacity: 0.045; mix-blend-mode: multiply;
@@ -614,7 +394,6 @@ const BoutiqueLoeuvre: React.FC = () => {
             >
               {fr ? 'La boutique INSPIRATA AYURVEDA' : 'The INSPIRATA AYURVEDA shop'}
             </motion.p>
-            <div className="flex items-center gap-[clamp(0.6rem,1.4vw,1.1rem)]">
             <h1 className="v2-serif font-light leading-[0.92] tracking-[-0.015em] text-[#1c1712] text-[clamp(2.4rem,4.6vw,4.1rem)]">
               {(fr ? ['Les essentiels', 'de la saison'] : ['The essentials', 'of the season']).map((ligne, i) => (
                 <span key={ligne} className="block overflow-hidden pb-[0.08em]">
@@ -629,22 +408,11 @@ const BoutiqueLoeuvre: React.FC = () => {
                 </span>
               ))}
             </h1>
-            {/* Le picto du dosha de la saison (Krystine, 8 oct. 2026), le même que dans « Selon ce qui est présent » */}
-            <motion.span
-              aria-hidden
-              className="shrink-0"
-              initial={reduce ? false : { opacity: 0, scale: 0.94, filter: 'blur(6px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.45 }}
-            >
-              <PictoDosha dosha={saison.dosha} className="h-[clamp(3.25rem,6vw,5rem)] w-[clamp(3.25rem,6vw,5rem)]" />
-            </motion.span>
-            </div>
             <motion.p
               initial={reduce ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.5 }}
-              className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.74rem] uppercase tracking-[0.12em] sm:tracking-[0.22em] text-[#1c1712]"
+              className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.74rem] uppercase tracking-[0.22em] text-[#1c1712]"
             >
               <span>
                 <span className="mr-3 inline-block h-2.5 w-2.5 rounded-full align-[0.05em]" style={{ background: saison.couleur }} aria-hidden />
@@ -652,17 +420,6 @@ const BoutiqueLoeuvre: React.FC = () => {
               </span>
               <span className="text-[#1c1712]/75 normal-case tracking-[0.04em] text-[0.9rem]">{fr ? saison.periodeFR : saison.periodeEN}</span>
             </motion.p>
-            {/* L'huile de la saison en une ligne, avec la formule de Krystine (8 oct. 2026), mot pour mot */}
-            {fr && vedette && (
-              <motion.p
-                initial={reduce ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.6 }}
-                className="mt-3 max-w-[60ch] text-[1rem] leading-[1.6] text-[#3a2f23]"
-              >
-                <Link to={`/boutique/produit/${vedette.handle}`} className="text-[#1c1712] border-b border-[#1c1712]/30 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">{vedette.title}</Link> : des plantes d’ici infusées à la main, puis, dans un mélange d’huiles choisies.
-              </motion.p>
-            )}
           </div>
 
           {/* La planche : la photo réelle de l'huile de la saison, plein cadre */}
@@ -686,12 +443,11 @@ const BoutiqueLoeuvre: React.FC = () => {
                     transition={{ duration: 1.35, ease: EASE_REVEAL, delay: 0.3 }}
                   >
                     <motion.img
-                      src={seance ? seance.grande.src : taille(photoVedette, 1000)}
-                      alt={seance ? seance.grande.alt[lang] : (vedette.featuredImage?.altText || vedette.title)}
+                      src={taille(photoVedette, 1000)}
+                      alt={vedette.featuredImage?.altText || vedette.title}
                       loading="eager"
                       referrerPolicy="no-referrer"
-                      className={`absolute inset-0 h-full w-full transition-transform duration-[1200ms] ease-out [@media(hover:hover)]:group-hover:scale-[1.025] ${seance ? 'object-cover' : 'object-contain p-[9%] mix-blend-multiply'}`}
-                      style={seance ? { objectPosition: seance.grande.focus } : undefined}
+                      className="absolute inset-0 h-full w-full object-contain p-[9%] mix-blend-multiply transition-transform duration-[1200ms] ease-out group-hover:scale-[1.025]"
                       initial={reduce ? false : { scale: 1.06 }}
                       animate={{ scale: 1 }}
                       transition={{ duration: 1.9, ease: EASE_REVEAL, delay: 0.3 }}
@@ -702,35 +458,40 @@ const BoutiqueLoeuvre: React.FC = () => {
                   </motion.span>
                 </span>
               </Link>
-              {galerie.length > 0 && (
-              <figure className="mt-5">
-                <div className="grid grid-cols-2 gap-[clamp(0.75rem,1.6vw,1.25rem)]">
-                  {galerie.map((g, i) => (
-                    <motion.span
-                      key={g.src}
-                      className="relative block aspect-[4/5] overflow-hidden border border-[#9c7a44]/40 bg-[#efe6d7]"
-                      initial={reduce ? false : { opacity: 0, y: 14, filter: 'blur(6px)' }}
-                      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                      transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.55 + i * 0.12 }}
-                    >
-                      <img src={g.src} alt={g.alt[lang]} loading="eager" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: g.focus }} />
-                      {/* le fondu : la photo glisse dans la crème, comme les cartes des médias */}
-                      <span aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(239,230,215,0.55) 0%, rgba(239,230,215,0.18) 18%, rgba(239,230,215,0) 38%)' }} />
-                    </motion.span>
-                  ))}
-                </div>
-                <figcaption className="mt-3 flex items-center gap-2.5 text-[0.62rem] uppercase tracking-[0.22em] text-[#1c1712]/80">
-                  <span className="h-px w-5 shrink-0 bg-[#BA7B39]" aria-hidden />
-                  {fr ? "L'Apaisante Vata, au quotidien" : 'L’Apaisante Vata, every day'}
-                </figcaption>
-              </figure>
-              )}
-              <div className="lg:hidden">{accueil}</div>
+              <div className="mt-5 grid grid-cols-2 gap-[clamp(0.75rem,1.6vw,1.25rem)]">
+                {galerie.map((g, i) => (
+                  <motion.figure
+                    key={g.src}
+                    className="relative"
+                    initial={reduce ? false : { opacity: 0, y: 14, filter: 'blur(6px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.55 + i * 0.12 }}
+                  >
+                    <span className="relative block aspect-[4/3] overflow-hidden border border-[#9c7a44]/40 bg-[#efe6d7]">
+                      <img
+                        src={g.src}
+                        alt={g.alt}
+                        loading="eager"
+                        referrerPolicy="no-referrer"
+                        className={`absolute inset-0 h-full w-full ${g.produit ? 'object-contain p-[10%] mix-blend-multiply' : 'object-cover object-[50%_30%] saturate-[0.92]'}`}
+                      />
+                    </span>
+                    <figcaption className="mt-2.5 flex items-center gap-2.5 text-[0.58rem] uppercase tracking-[0.22em] text-[#1c1712]/80">
+                      <span className="h-px w-5 shrink-0 bg-[#BA7B39]" aria-hidden />
+                      {g.legende}
+                    </figcaption>
+                  </motion.figure>
+                ))}
+              </div>
+              <p className="mt-6 border-t border-[#9c7a44]/35 pt-4 text-[1rem] leading-[1.6] text-[#3a2f23]">
+                <span className="mb-1.5 block text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">INSPIRATA AYURVEDA</span>
+                {fr ? "Des plantes d'ici infusées à la main dans l'huile, en petites quantités, selon les formules de Krystine." : 'Local plants infused in oil by hand, in small batches, from Krystine’s formulas.'}
+              </p>
             </motion.div>
           )}
 
           <motion.div
-            className={vedette ? 'lg:col-start-1 lg:row-start-2 lg:self-start lg:mt-4' : 'lg:col-start-2 lg:row-start-1'}
+            className={vedette ? 'lg:col-start-1 lg:row-start-2 lg:self-end' : 'lg:col-start-2 lg:row-start-1'}
             initial={reduce ? false : { opacity: 0, y: 22, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 1.1, ease: EASE_REVEAL, delay: 0.55 }}
@@ -738,7 +499,23 @@ const BoutiqueLoeuvre: React.FC = () => {
             <p className="v2-serif text-[clamp(1.1rem,1.35vw,1.2rem)] font-light leading-[1.6] text-[#3a2f23] max-w-[48ch]">
               {fr ? saison.introFR : saison.introEN}
             </p>
-            <div className="hidden lg:block max-w-[520px]">{accueil}</div>
+            {/* Nouvelle ici ? · ce qu'il faut savoir avant d'acheter, en deux phrases (4 oct. 2026) */}
+            <aside className="mt-7 border-t border-[#9c7a44]/40 pt-5 max-w-[52ch]">
+              <p className="text-[0.62rem] uppercase tracking-[0.26em] text-[#7d6330]">{fr ? 'Nouvelle ici ?' : 'New here?'}</p>
+              <p className="mt-2.5 text-[1rem] sm:text-[1.0625rem] leading-[1.7] text-[#3a2f23]">
+                {fr
+                  ? "Vous n'avez pas besoin de savoir « quel type » vous êtes. La saison nous influence déjà : en ce moment, l'air froid et sec assèche la peau, rend le sommeil plus léger et fait courir le mental. L'huile ci-dessous a été pensée pour ce moment de l'année."
+                  : 'INSPIRATA AYURVEDA is a line of oils and care products designed by Krystine St-Laurent, with local plants infused by hand in oil. Ayurveda, a care tradition born in India, sees three dominances, Vata (Wind and Space), Pitta (Fire and Water) and Kapha (Water and Earth): each season awakens one, and each oil is made for one of them.'}
+              </p>
+              <p className="mt-2.5 text-[1rem] sm:text-[1.0625rem] leading-[1.7] text-[#3a2f23]">
+                {fr
+                  ? "Les huiles INSPIRATA AYURVEDA sont conçues par Krystine St-Laurent, avec des plantes d'ici infusées à la main dans l'huile. Pour aller plus loin, à votre rythme : "
+                  : 'You do not need to know yours to begin: the oil below goes with the current season. '}
+                <Link to="/quiz" className="whitespace-nowrap text-[#1c1712] border-b border-[#1c1712]/40 pb-0.5 hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
+                  {fr ? 'Me situer en ce moment · 3 min' : 'Where am I right now · 3 min'} <ArrowRight size={14} className="inline align-[-0.1em]" />
+                </Link>
+              </p>
+            </aside>
             {vedette && (
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
                 <a href="#saison" className="group inline-flex min-h-[46px] items-center justify-center gap-2.5 bg-[#1c1712] px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-[background-color,transform] duration-200 ease-out active:scale-[0.97] hover:bg-[#9c7a44]">
@@ -792,10 +569,10 @@ const BoutiqueLoeuvre: React.FC = () => {
               {visibleProducts.length > 0 && (
                 <ul className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 border-y border-[#1c1712]/12 py-5">
                   {(fr
-                    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Livraison', 'Au Canada et aux États-Unis, en 3 à 4 jours ouvrables en général'], ['Livraison offerte', 'Dès 135 $ d’achat, avant taxes'], ['Fait à la main', 'En petites quantités, selon les formules de Krystine St-Laurent, après quatre ans de recherche et développement inspirés des apothicairesses de la Nouvelle-France. Chaque recette porte sa signature.']]
+                    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Livraison', 'Au Canada et aux États-Unis, en 3 à 4 jours ouvrables en général'], ['Livraison offerte', 'Dès 135 $ d’achat, avant taxes'], ['Fait à la main', 'En petites quantités, selon les formules de Krystine']]
                     : [['Secure checkout', 'By Shopify, in Canadian dollars'], ['Shipping', 'To Canada and the United States, usually in 3 to 4 business days'], ['Shipping included', 'From $135, before taxes'], ['Handmade', 'In small batches, from Krystine’s formulas']]
                   ).map(([t, d]) => (
-                    <li key={t} className="max-lg:last:col-span-2">
+                    <li key={t}>
                       <p className="text-[0.58rem] uppercase tracking-[0.22em] text-[#7d6330]">{t}</p>
                       <p className="mt-1.5 text-[1rem] leading-[1.5] text-[#3a2f23]">{d}</p>
                     </li>
@@ -854,11 +631,11 @@ const BoutiqueLoeuvre: React.FC = () => {
               {vedette && (
                 <Reveal className="mt-[clamp(3rem,7vh,4.5rem)]">
                   <div className="border-y border-[#9c7a44]/45 py-[clamp(1.75rem,3.5vw,2.75rem)]">
-                    <div className="grid gap-x-[clamp(1.5rem,3.5vw,3rem)] gap-y-7 grid-cols-1 sm:grid-cols-[8rem_1fr] lg:grid-cols-[9rem_1fr_1.1fr] lg:items-center">
-                      <div className="relative self-start lg:self-center">
+                    <div className="grid gap-x-[clamp(1.5rem,3.5vw,3rem)] gap-y-7 grid-cols-1 sm:grid-cols-[8rem_1fr] lg:grid-cols-[9rem_1.5fr_1fr]">
+                      <div className="relative self-start">
                         <span className="pointer-events-none absolute -inset-1.5 border border-[#9c7a44]/40" aria-hidden />
                         <span className="relative block aspect-[16/9] sm:aspect-[4/5] overflow-hidden bg-[#efe6d7]">
-                          <img src="/boutique/vata-inspirata-58.jpg" alt={fr ? "L'huile versée au creux de la main" : 'The oil poured into the palm'} loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_45%]" />
+                          <img src="/rituels-vivants/automassage-oreilles.webp" alt={fr ? 'Un flacon INSPIRATA AYURVEDA entre les mains' : 'An INSPIRATA AYURVEDA bottle in the hands'} loading="lazy" className="absolute inset-0 h-full w-full object-cover object-[50%_40%] saturate-[0.92]" />
                         </span>
                       </div>
                       <figure>
@@ -866,40 +643,25 @@ const BoutiqueLoeuvre: React.FC = () => {
                           <span className="h-px w-6 bg-[#BA7B39]" aria-hidden />
                           {fr ? "Pourquoi l'automassage" : 'Why self-massage'}
                         </p>
-                        <blockquote lang="fr" className="mt-4 max-w-[34ch] v2-serif font-light text-[clamp(1.3rem,1.9vw,1.65rem)] leading-[1.35] text-[#1c1712]">
-                          « Se masser avec une huile infusée est l’équivalent de prendre une tisane par la peau. »
+                        <blockquote lang="fr" className="mt-4 v2-serif font-light text-[1rem] leading-[1.65] text-[#1c1712] max-w-[62ch]">
+                          « Le massage et l’automassage sont très prisés dans l’approche ayurvédique. Que ce soit dans les rituels ou dans la routine quotidienne (dynacharia), l’automassage est recommandé et fait même partie des activités de tous les jours, au même titre que se nourrir, dormir, bouger et éliminer. Travaillant systématiquement sur trois systèmes (circulatoire, lymphatique et nerveux), l’automassage est extrêmement important pour apaiser vata et, de façon générale, pour apaiser la tête, le cœur (les émotions) et le corps en entier. »
                         </blockquote>
-                        <div lang="fr" className="mt-5 flex items-baseline gap-3 border-t border-[#9c7a44]/30 pt-4 max-w-[46ch]">
-                          <span className="shrink-0 text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? "L'automassage" : 'Self-massage'}</span>
-                          <div className="min-w-0 flex-1"><MachineAEcrire lignes={BIENFAITS_FR} /></div>
-                        </div>
-                        <figcaption className="mt-4 text-[0.9rem] text-[#1c1712]/85">
+                        <figcaption className="mt-4 text-[0.9rem] text-[#1c1712]/80">
                           Krystine St-Laurent, <cite className="not-italic">Nature & Ayurveda</cite>, Éditions de l’Homme, 2018
                         </figcaption>
                       </figure>
                       <ul className="sm:col-span-2 lg:col-span-1 space-y-5 border-t border-[#9c7a44]/30 pt-6 lg:border-t-0 lg:pt-0 lg:border-l lg:border-[#9c7a44]/35 lg:pl-[clamp(1.5rem,3vw,2.5rem)] self-start">
                         <li>
-                          <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? 'Selon ce qui est présent' : 'Depending on what is present'}</p>
-                          {/* Une ligne par dosha (8 oct. 2026) : le picto, trois repères tirés de la
-                              matière du site, puis la fréquence, citée mot pour mot du livre. */}
-                          <ul className="mt-3 space-y-3.5">
-                            {([
-                              ['vata', 'la peau tiraille · sommeil plus léger · le mental court', '« chaque jour, et même matin et soir si possible »'],
-                              ['pitta', 'peau réactive · mental tranchant · tout s’échauffe', '« trois fois par semaine, en moyenne »'],
-                              ['kapha', 'lourdeur au réveil · lenteur digestive · envie de se replier', '« une ou deux fois par semaine », et « un automassage actif le matin avec une huile adaptée pour kapha »'],
-                            ] as const).map(([d, reperes, frequence]) => (
-                              <li key={d} className="grid grid-cols-[2.5rem_1fr] items-start gap-3">
-                                <PictoDosha dosha={d} className="h-10 w-10" />
-                                <div lang="fr">
-                                  <p className="text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712]">{NOM_DOSHA[d][lang]}</p>
-                                  <p className="mt-0.5 text-[1rem] leading-[1.5] text-[#7d6330]">{reperes}</p>
-                                  <p className="mt-0.5 text-[1rem] leading-[1.55] text-[#3a2f23]">→ {frequence}</p>
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
-                          {/* Le PDF « Les 3 rituels du moment » attend son contenu (Krystine, 8 oct. 2026). */}
-                          {fr && AFFICHER_RITUEL_PDF && <RituelPdf />}
+                          <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? "L'huile infusée" : 'Infused oil'}</p>
+                          <p lang="fr" className="mt-1.5 v2-serif font-light text-[1.0625rem] leading-[1.55] text-[#1c1712]">« Se masser avec une huile infusée est l’équivalent de prendre une tisane par la peau. »</p>
+                        </li>
+                        <li>
+                          <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? 'Combien de fois' : 'How often'}</p>
+                          <p lang="fr" className="mt-1.5 text-[1rem] leading-[1.7] text-[#3a2f23]">
+                            {fr ? 'Vata (Vent et Espace)' : 'Vata (Wind and Space)'} : « chaque jour, et même matin et soir si possible ».<br />
+                            {fr ? 'Pitta (Feu et Eau)' : 'Pitta (Fire and Water)'} : « trois fois par semaine, en moyenne ».<br />
+                            {fr ? 'Kapha (Eau et Terre)' : 'Kapha (Water and Earth)'} : « une ou deux fois par semaine », et « un automassage actif le matin avec une huile adaptée pour kapha ».
+                          </p>
                         </li>
                         <li>
                           <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? 'Combien de temps' : 'How long'}</p>
@@ -954,46 +716,15 @@ const BoutiqueLoeuvre: React.FC = () => {
             <DrawRule className="w-24" />
 
             {/* Raccourcis vers chaque famille : la page est longue, surtout au téléphone */}
-            {/* Repérage par dosha : on se situe en ce moment, jamais une étiquette fixe */}
-            <div role="group" aria-label={fr ? 'Selon ce que vous vivez en ce moment' : 'Depending on what you are living right now'} className="mt-8">
-              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330]">{fr ? 'Selon ce que vous vivez en ce moment' : 'Depending on what you are living right now'}</p>
-              <div className="mt-3 flex flex-wrap gap-2.5">
-                {(['vata', 'pitta', 'kapha'] as const).map(d => {
-                  const actif = filtre === d;
-                  return (
-                    <button
-                      key={d}
-                      type="button"
-                      aria-pressed={actif}
-                      aria-label={NOM_DOSHA[d][lang]}
-                      onClick={() => setFiltre(actif ? null : d)}
-                      className={`inline-flex min-h-[46px] items-center gap-2.5 border pl-2 pr-4 text-[0.95rem] transition-[background-color,border-color,transform] duration-200 ease-out active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9c7a44] ${actif ? 'bg-[#f4efe6] border-[#1c1712]' : 'border-[#1c1712]/20 hover:border-[#1c1712]/60'}`}
-                    >
-                      <PictoDosha dosha={d} className="h-8 w-8" />
-                      <span className="text-[#1c1712]"><span className="sm:hidden">{d.charAt(0).toUpperCase() + d.slice(1)}</span><span className="hidden sm:inline">{NOM_DOSHA[d][lang]}</span></span>
-                    </button>
-                  );
-                })}
-                <button
-                  type="button"
-                  aria-pressed={filtre === null}
-                  onClick={() => setFiltre(null)}
-                  className={`inline-flex min-h-[46px] items-center border px-4 text-[0.66rem] uppercase tracking-[0.2em] transition-[background-color,border-color,transform] duration-200 ease-out active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9c7a44] ${filtre === null ? 'bg-[#1c1712] border-[#1c1712] text-[#f4efe6]' : 'border-[#1c1712]/20 text-[#1c1712] hover:border-[#1c1712]/60'}`}
-                >
-                  {fr ? 'Tout voir' : 'See all'}
-                </button>
-              </div>
-            </div>
-
-            <nav aria-label={fr ? 'Les familles' : 'The families'} className="mt-6 flex flex-wrap gap-x-6 gap-y-2">
-              {famillesAffichees.map(({ id, label }) => (
+            <nav aria-label={fr ? 'Les familles' : 'The families'} className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+              {familles.map(({ id, label }) => (
                 <a key={id} href={`#famille-${id}`} className="inline-flex min-h-[44px] items-center text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/85 border-b border-transparent hover:text-[#7d6330] hover:border-[#9c7a44] transition-colors">
                   {label}
                 </a>
               ))}
             </nav>
 
-            {famillesAffichees.map(({ id, slug, label, tagline, produits }) => (
+            {familles.map(({ id, slug, label, tagline, produits }) => (
               <div key={id} id={`famille-${id}`} className="mt-[clamp(2.75rem,6vh,4rem)] scroll-mt-28">
                 <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-[#1c1712]/15 pb-4 mb-10">
                   <div>
@@ -1054,7 +785,7 @@ const BoutiqueLoeuvre: React.FC = () => {
             {
               Icon: Leaf,
               titleFR: 'Signées Krystine', titleEN: 'Signed by Krystine',
-              bodyFR: 'Chaque formule est pensée, essayée et ajustée par Krystine St-Laurent avant d’arriver jusqu’à vous.',
+              bodyFR: 'Chaque formule est pensée, essayée et ajustée par Krystine avant d’arriver jusqu’à vous.',
               bodyEN: 'Each formula is designed, tried and adjusted by Krystine before it reaches you.',
             },
           ].map((c, i) => {
@@ -1093,7 +824,7 @@ const BoutiqueLoeuvre: React.FC = () => {
             <div>
               <p className="flex items-center gap-3 text-[0.7rem] uppercase tracking-[0.3em] text-[#7d6330]">
                 <span className="h-px w-8 bg-[#BA7B39]" aria-hidden />
-                Les formations de Krystine St-Laurent
+                Les formations de Krystine
               </p>
               <h2 className="mt-5 v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(1.75rem,2.6vw,2.25rem)]">
                 Pour accompagner vos rituels
@@ -1109,9 +840,7 @@ const BoutiqueLoeuvre: React.FC = () => {
                     <Link to={f.lienFiche!} aria-label={f.titre} className="relative block">
                       <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/40" aria-hidden />
                       <span className="relative block aspect-[16/10] overflow-hidden bg-[#efe6d7]">
-                        {f.lienFiche === '/vata'
-                          ? <EventailVata />
-                          : f.imageUrl && <img src={f.imageUrl} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out [@media(hover:hover)]:group-hover:scale-[1.025]" />}
+                        {f.imageUrl && <img src={f.imageUrl} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.025]" />}
                         <span className="absolute top-0 left-0 bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]">Formation en ligne</span>
                       </span>
                     </Link>

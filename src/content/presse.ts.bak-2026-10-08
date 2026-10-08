@@ -124,10 +124,10 @@ const CARTES_DEFAUT: CartePresse[] = [
     nu: { fichier: 'accueil/assets/hero-ml-poster.jpg', focus: 0.32, focusX: 0.53 },
     qrCible: '/krystine', cibleAffiche: 'krystinestlaurent.ca/krystine',
     kickerFR: 'Biographie', titreFR: 'Krystine St-Laurent',
-    corpsFR: "Près de 40 ans d'expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.",
+    corpsFR: "Auteure et conférencière, praticienne en ayurveda depuis près de quarante ans. Avant cela, dix années aux soins critiques comme infirmière d'urgence, jusqu'au jour où elle a choisi les plantes et l'ayurveda, puis l'aromathérapie.",
     metaFR: 'krystinestlaurent.ca/krystine',
     kickerEN: 'Biography', titreEN: 'Krystine St-Laurent',
-    corpsEN: "Nearly 40 years of experience, intensive care, clinical research, the inner workings of the system, before choosing herbalism, Ayurveda and aromatherapy. Author of three books with Éditions de l'Homme. Creator of Santé la vie and the podcast Au-delà des tendances.",
+    corpsEN: 'Author, speaker and Ayurveda practitioner. Nearly forty years in holistic health, ten of them in critical care as an emergency nurse, before she turned to plants, Ayurveda and aromatherapy.',
     metaEN: 'krystinestlaurent.ca/krystine',
     legendeFR: 'Le portrait et la biographie tiennent dans une seule image.',
     legendeEN: 'The portrait and the biography, in one image.',
@@ -330,25 +330,93 @@ const PAGES_DEFAUT: PlanchePresse[] = [
 
 const TEXTES_DEFAUT: TextePresse[] = [
   {
-    key: 'bio-courte', labelFR: 'Biographie', labelEN: 'Biography',
-    texteFR: `KRYSTINE ST-LAURENT · BIOGRAPHIE (FR)
+    key: 'bio-courte', labelFR: 'Biographie courte', labelEN: 'Short biography',
+    texteFR: `KRYSTINE ST-LAURENT · BIOGRAPHIE COURTE (FR)
 
-Près de 40 ans d'expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.
+Krystine St-Laurent est auteure, conférencière et praticienne en ayurveda.
+Après dix années aux soins critiques comme infirmière d'urgence, elle a
+choisi les plantes et l'ayurveda, puis l'aromathérapie, et elle consacre
+depuis près de quarante ans sa pratique à l'art de vivre conscient.
+
+Ses livres Nature & Ayurveda et Féminité & Ayurveda, parus aux Éditions de
+l'Homme, ont tous deux été consacrés best-sellers en francophonie. Un
+troisième titre paraît en février 2027.
 
 krystinestlaurent.ca`,
-    texteEN: `KRYSTINE ST-LAURENT · BIOGRAPHY (EN)
+    texteEN: `KRYSTINE ST-LAURENT · SHORT BIOGRAPHY (EN)
 
-Nearly 40 years of experience, intensive care, clinical research, the inner workings of the system, before choosing herbalism, Ayurveda and aromatherapy. Author of three books with Éditions de l'Homme. Creator of Santé la vie and the podcast Au-delà des tendances.
+Krystine St-Laurent is an author, speaker and Ayurveda practitioner. After
+ten years in critical care as an emergency nurse, she turned to plants,
+Ayurveda and aromatherapy, and she has spent close to forty years since
+then on the art of conscious living.
 
+Her books Nature & Ayurveda and Féminité & Ayurveda, both published by
+Éditions de l'Homme, became best-sellers across the French-speaking world.
+A third title comes out in February 2027.
+
+krystinestlaurent.ca`,
+  },
+  {
+    key: 'bio-longue', labelFR: 'Biographie longue', labelEN: 'Long biography',
+    texteFR: `KRYSTINE ST-LAURENT · BIOGRAPHIE LONGUE (FR)
+
+Krystine St-Laurent a passé dix ans aux soins critiques, comme infirmière
+d'urgence, avant de quitter le système de santé conventionnel pour les
+plantes et l'ayurveda, puis l'aromathérapie. Elle avait vu les coulisses,
+la recherche clinique et l'urgence, et c'est de là qu'elle est partie.
+
+Depuis près de quarante ans, elle tisse des rituels enracinés dans
+l'ayurveda, les plantes, la respiration et l'écoute intérieure. Ce travail
+ne suit pas les tendances : il s'inscrit dans un art de vivre conscient,
+qu'elle enseigne autant sur scène que dans ses livres.
+
+Elle a publié Nature & Ayurveda et Féminité & Ayurveda aux Éditions de
+l'Homme, tous deux best-sellers en francophonie, et son troisième titre
+paraît en février 2027. Elle a animé trois saisons de Santé la vie à la
+télévision, et les entrevues qui ont suivi se retrouvent sur son site.
+
+Son podcast Au-delà des tendances compte deux saisons sur Spotify. Elle
+monte sur scène au Canada, aux États-Unis et en Europe avec trois
+conférences signature, dont L'Ayurveda comme boussole intérieure. Elle
+dirige aussi l'Expérience Origine, un parcours de douze semaines, et la
+boutique Inspirata Ayurveda, dont les huiles corporelles sont formulées
+pour chacun des trois doshas.
+
+Contact : equipe@inspiratanature.com
+krystinestlaurent.ca`,
+    texteEN: `KRYSTINE ST-LAURENT · LONG BIOGRAPHY (EN)
+
+Krystine St-Laurent spent ten years in critical care as an emergency nurse
+before leaving conventional healthcare for plants, Ayurveda and
+aromatherapy. She saw the back rooms, the clinical research and the
+emergency floor, and that is where she started from.
+
+For close to forty years she has been weaving rituals rooted in Ayurveda,
+plants, breathing and inner listening. The work does not follow trends: it
+belongs to an art of conscious living that she teaches on stage as much as
+in her books.
+
+She published Nature & Ayurveda and Féminité & Ayurveda with Éditions de
+l'Homme, both best-sellers across the French-speaking world, and her third
+title arrives in February 2027. She hosted three television seasons of
+Santé la vie, and the interviews that followed are gathered on her site.
+
+Her podcast, Beyond Trends, runs to two seasons on Spotify. She speaks
+across Canada, the United States and Europe with three signature talks,
+among them Ayurveda as an Inner Compass. She also leads the Origin
+Experience, a twelve-week programme, and the Inspirata Ayurveda shop,
+whose body oils are formulated for each of the three doshas.
+
+Contact: equipe@inspiratanature.com
 krystinestlaurent.ca`,
   },
   {
     key: 'faits', labelFR: 'La fiche des faits', labelEN: 'Fact sheet',
     texteFR: `KRYSTINE ST-LAURENT · LES FAITS
 
-Métier          Auteure, conférencière et praticienne en Ayurveda
-Parcours        Près de 40 ans d'expérience
-Avant           Soins intensifs, recherche clinique
+Métier          Auteure, conférencière et praticienne en ayurveda
+Pratique        Près de quarante ans en santé holistique
+Avant           Dix ans aux soins critiques, infirmière d'urgence
 Livres          Nature & Ayurveda (34,99 $ CA)
                 Féminité & Ayurveda (39,99 $ CA)
                 Troisième titre à paraître en février 2027
@@ -361,15 +429,15 @@ Conférences     Au-delà des tendances
 Formats         De soixante minutes à une demi-journée
                 Présentiel, virtuel ou hybride
 Scènes          Canada, États-Unis, Europe
-Programme       EXPÉRIENCE ORIGINE, douze semaines
+Parcours        L'Expérience Origine, douze semaines
 Boutique        Inspirata Ayurveda, huiles Vata, Pitta et Kapha
 Site            krystinestlaurent.ca
 Contact         equipe@inspiratanature.com`,
     texteEN: `KRYSTINE ST-LAURENT · THE FACTS
 
 Role            Author, speaker and Ayurveda practitioner
-Background      Nearly 40 years of experience
-Before          Intensive care, clinical research
+Practice        Close to forty years in holistic health
+Before          Ten years in critical care as an emergency nurse
 Books           Nature & Ayurveda (CAD 34.99)
                 Féminité & Ayurveda (CAD 39.99)
                 Third title due February 2027

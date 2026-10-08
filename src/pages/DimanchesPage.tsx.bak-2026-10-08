@@ -1,0 +1,249 @@
+import React, { useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
+import { addNewsletterSubscriber } from '../firebase/firestore';
+import { trackLead } from '../lib/track';
+import { DIMANCHES, ETIQUETTES_DIMANCHES, SERIE_DIMANCHES, lienAmie } from '../lib/dimanches';
+import {
+  StyleV2, GOUTTIERE, Kicker, TitreV2, SousTitreV2, LiensChapitres, Planche, LigneDefiler,
+  TitreChapitre, Filet, Reveal, CarteVerte, BoutonIvoire, useMotionV2,
+} from '../components/v2/Magazine';
+
+/**
+ * Les Dimanches d'Origine (/dimanches) : trois directs ouverts à toutes, une
+ * seule inscription pour les trois. Le formulaire écrit par la porte commune
+ * (inscrireInfolettre) avec les étiquettes de la série; la confirmation, les
+ * rappels et la rediffusion partent des documents `liveEvents` des trois
+ * dimanches, comme pour le podcast en direct. Après l'inscription, la carte
+ * offre le lien personnel « Inviter une amie » (partage natif au téléphone).
+ * `?inviter=<fiche>` (lien des courriels) ouvre directement ce partage.
+ * Langage magazine crème V2, une seule carte vert profond.
+ */
+
+const TZ = 'America/Toronto';
+const ease = [0.16, 0.8, 0.24, 1] as const;
+
+const jourDe = (iso: string) =>
+  new Intl.DateTimeFormat('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ })
+    .format(new Date(iso)).replace(/^(\S+) 1 /, '$1 1er ');
+const heureDe = (iso: string, tz: string) =>
+  new Intl.DateTimeFormat('fr-CA', { hour: 'numeric', minute: '2-digit', timeZone: tz })
+    .format(new Date(iso)).replace(/[  ]/g, ' ').replace(/ h 00$/, ' h');
+
+const ROMAINS = ['I', 'II', 'III'];
+
+/** Le partage du lien personnel : natif au téléphone, copie partout. */
+const Inviter: React.FC<{ abonneId: string }> = ({ abonneId }) => {
+  const lien = lienAmie(abonneId);
+  const [copie, setCopie] = useState(false);
+  const peutPartager = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+  const partager = async () => {
+    try {
+      await navigator.share({
+        title: 'Trois dimanches en direct avec Krystine St-Laurent',
+        text: 'Trois matins en direct avec Krystine St-Laurent, offerts sur inscription : lire ce que le corps exprime, trier ce qui nourrit, ancrer les gestes qui tiennent.',
+        url: lien,
+      });
+    } catch { /* partage fermé : rien à faire */ }
+  };
+  const copier = async () => {
+    try { await navigator.clipboard.writeText(lien); setCopie(true); window.setTimeout(() => setCopie(false), 2400); }
+    catch { window.prompt('Copiez votre lien :', lien); }
+  };
+  const bouton = 'inline-flex min-h-[46px] items-center justify-center rounded-full px-6 py-3 text-[0.66rem] font-semibold uppercase tracking-[0.2em] transition-[background-color,transform] duration-200 active:scale-[0.97]';
+  return (
+    <div>
+      <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">Inviter une amie</p>
+      <p className="mt-3 max-w-[46ch] text-[0.95rem] leading-[1.8] text-[#EEE7DB]/80">
+        Une amie aimerait être là? Voici votre lien personnel, à lui transmettre comme il vous plaira.
+      </p>
+      <p className="mt-4 break-all rounded-[8px] border border-[#EEE7DB]/15 bg-[#1c2420]/50 px-4 py-3 text-[0.8rem] leading-[1.5] text-[#EEE7DB]/70">{lien}</p>
+      <div className="mt-5 flex flex-wrap gap-3">
+        {peutPartager && (
+          <button type="button" onClick={partager} className={`${bouton} bg-[#BA7B39] text-[#1c1712] hover:bg-[#d9a05b]`}>Partager le lien</button>
+        )}
+        <button type="button" onClick={copier} className={`${bouton} ${peutPartager ? 'border border-[#BA7B39]/60 text-[#EEE7DB] hover:bg-[#EEE7DB]/10' : 'bg-[#BA7B39] text-[#1c1712] hover:bg-[#d9a05b]'}`}>
+          <span aria-live="polite">{copie ? 'Lien copié' : 'Copier le lien'}</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const DimanchesPage: React.FC = () => {
+  const root = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const { search } = useLocation();
+  const inviter = useMemo(() => new URLSearchParams(search).get('inviter')?.trim().slice(0, 60) || '', [search]);
+  useMotionV2(root);
+
+  const [prenom, setPrenom] = useState('');
+  const [courriel, setCourriel] = useState('');
+  const [pot, setPot] = useState('');
+  const [envoi, setEnvoi] = useState(false);
+  const [erreur, setErreur] = useState<string | null>(null);
+  const [abonneId, setAbonneId] = useState<string | null>(inviter || null);
+  const [vientDeSInscrire, setVientDeSInscrire] = useState(false);
+
+  const envoyer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!courriel.trim() || envoi) return;
+    setEnvoi(true); setErreur(null);
+    try {
+      const res = await addNewsletterSubscriber({
+        email: courriel.trim(),
+        firstName: prenom.trim() || undefined,
+        source: SERIE_DIMANCHES,
+        tags: ETIQUETTES_DIMANCHES,
+        site: pot,
+      });
+      trackLead(SERIE_DIMANCHES);
+      setAbonneId((res && res.id) || '');
+      setVientDeSInscrire(true);
+    } catch (err: unknown) {
+      setErreur((err as { message?: string })?.message || 'L’inscription n’a pas fonctionné. Reprenez dans un instant.');
+    } finally { setEnvoi(false); }
+  };
+
+  const premier = DIMANCHES[0];
+  const champ = 'w-full rounded-[8px] border border-transparent bg-[#f6f1e7] px-4 py-3.5 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/50 outline-none transition-colors focus:border-[#BA7B39]';
+  const entree = (d: number) => ({
+    initial: reduce ? false : { opacity: 0, y: 14, filter: 'blur(6px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+    transition: { duration: 1.1, delay: d, ease },
+  });
+
+  return (
+    <div ref={root} className="relative min-h-screen w-full overflow-x-hidden bg-[#f4efe6] text-[#1c1712] antialiased" style={{ fontFamily: '"Inter", system-ui, sans-serif' }}>
+      <StyleV2 />
+
+      {/* ─────────── LE SEUIL ─────────── */}
+      <section data-hero className={`relative flex w-full flex-col ${GOUTTIERE} pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)]`}>
+        <div className="mt-[clamp(1.5rem,4vh,3rem)] grid items-center gap-x-[clamp(2rem,4vw,4.5rem)] gap-y-10 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <Kicker className="mb-6"><span data-fade className="inline-block">Trois dimanches en direct{'\u00a0'}·{'\u00a0'}{heureDe(premier.iso, TZ).replace(' ', '\u00a0')}</span></Kicker>
+            <TitreV2 lignes={['Ce que le corps', 'sait déjà']} className="max-w-none text-[clamp(2.7rem,6.4vw,6.6rem)]" />
+            <SousTitreV2>
+              Trois matins en direct avec Krystine St-Laurent pour lire ce que le corps exprime, trier ce qui nourrit et repartir avec des gestes qui tiennent.
+            </SousTitreV2>
+            <p data-fade className="mt-6 text-[1rem] leading-[1.6] text-[#7d6330]">
+              {DIMANCHES.map(d => jourDe(d.iso).replace(/^dimanche /, '')).join(' · ')} &middot; offert, sur inscription
+            </p>
+            <LiensChapitres liens={[['Les trois dimanches', '#dates'], ['L’inscription', '#inscription']]} />
+          </div>
+          <Planche
+            seuil
+            src="/accueil/assets/hero-ml-poster.jpg"
+            alt="Krystine St-Laurent à sa table, une tasse entre les mains, ses livres à côté"
+            ratio="aspect-[4/3]"
+            position="object-[50%_35%]"
+            etiquette="Le dimanche, 9 h"
+          />
+        </div>
+        <LigneDefiler droite={<>Lire &middot; Trier &middot; Ancrer</>} />
+      </section>
+
+      {/* ─────────── CHAPITRE 01 · LES TROIS DIMANCHES ─────────── */}
+      <section id="dates" className={`relative w-full ${GOUTTIERE} scroll-mt-24 bg-[#efe6d7] py-[clamp(6rem,15vh,11rem)]`}>
+        <Reveal className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+          <div>
+            <Kicker className="mb-5">Chapitre 01 · Les trois dimanches</Kicker>
+            <TitreChapitre>Trois dimanches, un même fil</TitreChapitre>
+            <Filet className="mt-7" />
+          </div>
+          <p className="max-w-[56ch] text-[1.05rem] leading-[1.85] text-[#3a2f23]">
+            Chaque dimanche pose un mot et le travaille avec vous, en direct, avec vos questions. Vous pouvez venir aux trois ou seulement à celui qui vous appelle : une seule inscription vous garde une place pour chacun.
+          </p>
+        </Reveal>
+        <ol className="mt-[clamp(3rem,7vh,5rem)] border-t border-[#1c1712]/15">
+          {DIMANCHES.map((d, i) => (
+            <li key={d.id}>
+              <Reveal delay={i * 0.08} className="grid gap-x-[clamp(1.5rem,4vw,4rem)] gap-y-3 border-b border-[#1c1712]/15 py-[clamp(2rem,5vh,3.2rem)] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)_minmax(0,1.4fr)] md:items-baseline">
+                <div>
+                  <p className="text-[0.62rem] uppercase tracking-[0.28em] text-[#7d6330]">{ROMAINS[i]} · {jourDe(d.iso)}</p>
+                  <p className="mt-2 text-[0.95rem] text-[#3a2f23]">{heureDe(d.iso, TZ)} au Québec · {heureDe(d.iso, 'Europe/Paris')} en France et en Belgique</p>
+                </div>
+                <p className="v2-serif font-light text-[clamp(2.6rem,6vw,4.6rem)] leading-[0.95] tracking-[0.04em] text-[#1c1712]">{d.mot}</p>
+                <div>
+                  <p className="v2-serif text-[clamp(1.25rem,2vw,1.6rem)] font-light leading-[1.25] text-[#1c1712]">{d.titre}</p>
+                  <p className="mt-2 max-w-[48ch] text-[0.95rem] leading-[1.8] text-[#3a2f23]">{d.ligne}</p>
+                </div>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ─────────── CHAPITRE 02 · L'INSCRIPTION (la seule carte sombre) ─────────── */}
+      <section id="inscription" className={`relative w-full ${GOUTTIERE} scroll-mt-24 bg-[#f4efe6] py-[clamp(6rem,15vh,11rem)]`}>
+        <div className="grid items-start gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[0.9fr_1.1fr]">
+          <Reveal>
+            <Kicker className="mb-5">Chapitre 02 · Réserver ma place</Kicker>
+            <TitreChapitre className="max-w-[14ch]">Une inscription, trois dimanches</TitreChapitre>
+            <Filet className="mt-7" />
+            <p className="mt-8 max-w-[50ch] text-[1rem] leading-[1.85] text-[#3a2f23]">
+              Laissez votre prénom et votre courriel. Vous recevrez le lien du direct et un rappel avant chaque dimanche, puis la rediffusion lorsqu’elle sera disponible.
+            </p>
+            <p className="mt-5 text-[0.66rem] uppercase tracking-[0.22em] text-[#7d6330]">Offert · ouvert à toutes · sur inscription</p>
+          </Reveal>
+
+          <Reveal>
+            {/* overflow-clip : le halo de la carte déborde à droite, et un défilement programmatique (focus) décalait tout le contenu. */}
+            <CarteVerte className="overflow-clip">
+              <div className="p-[clamp(1.5rem,4vw,3rem)]">
+                {abonneId === null ? (
+                  <form onSubmit={envoyer} className="grid gap-4 sm:grid-cols-2">
+                    <input type="text" name="site" value={pot} onChange={e => setPot(e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
+                    <label className="grid gap-2">
+                      <span className="text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">Prénom</span>
+                      <input type="text" autoComplete="given-name" value={prenom} onChange={e => setPrenom(e.target.value)} className={champ} placeholder="Votre prénom" />
+                    </label>
+                    <label className="grid gap-2">
+                      <span className="text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">Courriel</span>
+                      <input type="email" required autoComplete="email" value={courriel} onChange={e => setCourriel(e.target.value)} className={champ} placeholder="Votre courriel" />
+                    </label>
+                    <button type="submit" disabled={envoi} className="sm:col-span-2 mt-2 inline-flex min-h-[50px] items-center justify-center rounded-full bg-[#BA7B39] px-6 py-3 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#1c1712] transition-[background-color,transform] duration-200 hover:bg-[#d9a05b] active:scale-[0.97] disabled:opacity-60">
+                      {envoi ? 'Un instant…' : 'Réserver ma place'}
+                    </button>
+                    {erreur && <p role="alert" className="sm:col-span-2 text-[0.9rem] text-[#f0b9a0]">{erreur}</p>}
+                    <p className="sm:col-span-2 text-[0.9rem] leading-[1.7] text-[#EEE7DB]/75">Désabonnement en un clic. Votre adresse n’est jamais revendue.</p>
+                  </form>
+                ) : (
+                  <div role="status" aria-live="polite">
+                    <motion.p {...entree(0)} className="text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">{vientDeSInscrire ? 'Inscription reçue' : 'Votre lien d’invitation'}</motion.p>
+                    <motion.h3 {...entree(0.1)} className="mt-4 v2-serif font-light text-[clamp(1.9rem,3.4vw,2.7rem)] leading-[1.05]">
+                      {vientDeSInscrire ? 'Votre place est réservée' : 'Invitez une amie'}
+                    </motion.h3>
+                    <motion.p {...entree(0.2)} className="mt-4 max-w-[46ch] text-[0.95rem] leading-[1.8] text-[#EEE7DB]/80">
+                      {vientDeSInscrire
+                        ? 'Un courriel de confirmation arrive dans votre boîte. Nous vous écrirons avant chaque dimanche avec le lien du direct.'
+                        : 'Votre place est déjà réservée pour les trois dimanches. Ce lien permet à une amie de s’inscrire à son tour, si elle le souhaite.'}
+                    </motion.p>
+                    {abonneId && (
+                      <motion.div {...entree(0.3)} className="mt-8 border-t border-[#EEE7DB]/15 pt-7">
+                        <Inviter abonneId={abonneId} />
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CarteVerte>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ─────────── LA QUATRIÈME DE COUVERTURE (le pied du site suit) ─────────── */}
+      <section className={`relative w-full bg-[#34241a] text-[#f4efe6] ${GOUTTIERE} py-[clamp(5rem,12vh,9rem)]`}>
+        <Reveal className="mx-auto max-w-[860px] text-center">
+          <p className="v2-serif font-light text-[clamp(1.6rem,3.6vw,2.8rem)] leading-[1.24]">« Le corps porte le même langage que la nature, il ne demande qu’à être écouté. »</p>
+          <p className="mt-5 text-[0.7rem] uppercase tracking-[0.28em] text-[#f4efe6]/60">Krystine St-Laurent</p>
+          <div className="mt-10 flex justify-center">
+            <BoutonIvoire href="#inscription">M’inscrire aux trois dimanches</BoutonIvoire>
+          </div>
+        </Reveal>
+      </section>
+    </div>
+  );
+};
+
+export default DimanchesPage;

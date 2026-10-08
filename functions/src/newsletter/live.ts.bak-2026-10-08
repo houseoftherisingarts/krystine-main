@@ -10,7 +10,6 @@ import {
   createTransporter,
   fromAddr,
   unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
-import { SERIE_DIMANCHES, buildMailDimanche, lienInviter } from './dimanches';
 
 // ─── Podcast en direct : confirmation + rappels automatiques ─────────────────
 // Un document `liveEvents/{id}` décrit chaque direct (titre, date, lien
@@ -37,15 +36,13 @@ export interface LiveEvent {
   /** Krystine coupe tous les envois automatiques de ce direct. */
   envoisDesactives?: boolean;
   tag: string;
-  /** Une série de directs qui a ses propres mots (« dimanches-origine », voir dimanches.ts). */
-  serie?: string;
   reminders?: Partial<Record<Step, unknown>>;
   // Le nombre d'heures avant le direct où chaque rappel part. Krystine les
   // règle dans l'admin; sans réglage, la série garde 72 h, 24 h et 1 h.
   offsets?: Partial<Record<'d3' | 'veille' | 'h1', number>>;
 }
 
-export type Step = 'd3' | 'veille' | 'h1' | 'replay';
+type Step = 'd3' | 'veille' | 'h1' | 'replay';
 const H = 3600 * 1000;
 const PRE_STEPS: Array<[Step, number]> = [['d3', 72 * H], ['veille', 24 * H], ['h1', 1 * H]];
 const GRACE = 3 * H;
@@ -100,26 +97,15 @@ export function calendarUrl(ev: LiveEvent): string {
 }
 
 // ─── Copie des cinq courriels ────────────────────────────────────────────────
-export interface Mail { subject: string; preheader: string; paragraphs: string[]; cta: { label: string; url: string }; cta2?: { label: string; url: string }; invite?: { label: string; url: string }; closing: string }
+interface Mail { subject: string; preheader: string; paragraphs: string[]; cta: { label: string; url: string }; cta2?: { label: string; url: string }; closing: string }
 
-/** `opts.serie` : les directs de la même série (confirmation des Dimanches);
- *  `opts.abonneId` : la fiche de l'inscrite, pour son lien « Inviter une amie ». */
-export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: string, opts: { serie?: LiveEvent[]; abonneId?: string } = {}): Mail {
+export function buildMail(step: Step | 'confirm', ev: LiveEvent, firstName?: string): Mail {
   const salut = firstName ? `Bonjour ${firstName},` : 'Bonjour,';
   const start = ev.startsAt.toDate();
   const jour = fmtDay(start);
   const heure = fmtTime(start);
   const agenda = { label: 'Ajouter à mon agenda', url: calendarUrl(ev) };
   const direct = { label: 'Ouvrir la page du direct', url: lienDirect(ev) };
-  if (ev.serie === SERIE_DIMANCHES) {
-    const serie = (opts.serie?.length ? opts.serie : [ev])
-      .slice().sort((a, b) => a.startsAt.toMillis() - b.startsAt.toMillis())
-      .map(e => ({ jour: fmtDay(e.startsAt.toDate()), mot: (e.title.split('·').pop() || e.title).trim() }));
-    return buildMailDimanche(step, ev, {
-      salut, jour, heure, agenda, direct, serie,
-      inviteUrl: opts.abonneId ? lienInviter(opts.abonneId) : undefined,
-    });
-  }
 
   switch (step) {
     case 'confirm':
@@ -230,14 +216,14 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;">
 
         <!-- Couverture du podcast (carte du moodboard KSL) -->
-        ${ev?.serie ? '' : `<tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:${CHARTE.night};">
+        <tr><td style="padding:0;border-radius:15px 15px 0 0;overflow:hidden;background:${CHARTE.night};">
           <img src="cid:cover" width="600" alt="Au-delà des tendances, le podcast avec Krystine St-Laurent" style="display:block;width:100%;max-width:600px;height:auto;border-radius:15px 15px 0 0;" />
-        </td></tr>`}
+        </td></tr>
 
         <!-- Bandeau noir chaud + or (visuel Saison 2) : le rendez-vous -->
-        <tr><td style="background:${CHARTE.night};padding:30px 40px 28px;${ev?.serie ? 'border-radius:15px 15px 0 0;' : ''}">
+        <tr><td style="background:${CHARTE.night};padding:30px 40px 28px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">&#9679;&nbsp; ${ev?.serie === SERIE_DIMANCHES ? 'En direct &middot; Trois dimanches avec Krystine' : 'En direct sur YouTube'}</td></tr>
+            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">&#9679;&nbsp; En direct sur YouTube</td></tr>
             <tr><td style="padding:0 0 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
             <tr><td style="padding:0 0 22px;"><div style="height:1px;width:64px;background:${CHARTE.gold};"></div></td></tr>
             ${start ? `<tr><td><table role="presentation" cellpadding="0" cellspacing="0"><tr>${cell('Date', jour.charAt(0).toUpperCase() + jour.slice(1))}${cell('Heure', `${heureQc} · Québec`, `${heureFr} · France`)}</tr></table></td></tr>` : ''}
@@ -249,12 +235,11 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             ${m.paragraphs.map(p).join('\n')}
             <tr><td style="padding:10px 0 26px;">${btn(m.cta, true)}${m.cta2 ? btn(m.cta2, false) : ''}</td></tr>
-            ${m.invite ? `<tr><td style="padding:0 0 26px;"><div style="border-top:1px solid rgba(41,48,39,0.12);padding-top:20px;font-family:${CHARTE.sans};font-size:15px;line-height:1.7;color:${CHARTE.ink};">Une amie aimerait &ecirc;tre l&agrave;? Votre lien personnel l&rsquo;attend, &agrave; lui transmettre comme il vous plaira.<br /><a href="${esc(m.invite.url)}" style="display:inline-block;margin-top:10px;font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${CHARTE.goldInk};text-decoration:underline;">${esc(m.invite.label)}</a></div></td></tr>` : ''}
             <tr><td style="padding:6px 0 24px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td width="96" valign="middle" style="padding:0 18px 14px 0;"><img src="cid:portrait" width="96" height="96" alt="Krystine St-Laurent" style="display:block;width:96px;height:96px;object-fit:cover;border-radius:50%;" /></td>
-                  <td valign="middle" style="padding:0 0 14px;font-family:${CHARTE.serif};font-size:20px;line-height:1.35;color:${CHARTE.goldInk};">${ev?.serie ? 'Avec' : 'Au micro&nbsp;:'} Krystine St-Laurent</td>
+                  <td valign="middle" style="padding:0 0 14px;font-family:${CHARTE.serif};font-size:20px;line-height:1.35;color:${CHARTE.goldInk};">Au micro&nbsp;: Krystine St-Laurent</td>
                 </tr>
                 <tr><td colspan="2" style="font-family:${CHARTE.sans};font-size:14px;line-height:1.75;color:${CHARTE.ink};">
                   <p style="margin:0 0 12px;">Pr&egrave;s de 40 ans &agrave; relier ce que nous avons appris &agrave; s&eacute;parer&nbsp;:</p>
@@ -286,7 +271,6 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
 export function renderLiveText(m: Mail, opts: { unsubscribeUrl: string; postalAddress: string }): string {
   const lines = [...m.paragraphs, `${m.cta.label} : ${m.cta.url}`];
   if (m.cta2) lines.push(`${m.cta2.label} : ${m.cta2.url}`);
-  if (m.invite) lines.push(`Une amie aimerait être là? ${m.invite.label} : ${m.invite.url}`);
   lines.push(m.closing, 'Krystine St-Laurent', '', opts.postalAddress, `Se désabonner : ${opts.unsubscribeUrl}`);
   return lines.join('\n\n');
 }
@@ -294,28 +278,19 @@ export function renderLiveText(m: Mail, opts: { unsubscribeUrl: string; postalAd
 export async function findEventByTags(tags: string[] | undefined): Promise<LiveEvent | null> {
   if (!tags || tags.length === 0) return null;
   const db = getFirestore();
-  const snap = await db.collection('liveEvents').where('tag', 'in', tags.slice(0, 10)).limit(10).get();
+  const snap = await db.collection('liveEvents').where('tag', 'in', tags.slice(0, 10)).limit(1).get();
   if (snap.empty) return null;
-  // Une inscription aux Dimanches porte trois étiquettes : la confirmation
-  // parle du prochain direct à venir, sinon du dernier.
-  const evs = snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<LiveEvent, 'id'>) }))
-    .filter(e => e.startsAt).sort((a, b) => a.startsAt.toMillis() - b.startsAt.toMillis());
-  return evs.find(e => e.startsAt.toMillis() > Date.now()) || evs[evs.length - 1] || null;
+  const d = snap.docs[0];
+  return { id: d.id, ...(d.data() as Omit<LiveEvent, 'id'>) };
 }
 
 export async function sendLiveMail(
   transporter: Transporter,
   step: Step | 'confirm',
   ev: LiveEvent,
-  sub: { email: string; firstName?: string; unsubscribeToken?: string; ref?: { id?: string; update: (d: Record<string, unknown>) => Promise<unknown> } },
+  sub: { email: string; firstName?: string; unsubscribeToken?: string; ref?: { update: (d: Record<string, unknown>) => Promise<unknown> } },
 ): Promise<void> {
-  // La confirmation d'une série nomme tous ses directs.
-  let serie: LiveEvent[] | undefined;
-  if (step === 'confirm' && ev.serie) {
-    const snap = await getFirestore().collection('liveEvents').where('serie', '==', ev.serie).get();
-    serie = snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<LiveEvent, 'id'>) })).filter(e => e.startsAt);
-  }
-  const m = buildMail(step, ev, sub.firstName, { serie, abonneId: sub.ref?.id });
+  const m = buildMail(step, ev, sub.firstName);
   const jeton = await assurerJeton(sub.ref ?? null, sub.unsubscribeToken);
   const unsub = unsubscribeUrl(jeton);
   const postalAddress = NEWSLETTER_POSTAL_ADDRESS.value();
@@ -330,7 +305,7 @@ export async function sendLiveMail(
       'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     },
-    attachments: ev.serie ? liveAttachments().filter(a => a.cid !== 'cover') : liveAttachments(),
+    attachments: liveAttachments(),
   });
 }
 

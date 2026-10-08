@@ -93,9 +93,8 @@ export const COLLECTIONS: CollectionManifest[] = [
   {
     id: 'visage-sens',
     slug: 'visage-sens',
-    // « Visage » (Krystine, 8 oct. 2026) : le Sérum Défripant et le Nez ZEN, bientôt une eau de rose.
-    labelFR: 'Visage',
-    labelEN: 'Face',
+    labelFR: 'Visage & Sens',
+    labelEN: 'Face & Senses',
     taglineFR: 'Le visage, le nez, les yeux',
     taglineEN: 'The face, the nose, the eyes',
     storyFR:

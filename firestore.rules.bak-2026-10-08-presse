@@ -339,11 +339,6 @@ service cloud.firestore {
     // portent des courriels : seule l'admin les lit. Les écritures passent
     // par les fonctions demanderAvisStock et avisStockRetours (avisStock.ts).
     match /avisStock/{id}     { allow read, write: if isAdmin(); }
-    // Les demandes de kit de presse (8 oct. 2026). Elles portent des courriels
-    // et l'empreinte du lien personnel : seule l'admin les lit et les modifie.
-    // La création, l'acceptation et le lien passent par les fonctions de
-    // functions/src/presse.ts.
-    match /demandesPresse/{id} { allow read, update: if isAdmin(); }
     // La fiche produit personnalisée par Krystine (4 oct. 2026) : titre,
     // accroche, description, photos, ordre, masqué. Le public la lit pour
     // afficher la boutique; seule l'admin l'écrit (src/firebase/boutiqueProduits.ts).

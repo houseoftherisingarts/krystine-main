@@ -12,7 +12,6 @@ import { useSiteFlags } from '../contexts/SiteFlagsContext';
 import { usePresse, LOGOS, type CartePresse, type PlanchePresse, type TextePresse, type Logo } from '../content/presse';
 import { VisuelCarte, VisuelPlanche, CadreEchelle, W, H } from '../components/presse/VisuelPresse';
 import { zipper, octets, octetsTexte, type FichierZip } from '../lib/zip';
-import DemandeKitPresse from '../components/presse/DemandeKitPresse';
 
 /**
  * La salle de presse, bâtie sur la formule Prisket (Krystine, 22 septembre
@@ -37,15 +36,6 @@ import DemandeKitPresse from '../components/presse/DemandeKitPresse';
  * Tant que l'interrupteur presseOuvert reste éteint dans l'admin, une
  * visiteuse qui arrive ici repart vers l'accueil, et Krystine reste seule
  * à voir la page, avec un bandeau qui lui rappelle où l'allumer.
- *
- * Depuis le 8 octobre 2026 (Krystine : « On doit avoir un contrôle sur qui
- * télécharge »), /presse ne montre plus que les visuels : aucun bouton
- * Télécharger, Partager, zip, Version QR ni Photo seule, et les images ne
- * se prennent plus d'un clic droit ou d'un glisser. Le bouton « Demander le
- * kit de presse » ouvre la demande nominative (DemandeKitPresse.tsx). Les
- * gestes d'avant reviennent seulement avec `acces`, que PresseKitPage.tsx
- * passe après avoir fait vérifier le lien personnel par le serveur.
- * Le dessin des cartes, lui, ne change pas.
  */
 
 const SECTION = `relative w-full ${GOUTTIERE} py-[clamp(4.5rem,12vh,9rem)] scroll-mt-24`;
@@ -65,15 +55,12 @@ const LIEN_CLAIR = 'inline-flex items-center gap-2.5 border-b border-[#BA7B39]/6
 const T = {
   FR: {
     kicker: 'Pour la presse', titre: 'Salle de presse', titreLignes: ['Salle', 'de presse'],
-    soustitre: 'Les visuels, les portraits et les biographies se consultent ici. Pour les publier, demandez le kit de presse : nous vous envoyons un lien personnel après lecture de votre demande.',
-    soustitreAcces: 'Votre accès personnel au kit de presse. Les visuels, les portraits et les biographies se téléchargent ici, à la seule condition de créditer Krystine St-Laurent.',
-    demander: 'Demander le kit de presse',
-    demandeNote: 'Chaque demande est lue par notre équipe. Le lien reçu par courriel reste valable sept jours.',
+    soustitre: 'Les visuels, les portraits et les biographies se téléchargent ici librement, à la seule condition de créditer Krystine St-Laurent.',
     liens: [['Les visuels', '#visuels'], ['Les photos', '#photos'], ['Le site', '#site'], ['Les mots-symboles', '#logos'], ['Les textes', '#textes']] as [string, string][],
     defiler: 'Faire défiler', zip: 'Télécharger tout le kit',
     zipNote: 'Un fichier zip : une photo par sujet dans la langue affichée, les mots-symboles et les textes. Les versions avec code QR et les photos nues se téléchargent tuile par tuile.',
     zipEnCours: 'Préparation du zip…',
-    heroLegende: 'Le portrait de presse, remis en 1920 × 1080 avec le kit.',
+    heroLegende: 'Le portrait de presse, tel qu’il se télécharge en 1920 × 1080.',
     brefKicker: 'En bref', faitsTitre: 'Les faits',
     faitsNote: 'Tout ce qui se vérifie en un coup d’œil, et la fiche complète en fichier texte.',
     ficheFaits: 'Ouvrir la fiche des faits', contactLabel: 'Contact presse',
@@ -81,8 +68,7 @@ const T = {
     photosTitre: 'Les photos', photosNote: 'Six planches légendées dans les deux langues, prêtes à illustrer un article.',
     siteTitre: 'Le site', siteNote: 'Six pages du site, montrées telles qu’elles se présentent aujourd’hui.',
     logosTitre: 'Les mots-symboles', logosNote: 'Le site n’a pas d’autre logo que sa signature typographique, et elle existe en quatre versions.',
-    textesTitre: 'Les textes', textesNote: 'Les biographies et la fiche des faits, à lire ici. Les fichiers accompagnent le kit de presse.',
-    textesNoteAcces: 'Les biographies et la fiche des faits, à lire ici ou à emporter en fichier.',
+    textesTitre: 'Les textes', textesNote: 'Les biographies et la fiche des faits, à lire ici ou à emporter en fichier.',
     precedent: 'Précédente', suivant: 'Suivante',
     lire: 'Lire', telecharger: 'Télécharger', partager: 'Partager', versionQr: 'Version QR', photoSeule: 'Photo seule', avecTexte: 'Avec texte',
     qrMene: 'Le code mène à', copie: 'Téléchargé', agrandir: 'Agrandir', fermer: 'Fermer',
@@ -94,15 +80,12 @@ const T = {
   },
   EN: {
     kicker: 'For the press', titre: 'Press room', titreLignes: ['Press', 'room'],
-    soustitre: 'The visuals, the portraits and the biographies can be viewed here. To publish them, request the press kit: we send you a personal link once we have read your request.',
-    soustitreAcces: 'Your personal access to the press kit. The visuals, the portraits and the biographies download from here, on the single condition that Krystine St-Laurent is credited.',
-    demander: 'Request the press kit',
-    demandeNote: 'Our team reads every request. The link you receive by email stays valid for seven days.',
+    soustitre: 'The visuals, the portraits and the biographies download freely from here, on the single condition that Krystine St-Laurent is credited.',
     liens: [['The visuals', '#visuels'], ['The photographs', '#photos'], ['The site', '#site'], ['The wordmarks', '#logos'], ['The texts', '#textes']] as [string, string][],
     defiler: 'Scroll', zip: 'Download the full kit',
     zipNote: 'One zip file: one photo per subject in the language on screen, the wordmarks and the texts. QR versions and bare photographs download tile by tile.',
     zipEnCours: 'Preparing the zip…',
-    heroLegende: 'The press portrait, provided at 1920 × 1080 with the kit.',
+    heroLegende: 'The press portrait, as it downloads at 1920 × 1080.',
     brefKicker: 'In brief', faitsTitre: 'The facts',
     faitsNote: 'Everything that checks out at a glance, with the full sheet as a text file.',
     ficheFaits: 'Open the fact sheet', contactLabel: 'Press contact',
@@ -110,8 +93,7 @@ const T = {
     photosTitre: 'The photographs', photosNote: 'Six captioned plates in both languages, ready to illustrate an article.',
     siteTitre: 'The site', siteNote: 'Six pages of the site, shown as they look today.',
     logosTitre: 'The wordmarks', logosNote: 'The site has no logo beyond its typographic signature, and that signature comes in four versions.',
-    textesTitre: 'The texts', textesNote: 'The biographies and the fact sheet, to read here. The files come with the press kit.',
-    textesNoteAcces: 'The biographies and the fact sheet, to read here or to carry away as a file.',
+    textesTitre: 'The texts', textesNote: 'The biographies and the fact sheet, to read here or to carry away as a file.',
     precedent: 'Previous', suivant: 'Next',
     lire: 'Read', telecharger: 'Download', partager: 'Share', versionQr: 'QR version', photoSeule: 'Photo only', avecTexte: 'With text',
     qrMene: 'The code leads to', copie: 'Downloaded', agrandir: 'Enlarge', fermer: 'Close',
@@ -202,7 +184,7 @@ const Tuile: React.FC<{
     <div className={`${BANDE} flex flex-1 flex-col`}>
       <p className="v2-serif text-[1.05rem] font-light leading-snug text-[#f4efe6]">{titre}</p>
       {legende && <p className="mt-2 text-[13px] font-light leading-relaxed text-[#f4efe6]/65">{legende}</p>}
-      {children ? <div className="mt-auto grid grid-cols-2 gap-2 pt-4">{children}</div> : null}
+      <div className="mt-auto grid grid-cols-2 gap-2 pt-4">{children}</div>
       {dessous}
     </div>
   </Reveal>
@@ -210,7 +192,7 @@ const Tuile: React.FC<{
 
 /* ════════════════════════ La page ════════════════════════ */
 
-const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
+const PressePage: React.FC = () => {
   const root = useRef<HTMLDivElement>(null);
   const { lang } = useApp();
   const { isAdmin } = useAuth();
@@ -228,7 +210,6 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
   const [loupe, setLoupe] = useState<{ i: number; vues: Vue[] } | null>(null);
   const [texte, setTexte] = useState<TextePresse | null>(null);
   const [zipEnCours, setZipEnCours] = useState(false);
-  const [demande, setDemande] = useState(false);
 
   // Chaque tuile visible s'enregistre ici sous une clé stable, pour que
   // Télécharger/Partager/la loupe captent toujours le nœud qui est
@@ -239,7 +220,7 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
     if (node) refs.current.set(cle, node); else refs.current.delete(cle);
   }, []);
 
-  useMotionV2(root, pret && (presseOuvert || isAdmin || acces));
+  useMotionV2(root, pret && (presseOuvert || isAdmin));
 
   const bascule = (set: React.Dispatch<React.SetStateAction<Set<string>>>, cle: string) =>
     set(s => { const n = new Set(s); if (n.has(cle)) n.delete(cle); else n.add(cle); return n; });
@@ -322,7 +303,7 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
   }, [kit]);
 
   if (!pret) return <div className="min-h-screen bg-[#f4efe6]" />;
-  if (!presseOuvert && !isAdmin && !acces) return <Navigate to="/krystine" replace />;
+  if (!presseOuvert && !isAdmin) return <Navigate to="/krystine" replace />;
 
   const nomCarte = (c: CartePresse, nu: boolean, qr: boolean) =>
     nu ? `${c.key}-nu${qr ? '-qr' : ''}.jpg` : `${c.key}-${L.toLowerCase()}-texte${qr ? '-qr' : ''}.jpg`;
@@ -367,17 +348,13 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
             })}
             dessous={qr ? <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {f.chemin}</p> : undefined}
           >
-            {acces && (
-              <>
-                {gestesCommuns(cle, nom, titre)}
-                <Geste actif={qr} onClick={() => bascule(setEnQr, f.key)} libelle={`${t.versionQr} · ${titre}`}>
-                  <QrCode size={14} weight="regular" /> {t.versionQr}
-                </Geste>
-                <Geste actif={nu} onClick={() => bascule(setEnNu, f.key)} libelle={`${nu ? t.avecTexte : t.photoSeule} · ${titre}`}>
-                  <ImageSquare size={14} weight="regular" /> {nu ? t.avecTexte : t.photoSeule}
-                </Geste>
-              </>
-            )}
+            {gestesCommuns(cle, nom, titre)}
+            <Geste actif={qr} onClick={() => bascule(setEnQr, f.key)} libelle={`${t.versionQr} · ${titre}`}>
+              <QrCode size={14} weight="regular" /> {t.versionQr}
+            </Geste>
+            <Geste actif={nu} onClick={() => bascule(setEnNu, f.key)} libelle={`${nu ? t.avecTexte : t.photoSeule} · ${titre}`}>
+              <ImageSquare size={14} weight="regular" /> {nu ? t.avecTexte : t.photoSeule}
+            </Geste>
           </Tuile>
         );
       })}
@@ -392,17 +369,8 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
   };
 
   return (
-    <div
-      ref={root}
-      className={`relative w-full overflow-x-hidden bg-[#f4efe6] text-[#1c1712] antialiased ${acces ? '' : 'presse-protege'}`}
-      onContextMenu={acces ? undefined : e => { if ((e.target as HTMLElement).closest('img, [data-visuel]')) e.preventDefault(); }}
-    >
+    <div ref={root} className="relative w-full overflow-x-hidden bg-[#f4efe6] text-[#1c1712] antialiased">
       <StyleV2 />
-      {/* Sans accès, les images de la page ne se glissent ni ne s'enregistrent d'un clic droit.
-          Aucune protection n'est absolue (une capture d'écran reste possible) : c'est un frein,
-          pas un verrou. Le dessin des cartes ne change pas. */}
-      {!acces && <style>{`.presse-protege img{pointer-events:none;-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none}`}</style>}
-      {demande && <DemandeKitPresse lang={L} onFermer={() => setDemande(false)} />}
 
       {isAdmin && !presseOuvert && (
         <div className={`relative z-40 w-full bg-[#1c1712] text-[#f4efe6] ${GOUTTIERE} py-4`}>
@@ -426,29 +394,18 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
           <div>
             <p data-fade className="mb-6 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">{t.kicker}</p>
             <TitreV2 lignes={t.titreLignes} className="text-[clamp(2.9rem,6vw,5.4rem)] max-w-[13ch]" />
-            <SousTitreV2>{acces ? t.soustitreAcces : t.soustitre}</SousTitreV2>
+            <SousTitreV2>{t.soustitre}</SousTitreV2>
             <div data-fade className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
-              {acces ? (
-                <>
-                  <BoutonNoir onClick={zipEnCours ? undefined : toutLeKit} className={zipEnCours ? 'pointer-events-none opacity-60' : ''}>
-                    <Download size={15} weight="regular" /> {zipEnCours ? t.zipEnCours : t.zip}
-                  </BoutonNoir>
-                  <p className="text-[13px] font-light leading-relaxed text-[#1c1712]/55">{t.zipNote}</p>
-                </>
-              ) : (
-                <>
-                  <BoutonNoir onClick={() => setDemande(true)}>
-                    <Envelope size={15} weight="regular" /> {t.demander}
-                  </BoutonNoir>
-                  <p className="max-w-[44ch] text-[13px] font-light leading-relaxed text-[#1c1712]/55">{t.demandeNote}</p>
-                </>
-              )}
+              <BoutonNoir onClick={zipEnCours ? undefined : toutLeKit} className={zipEnCours ? 'pointer-events-none opacity-60' : ''}>
+                <Download size={15} weight="regular" /> {zipEnCours ? t.zipEnCours : t.zip}
+              </BoutonNoir>
+              <p className="text-[13px] font-light leading-relaxed text-[#1c1712]/55">{t.zipNote}</p>
             </div>
             <LiensChapitres liens={t.liens} />
           </div>
 
           {kit.cartes[0] && (
-            <figure className={`${TUILE.replace('h-full', '')} w-full self-center`}>
+            <figure className={`${TUILE} w-full`}>
               <CadreEchelle ref={enregistrer('carte:portrait-hero')}>
                 <VisuelCarte carte={kit.cartes[0]} lang="FR" qr={false} nu />
               </CadreEchelle>
@@ -525,17 +482,13 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
                 })}
                 dessous={qr ? <p className="mt-3 break-all text-[13px] font-light text-[#BA7B39]">{t.qrMene} {c.cibleAffiche}</p> : undefined}
               >
-                {acces && (
-                  <>
-                    {gestesCommuns(cle, nom, titre)}
-                    <Geste actif={qr} onClick={() => bascule(setEnQr, c.key)} libelle={`${t.versionQr} · ${titre}`}>
-                      <QrCode size={14} weight="regular" /> {t.versionQr}
-                    </Geste>
-                    <Geste actif={nu} disponible={!!c.nu} onClick={() => bascule(setEnNu, c.key)} libelle={`${nu ? t.avecTexte : t.photoSeule} · ${titre}`}>
-                      <ImageSquare size={14} weight="regular" /> {nu ? t.avecTexte : t.photoSeule}
-                    </Geste>
-                  </>
-                )}
+                {gestesCommuns(cle, nom, titre)}
+                <Geste actif={qr} onClick={() => bascule(setEnQr, c.key)} libelle={`${t.versionQr} · ${titre}`}>
+                  <QrCode size={14} weight="regular" /> {t.versionQr}
+                </Geste>
+                <Geste actif={nu} disponible={!!c.nu} onClick={() => bascule(setEnNu, c.key)} libelle={`${nu ? t.avecTexte : t.photoSeule} · ${titre}`}>
+                  <ImageSquare size={14} weight="regular" /> {nu ? t.avecTexte : t.photoSeule}
+                </Geste>
               </Tuile>
             );
           })}
@@ -567,24 +520,15 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
             const fond = l.key === 'creme-encre' ? '#34241a' : l.key === 'encre-creme' ? '#f3eee5' : sombre ? '#34241a' : '#faf6ee';
             return (
               <Reveal key={l.key} className={TUILE}>
-                {/* Sans accès, ouvrir le PNG dans un onglet revenait à le télécharger : la tuile reste une image. */}
-                {acces ? (
-                  <button type="button" onClick={() => window.open(`/${l.fichier}`, '_blank')} aria-label={`${t.agrandir} · ${titre}`} className="group block w-full cursor-zoom-in overflow-hidden" style={{ background: fond }}>
-                    <img src={`/${l.fichier}`} alt={titre} loading="lazy" decoding="async" className="aspect-video w-full object-contain p-8 transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
-                  </button>
-                ) : (
-                  <div className="block w-full overflow-hidden" style={{ background: fond }}>
-                    <img src={`/${l.fichier}`} alt={titre} loading="lazy" decoding="async" draggable={false} className="aspect-video w-full object-contain p-8" />
-                  </div>
-                )}
+                <button type="button" onClick={() => window.open(`/${l.fichier}`, '_blank')} aria-label={`${t.agrandir} · ${titre}`} className="group block w-full cursor-zoom-in overflow-hidden" style={{ background: fond }}>
+                  <img src={`/${l.fichier}`} alt={titre} loading="lazy" decoding="async" className="aspect-video w-full object-contain p-8 transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]" />
+                </button>
                 <div className={`${BANDE} flex flex-1 flex-col`}>
                   <p className="v2-serif text-[1.05rem] font-light leading-snug text-[#f4efe6]">{titre}</p>
                   <p className="mt-2 text-[13px] font-light leading-relaxed text-[#f4efe6]/65">{lang === 'EN' ? l.legendeEN : l.legendeFR}</p>
-                  {acces && (
-                    <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
-                      <a href={`/${l.fichier}`} download className={`${BOUTON} ${CREUX}`}><Download size={14} weight="regular" /> {t.telecharger}</a>
-                    </div>
-                  )}
+                  <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
+                    <a href={`/${l.fichier}`} download className={`${BOUTON} ${CREUX}`}><Download size={14} weight="regular" /> {t.telecharger}</a>
+                  </div>
                 </div>
               </Reveal>
             );
@@ -594,7 +538,7 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
 
       {/* ─── LES TEXTES ─────────────────────────────────────────────── */}
       <section id="textes" className={`${SECTION} bg-[#f4efe6]`}>
-        <Chapeau numero={<>N&deg; 05</>} titre={t.textesTitre} note={acces ? t.textesNoteAcces : t.textesNote} />
+        <Chapeau numero={<>N&deg; 05</>} titre={t.textesTitre} note={t.textesNote} />
         <div className="mt-[clamp(2.5rem,6vh,4rem)] grid gap-[clamp(1.25rem,2.5vw,1.75rem)] md:grid-cols-2 xl:grid-cols-3">
           {kit.textes.map(x => (
             <Reveal key={x.key} className={TUILE}>
@@ -610,11 +554,9 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
                   <Geste onClick={() => setTexte(x)} libelle={`${t.lire} · ${x.key}`}>
                     <ArrowUpRight size={14} weight="regular" /> {t.lire}
                   </Geste>
-                  {acces && (
-                    <Geste onClick={() => telechargerTexte(x)} libelle={`${t.telecharger} · ${x.key}`}>
-                      <Download size={14} weight="regular" /> {t.telecharger}
-                    </Geste>
-                  )}
+                  <Geste onClick={() => telechargerTexte(x)} libelle={`${t.telecharger} · ${x.key}`}>
+                    <Download size={14} weight="regular" /> {t.telecharger}
+                  </Geste>
                 </div>
               </div>
             </Reveal>
@@ -667,16 +609,12 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
                 <CaretLeft size={14} weight="regular" /> {t.precedent}
               </button>
             )}
-            {acces && (
-              <>
-                <button type="button" onClick={() => telecharger(vue.cle, `${vue.cle.replace(':', '-')}.jpg`)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
-                  <Download size={14} weight="regular" /> {t.telecharger}
-                </button>
-                <button type="button" onClick={() => envoyer(vue.cle, `${vue.cle.replace(':', '-')}.jpg`, vue.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
-                  <ShareNetwork size={14} weight="regular" /> {copie === vue.cle ? t.copie : t.partager}
-                </button>
-              </>
-            )}
+            <button type="button" onClick={() => telecharger(vue.cle, `${vue.cle.replace(':', '-')}.jpg`)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+              <Download size={14} weight="regular" /> {t.telecharger}
+            </button>
+            <button type="button" onClick={() => envoyer(vue.cle, `${vue.cle.replace(':', '-')}.jpg`, vue.titre)} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
+              <ShareNetwork size={14} weight="regular" /> {copie === vue.cle ? t.copie : t.partager}
+            </button>
             {loupe.vues.length > 1 && (
               <button type="button" onClick={() => glisser(1)} aria-label={t.suivant} className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.18em] text-[#f4efe6]/75 transition-colors hover:text-[#BA7B39]">
                 {t.suivant} <CaretRight size={14} weight="regular" />
@@ -700,23 +638,21 @@ const PressePage: React.FC<{ acces?: boolean }> = ({ acces = false }) => {
             <pre className="flex-1 overflow-auto whitespace-pre-wrap px-7 py-6 font-sans text-[0.9rem] font-light leading-relaxed text-[#3a2f23]">
               {(lang === 'EN' && texte.texteEN) ? texte.texteEN : texte.texteFR}
             </pre>
-            {acces && <div className="border-t border-[#1c1712]/12 px-7 py-4">
+            <div className="border-t border-[#1c1712]/12 px-7 py-4">
               <button type="button" onClick={() => telechargerTexte(texte)} className="inline-flex items-center gap-2 border-b border-[#1c1712]/40 pb-1 text-[13px] uppercase tracking-[0.18em] text-[#1c1712] transition-colors hover:text-[#7d6330]">
                 <Download size={14} weight="regular" /> {t.telecharger}
               </button>
-            </div>}
+            </div>
           </div>
         </div>
       )}
 
       {/* ─── LES NŒUDS DU ZIP, hors écran ───────────────────────────── */}
-      {acces && (
-        <div style={{ position: 'fixed', left: -99999, top: 0, width: W, pointerEvents: 'none' }} aria-hidden="true">
-          {kit.cartes.map(c => <div key={c.key} ref={enregistrerZip(`zc:${c.key}`)}><VisuelCarte carte={c} lang={L} qr={false} /></div>)}
-          {kit.planches.map(p => <div key={p.key} ref={enregistrerZip(`zp:${p.key}`)}><VisuelPlanche item={p} qr={false} /></div>)}
-          {kit.pages.map(p => <div key={p.key} ref={enregistrerZip(`zs:${p.key}`)}><VisuelPlanche item={p} qr={false} page /></div>)}
-        </div>
-      )}
+      <div style={{ position: 'fixed', left: -99999, top: 0, width: W, pointerEvents: 'none' }} aria-hidden="true">
+        {kit.cartes.map(c => <div key={c.key} ref={enregistrerZip(`zc:${c.key}`)}><VisuelCarte carte={c} lang={L} qr={false} /></div>)}
+        {kit.planches.map(p => <div key={p.key} ref={enregistrerZip(`zp:${p.key}`)}><VisuelPlanche item={p} qr={false} /></div>)}
+        {kit.pages.map(p => <div key={p.key} ref={enregistrerZip(`zs:${p.key}`)}><VisuelPlanche item={p} qr={false} page /></div>)}
+      </div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T12:18:56.423Z",
+  "generatedAt": "2026-10-08T13:56:24.119Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -280,6 +280,48 @@
       "folder": "assets/infolettre",
       "kind": "image",
       "size": 104086
+    },
+    {
+      "path": "/boutique/rituel-automassage.pdf",
+      "name": "rituel-automassage.pdf",
+      "folder": "boutique",
+      "kind": "document",
+      "size": 863337
+    },
+    {
+      "path": "/boutique/vata-inspirata-100.jpg",
+      "name": "vata-inspirata-100.jpg",
+      "folder": "boutique",
+      "kind": "image",
+      "size": 149331
+    },
+    {
+      "path": "/boutique/vata-inspirata-103.jpg",
+      "name": "vata-inspirata-103.jpg",
+      "folder": "boutique",
+      "kind": "image",
+      "size": 387373
+    },
+    {
+      "path": "/boutique/vata-inspirata-131.jpg",
+      "name": "vata-inspirata-131.jpg",
+      "folder": "boutique",
+      "kind": "image",
+      "size": 391225
+    },
+    {
+      "path": "/boutique/vata-inspirata-55.jpg",
+      "name": "vata-inspirata-55.jpg",
+      "folder": "boutique",
+      "kind": "image",
+      "size": 387080
+    },
+    {
+      "path": "/boutique/vata-inspirata-58.jpg",
+      "name": "vata-inspirata-58.jpg",
+      "folder": "boutique",
+      "kind": "image",
+      "size": 332167
     },
     {
       "path": "/compte/bienvenue-bureau-720.webp",

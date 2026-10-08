@@ -893,197 +893,6 @@
 <style>/* no-italic-rule : règle dure d'Alex, l'accent passe par la couleur et le poids */
   em,i,.italic,.foot .q,.echo-line em,.tri-foot,.fan .card .fn,.fan .card .verb,.fan-cap .fc-num,
   .trilogy h2 b,.t-bridge,.nl-msg.ok,.tm-msg.ok,.rotate-hint span,.o-tag{font-style:normal!important}</style>
-<style id="automne-lisible">
-/* ===== Accueil, saison froide (8 oct. 2026, demande de Krystine) =====
-   1. Le brun terne part : voile du hero, carte d'Origine et pied de page passent au vert profond
-      de la forêt; le tome 3 passe au crème du magazine. Les bruns chauds (cuivre, accroche dorée) restent.
-   2. Lisibilité pour des yeux de 45 à 70 ans : corps 16-17 px au téléphone, chapeaux 18 px et plus,
-      libellés en capitales jamais sous 12 px, interligne 1,6, contraste 4,5:1, boutons de 44 px et plus. */
-:root{--ink:#1c1712;--ink-soft:#4a3f33;--brass-deep:#7d6330;--terracotta:#7d6330;--cuivre:#BA7B39;--vert:#28352F;--vert-nuit:#1f2a25}
-
-/* --- 1. Le brun terne remplacé --- */
-.hero{background:#121a16}
-.hero .veil{background:linear-gradient(90deg, rgba(17,25,21,.95) 0%, rgba(17,25,21,.86) 20%, rgba(17,25,21,.6) 38%, rgba(17,25,21,.3) 58%, rgba(17,25,21,.12) 74%, rgba(17,25,21,0) 90%)}
-.offer-origine{background:linear-gradient(150deg,#31403a 0%,var(--vert) 55%,#222e29 100%);border-color:rgba(238,231,219,.2);box-shadow:0 20px 52px rgba(31,42,37,.3)}
-.o-halo span:nth-child(1){background:rgba(186,123,57,.16)}
-.o-halo span:nth-child(2){background:rgba(186,123,57,.10)}
-.offer-origine .o-tag{color:#e0a86a}
-.offer-origine .o-desc{color:rgba(238,231,219,.88)}
-.offer-origine .o-fine{color:rgba(238,231,219,.78)}
-.o-voile{background:linear-gradient(180deg,rgba(31,42,37,0) 44%,rgba(31,42,37,.5) 72%,rgba(31,42,37,.9) 100%)}
-.foot{background:var(--vert-nuit)}
-.foot .bottom{color:rgba(238,231,219,.72)}
-.foot .ftag{color:rgba(238,231,219,.82)}
-
-/* Tome 3 en crème magazine */
-.tome{background:#f4efe6;color:var(--ink)}
-.tome::before{background:radial-gradient(58% 78% at 80% 24%, rgba(186,123,57,.10), transparent 70%)}
-.tome::after{opacity:.05}
-.tm-ey{color:var(--brass-deep)}
-.tm-rule{background:#9c7a44}
-.tome h2{color:var(--ink)}
-.tome h2 b{color:var(--brass-deep)}
-.tm-lede{color:var(--ink-soft)}
-.tm-list li{color:var(--ink)}
-.tm-list svg{stroke:var(--cuivre)}
-.tm-card{background:#faf6ee;-webkit-backdrop-filter:none;backdrop-filter:none;border:1px solid rgba(156,122,68,.45);box-shadow:0 24px 60px rgba(28,23,18,.10);border-radius:4px}
-.tm-card h3{color:var(--ink)}
-.tm-card .tm-sub,.tm-fine{color:var(--ink-soft);opacity:1}
-.tmform input{background:#fff;border:1px solid rgba(28,23,18,.28);color:var(--ink);border-radius:2px}
-.tmform input::placeholder{color:#6b5e4f}
-.tmform input:focus{border-color:var(--ink);background:#fff}
-.tmform button{background:var(--ink);color:#f4efe6;border-radius:2px}
-.tmform button:hover{background:var(--brass-deep)}
-.tm-msg.ok{color:var(--brass-deep)}
-.tm-msg.err{color:#a4452a}
-.tome .acct-upsell p{color:var(--ink-soft)}
-
-/* --- La saison froide --- */
-.saison{position:relative;z-index:4;background:#efe6d7;padding:5.5rem 0 6rem}
-.saison-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:4.5rem;align-items:center}
-.saison-ey{display:flex;align-items:center;gap:.7rem;font-family:var(--sans);font-weight:500;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-deep)}
-.saison-pt{width:10px;height:10px;border-radius:50%;background:#8F9779;flex:0 0 auto}
-.saison h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.9rem,3.2vw,2.7rem);line-height:1.1;color:var(--ink);margin-top:1.1rem}
-.saison-filet{width:64px;height:1px;background:#9c7a44;margin:1.5rem 0 .4rem}
-.saison-p{font-size:1rem;line-height:1.75;color:var(--ink-soft);max-width:34rem;margin-top:1rem}
-.saison-btn{display:inline-flex;align-items:center;gap:.75rem;min-height:48px;margin-top:2rem;padding:0 1.6rem;background:var(--ink);color:#f4efe6;font-family:var(--sans);font-weight:500;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;transition:background .3s,transform .3s}
-.saison-btn svg{width:18px;height:10px;stroke:currentColor;stroke-width:1.4;fill:none;transition:transform .3s}
-.saison-btn:hover svg{transform:translateX(4px)}
-.saison-fine{margin-top:1rem;font-size:.82rem;letter-spacing:.06em;color:var(--ink-soft)}
-.saison-cadre{margin:0;position:relative;border:1px solid #9c7a44;padding:.6rem;background:#f4efe6;box-shadow:0 30px 70px rgba(28,23,18,.12)}
-.saison-ph{aspect-ratio:4/3;overflow:hidden;background:#d9c7a8}
-.saison-ph video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.95)}
-.saison-etiq{position:absolute;left:1.4rem;bottom:1.4rem;background:var(--ink);color:#f4efe6;font-family:var(--sans);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:.5rem .8rem}
-
-/* --- 2. Lisibilité, tous écrans --- */
-.seen .lbl{font-size:.78rem;color:var(--brass-deep)}
-.seen .wm small{font-size:.7rem;color:var(--ink-soft)}
-.offer-origine .o-eyebrow{font-size:clamp(.75rem,.9vw,.8rem)}
-.offer-origine .o-desc{font-size:clamp(1rem,1.1vw,1.06rem);line-height:1.7}
-.offer-origine .o-fine{font-size:.88rem}
-.offer-origine .o-bouton{font-size:.76rem;min-height:46px}
-.fan-cap p{font-size:1.02rem;line-height:1.7}
-.fan-cap a{font-size:.75rem;min-height:44px}
-.film .k{font-size:.78rem}
-.film .sub{line-height:1.6}
-.film h2{text-wrap:balance}
-.film .btn{font-size:.76rem}
-.film .sub{font-size:clamp(1.12rem,1.4vw,1.25rem)}
-.hero .sub{font-size:clamp(1.15rem,1.6vw,1.38rem)}
-.lede-row .lede{font-size:1.2rem}
-.besoin-t{font-size:1.08rem}
-.rp-item h3{font-size:.82rem}
-.rp-item p{font-size:1.08rem;line-height:1.6}
-.tm-lede{font-size:1rem;line-height:1.75}
-.tm-card .tm-sub{font-size:1rem}
-.tm-fine{font-size:.85rem}
-.tmform input{font-size:1rem}
-.tmform button{font-size:.75rem;letter-spacing:.16em;min-height:48px}
-.relie .copy2 p{font-size:1rem;line-height:1.75}
-.relie .more,.bio .more{font-size:.75rem;min-height:44px}
-.bio .bio-p{font-size:1rem;line-height:1.8}
-.bio-eyebrow,.bio-cap{font-size:.78rem}
-.foot h4{font-size:.78rem}
-.foot .colo ul a{font-size:.82rem}
-.foot .colo ul.plain a{font-size:.95rem}
-.foot .bottom{font-size:.75rem}
-.foot .nl p{font-size:1rem}
-.nlform input{font-size:1rem}
-.nlform button{font-size:.75rem;min-height:48px}
-.cta-row .cta{font-size:.8rem;letter-spacing:.1em}
-.besoin-t{color:var(--ctext);font-weight:500}
-.saison-fine{font-size:.9rem}
-.fan-cap a{color:var(--brass-deep)}
-.film .langs{font-size:.78rem;color:rgba(238,231,219,.85)}
-.rp-item p{font-weight:500;color:#3a2f24}
-.t-eyebrow{color:var(--brass-deep)!important}
-.saison-fine{color:var(--ink)}
-.bio-eyebrow,.bio-cap,.tm-ey{font-size:.8rem}
-.t-bridge{font-size:1.2rem;color:var(--ink-soft)}
-.lede-row .lede{color:var(--ctext)}
-.hcore{color:var(--ink);font-size:.8rem;font-weight:600;letter-spacing:.06em}
-.fan-cap .fc-num{font-size:.85rem}
-.t-bridge em{color:var(--brass-deep)}
-.lede-row .lede{line-height:1.6}
-.film .filmbtn{font-size:.75rem;min-height:44px}
-.hnode .nt{font-size:.75rem;letter-spacing:.08em}
-.gp [data-gp-enter]{font-size:.75rem}
-.hero .cta-sub{font-size:.75rem}
-@media(min-width:1440px){
-  nav{max-width:1360px}
-  .navlinks{font-size:.75rem;letter-spacing:.05em;gap:clamp(.85rem,1.1vw,1.3rem)}
-  .btn-gold--nav{font-size:.75rem!important;letter-spacing:.06em!important;padding:.6rem 1rem!important}
-}
-.btn-solid,.btn-outline{font-size:.75rem;letter-spacing:.14em;min-height:48px;display:inline-flex;align-items:center}
-.btn-solid{color:var(--ink)}
-.tri-foot{color:var(--ink);font-size:1.15rem}
-.t-lede{font-size:1rem;line-height:1.75}
-
-@media(max-width:900px){
-  .hero .veil{background:linear-gradient(180deg,rgba(17,25,21,.34) 0%,rgba(17,25,21,.22) 22%,rgba(17,25,21,.86) 48%,rgba(17,25,21,.96) 100%)}
-  .saison{padding:3.8rem 0 4.2rem}
-  .saison-grid{grid-template-columns:1fr;gap:2.4rem}
-}
-@media(max-width:640px){
-  /* hero */
-  .h1-lead{font-size:.84rem;letter-spacing:.03em}
-  .hero-inner{padding-top:10rem}
-  .hero .sub{font-size:1.12rem;line-height:1.48}
-  .hero .lede-row .lede{font-size:1rem;line-height:1.58}
-  .besoin-t{font-size:1rem;line-height:1.58}
-  .hero .cta{font-size:.78rem;letter-spacing:.1em;min-height:48px}
-  /* sections */
-  .offer-origine .o-eyebrow{font-size:.75rem;letter-spacing:.16em}
-  .offer-origine .o-title{font-size:1.75rem}
-  .offer-origine .o-desc{font-size:1rem}
-  .offer-origine .o-bouton{font-size:.75rem}
-  .film .k{font-size:.75rem;letter-spacing:.16em}
-  .film h2{font-size:1.62rem;line-height:1.18;letter-spacing:-.005em}
-  .film h2 b{display:inline;font-size:inherit;line-height:inherit;margin-top:0}
-  .film .sub{font-size:1.06rem}
-  .langs{font-size:.75rem}
-  .rp-item h3{font-size:.8rem}
-  .rp-item p{font-size:1.06rem}
-  .tome h2{font-size:1.85rem}
-  .tm-card{padding:2rem 1.4rem}
-  .saison h2{font-size:1.85rem}
-  .saison-ey{letter-spacing:.12em;align-items:flex-start;line-height:1.5}
-  .saison-pt{margin-top:.35em}
-  .saison-p{font-size:1rem}
-  .saison-etiq{left:1.1rem;right:1.1rem;bottom:1.1rem;font-size:.75rem;letter-spacing:.1em;text-align:center}
-  .foot .colo{gap:2rem 1.2rem}
-  .hero .cta-sub{font-size:.75rem;letter-spacing:.1em}
-  .fan .card .verb{font-size:.95rem;color:#f4efe6;opacity:1}
-  .fan .card .fn{font-size:.85rem}
-  .fan .card::before{font-size:1.02rem}
-  .fan .card::after{background:linear-gradient(180deg,rgba(17,25,21,.25) 0%,transparent 28%,transparent 38%,rgba(17,25,21,.82) 100%)}
-  .t-bridge{font-size:1.15rem}
-  .hcore{font-size:.75rem;letter-spacing:.03em;padding:.4rem}
-  .offer-origine .o-fine{font-size:1rem;color:#EEE7DB}
-  .tm-fine,.saison-fine,.nl-fine{font-size:1rem}
-  .t-bridge{font-size:1.2rem}
-  .hnode .nt{font-size:.75rem;letter-spacing:.04em}
-  .foot .colo ul a{font-size:.8rem;letter-spacing:.08em}
-  .foot h4{letter-spacing:.14em}
-  .nlform{flex-wrap:wrap;gap:.6rem;max-width:none}
-  .nlform input{flex:1 1 100%;min-height:48px}
-  .nlform button{flex:1 1 100%}
-}
-
-/* --- Finition (regard d'Emil Kowalski) : le bouton répond au doigt, le survol seulement à la souris,
-   des transitions nommées et courtes en ease-out --- */
-.saison-btn,.tmform button,.nlform button,.btn-solid,.btn-outline{transition:background-color 200ms cubic-bezier(.23,1,.32,1),color 200ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1)}
-.saison-btn:active,.tmform button:active,.nlform button:active,.btn-solid:active,.btn-outline:active,.hero .cta:active,.offer-origine:active .o-bouton,.film .btn:active{transform:scale(.97)}
-.tmform button:hover{transform:none}
-@media(hover:hover) and (pointer:fine){
-  .saison-btn:hover{background:var(--brass-deep)}
-  .saison-btn:hover svg{transform:translateX(4px)}
-}
-@media(hover:none){ .saison-btn:hover svg{transform:none} }
-.saison-ph video{transition:opacity 400ms cubic-bezier(.23,1,.32,1)}
-.saison-etiq{font-variant-numeric:oldstyle-nums}
-@media(prefers-reduced-motion:reduce){ .saison-btn,.saison-btn svg,.tmform button{transition:none} .saison-btn:active,.tmform button:active{transform:none} }
-</style>
 </head>
 <body>
 
@@ -1194,28 +1003,6 @@
     </div>
   </section>
 
-  <!-- ===== LA SAISON FROIDE (8 oct. 2026) : l'ambiance de la saison, les mots de la boutique (src/lib/saisonBoutique.ts),
-       la vraie matière : l'érable roux filmé par Krystine (public/vata/banniere-automne). Le bouton répond à un besoin : prendre soin cette saison. ===== -->
-  <section class="saison" id="saison" aria-labelledby="saison-titre">
-    <div class="mx saison-grid">
-      <div class="saison-copy reveal">
-        <p class="saison-ey"><span class="saison-pt" aria-hidden="true"></span>La saison froide · Vata (Vent et Espace)</p>
-        <h2 id="saison-titre">Ce que la saison<br/>nous demande</h2>
-        <div class="saison-filet" aria-hidden="true"></div>
-        <p class="saison-p">L'air devient sec, le vent se lève et tout s'accélère. Vata (Vent et Espace) prend de la place : la peau tiraille, le sommeil devient plus léger, le mental court.</p>
-        <p class="saison-p">Pour traverser ces mois-là, le corps demande de la chaleur, de l'huile et des gestes répétés chaque jour.</p>
-        <a class="saison-btn" href="/boutique">Les essentiels de la saison <svg viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
-        <p class="saison-fine">Du 22 septembre au 31 janvier</p>
-      </div>
-      <figure class="saison-cadre reveal d2">
-        <div class="saison-ph">
-          <video id="saisonVid" muted loop playsinline preload="none" poster="/vata/banniere-automne.jpg" aria-label="Un érable roux dans le vent d'octobre"><source src="/vata/banniere-automne.mp4" type="video/mp4" /></video>
-        </div>
-        <figcaption class="saison-etiq">L'érable d'octobre, filmé par Krystine</figcaption>
-      </figure>
-    </div>
-  </section>
-
   <!-- ===== PORTES ===== -->
   <section class="portes" id="portes">
     <div class="mx">
@@ -1249,7 +1036,7 @@
     <div class="mx">
       <div class="copy">
         <div class="k reveal d1">Conférencière · Keynote speaker · Autrice best-seller</div>
-        <h2 class="reveal d2">Comment choisir <b>dans un monde qui pense à notre place&nbsp;?</b></h2>
+        <h2 class="reveal d2">Comment choisir <b>dans un monde qui pense de plus en plus à notre place&nbsp;?</b></h2>
         <p class="sub reveal d3">Nous n’avons jamais eu accès à autant d’informations, de conseils, d’experts, de méthodes et maintenant d’intelligence artificielle. Pourtant, plus les réponses se multiplient, plus il peut devenir difficile de savoir lesquelles croire, lesquelles suivre et ce qui nous convient réellement.</p>
         <p class="sub reveal d3">Sur scène, Krystine St-Laurent explore ce que cette abondance de réponses fait à notre jugement, à notre confiance et à notre capacité de choisir, et comment retrouver des repères sans remettre notre autorité à une nouvelle méthode, un nouvel expert ou une nouvelle technologie.</p>
         <div class="ctas reveal d4">
@@ -1421,7 +1208,7 @@
         <div class="bio-rule" aria-hidden="true"></div>
         <p class="bio-p">Pendant des années, Krystine a œuvré en soins intensifs et en recherche clinique, dans les coulisses du système, avant de choisir l&#39;Ayurveda, les plantes médicinales et l&#39;aromathérapie. Depuis, elle relie la rigueur de la science à la sagesse de la nature, pour que chaque personne apprenne à écouter son propre corps.</p>
         <p class="bio-p">Autrice de la Trilogie d&#39;Origine, près de 1 200 pages dont deux best-sellers, elle a créé l&#39;émission Santé la vie et le podcast Au-delà des tendances.</p>
-        <p class="bio-p" style="font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)">Publiée aux Éditions de l&#39;Homme</p>
+        <p class="bio-p" style="font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)">Publiée aux Éditions de l&#39;Homme</p>
         <a class="more" href="/conferenciere">Découvrir son parcours →</a>
       </div>
       <div class="bio-frame reveal d2">
@@ -1729,11 +1516,6 @@
   // scroll reveals with stagger
   const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.16});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-  // L'érable de la saison : la vidéo ne se charge et ne joue que lorsqu'elle est à l'écran (et jamais si le mouvement est réduit).
-  (function(){var v=document.getElementById('saisonVid'); if(!v||!('IntersectionObserver' in window)) return;
-    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ v.play&&v.play().catch(function(){}); } else { v.pause(); } });},{threshold:.25}).observe(v);
-  })();
   setTimeout(()=>document.querySelectorAll('.hero .reveal').forEach(el=>el.classList.add('in')),130);
   // gentle scroll parallax (transform-only, rAF-throttled)
   if(!reduce){

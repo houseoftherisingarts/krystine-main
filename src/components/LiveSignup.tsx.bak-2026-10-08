@@ -56,9 +56,7 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
   useEffect(() => { if (sansEpisode) return; fetchYouTubeVideos().then(v => setDernier(dernierEpisode(v))).catch(() => setDernier(null)); }, [sansEpisode]);
 
   useEffect(() => {
-    getLiveEvents().then(all => {
-      // Les Dimanches d'Origine ont leur propre page (/dimanches) : jamais ici.
-      const list = all.filter(e => !e.serie);
+    getLiveEvents().then(list => {
       const now = Date.now();
       // Le prochain direct à venir, sinon le dernier passé s'il a une rediffusion.
       const upcoming = list.filter(e => e.startsAt.toMillis() + 3 * 3600e3 > now).sort((a, b) => a.startsAt.toMillis() - b.startsAt.toMillis())[0];
