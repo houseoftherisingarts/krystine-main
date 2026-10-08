@@ -7174,5 +7174,20 @@
       "src/pages/client/ClientPreferences.tsx",
       "src/pages/client/ClientPreferences.tsx.bak-2026-10-08"
     ]
+  },
+  {
+    "quand": "2026-10-08T11:42:15.738Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "82039b2e",
+    "message": "Cours des fondatrices : les titres « Avant le parcours » et des piliers s'ouvrent du premier clic (la liste ne se démonte plus à chaque clic)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/origine/ListeOrigine.tsx",
+      "src/components/cours/origine/ListeOrigine.tsx.bak-2026-10-08"
+    ]
   }
 ]
