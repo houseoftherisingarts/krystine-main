@@ -7189,5 +7189,45 @@
       "src/components/cours/origine/ListeOrigine.tsx",
       "src/components/cours/origine/ListeOrigine.tsx.bak-2026-10-08"
     ]
+  },
+  {
+    "quand": "2026-10-08T12:19:04.589Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c864c1b6",
+    "message": "Cours (Origine et tous les cours) : panneau « Documents de la leçon » avec aperçu du PDF, « Voir » et « Télécharger la version imprimable » (aussi au téléphone); vignettes de la bibliothèque (première page du PDF); vrais visuels d'Origine retrouvés (méditations, réflexions, Q&R, Lire/Trier/Ancrer), vignettes composées et ajustables pour le reste (rediffusions, audios)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "package-lock.json",
+      "package.json",
+      "package.json.bak-2026-10-08",
+      "public/assets-manifest.json",
+      "public/origine2/lecons/ancrer.webp",
+      "public/origine2/lecons/cle-1.webp",
+      "public/origine2/lecons/documents.webp",
+      "public/origine2/lecons/integration.webp",
+      "public/origine2/lecons/lire.webp",
+      "public/origine2/lecons/meditations.webp",
+      "public/origine2/lecons/musique.webp",
+      "public/origine2/lecons/questions.webp",
+      "public/origine2/lecons/reflexions.webp",
+      "public/origine2/lecons/trier.webp",
+      "src/components/cours/DocumentsLecon.tsx",
+      "src/components/cours/VideoLecon.tsx",
+      "src/components/cours/VideoLecon.tsx.bak-2026-10-08",
+      "src/components/cours/VignetteComposee.tsx",
+      "src/components/cours/origine/CoursOrigine.tsx",
+      "src/components/cours/origine/CoursOrigine.tsx.bak-2026-10-08",
+      "src/components/cours/origine/ListeOrigine.tsx",
+      "src/components/cours/origine/ListeOrigine.tsx.bak-2026-10-08b",
+      "src/components/cours/origine/VoletLecon.tsx",
+      "src/components/cours/origine/VoletLecon.tsx.bak-2026-10-08",
+      "src/lib/pdfApercu.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/CoursDetailPage.tsx.bak-2026-10-08",
+      "src/pages/origine2/visuels.ts"
+    ]
   }
 ]
