@@ -205,7 +205,7 @@ const SelectField: React.FC<{
 const Fieldset: React.FC<{ step: string; title: string; children: React.ReactNode }> = ({ step, title, children }) => (
   <div>
     <div className="flex items-baseline gap-3 mb-6">
-      <span className="v2-serif italic text-[#7d6330] text-lg tabular-nums">{step}</span>
+      <span className="v2-serif text-[#7d6330] text-lg tabular-nums">{step}</span>
       <h3 className="v2-serif text-[1.25rem] font-light text-[#1c1712]">{title}</h3>
     </div>
     {children}
@@ -287,7 +287,7 @@ const BookingSection: React.FC = () => {
         <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
           Faire une demande
         </h2>
-        <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] mx-auto leading-snug">
+        <p className="mt-6 v2-serif text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] mx-auto leading-snug">
           Quelques questions, cela aide l’équipe à préparer une proposition juste. Réponse sous 48 h ouvrables.
         </p>
       </div>
@@ -302,7 +302,7 @@ const BookingSection: React.FC = () => {
                   <Check size={26} weight="light" />
                 </span>
                 <h3 className="v2-serif font-light text-[2rem] text-[#1c1712] mb-3">Demande envoyée.</h3>
-                <p className="v2-serif italic text-[#3a2f23] max-w-md mx-auto leading-relaxed">
+                <p className="v2-serif text-[#3a2f23] max-w-md mx-auto leading-relaxed">
                   Merci. L’équipe vous revient sous 48 h ouvrables avec une proposition adaptée.
                 </p>
               </div>
@@ -366,7 +366,7 @@ const BookingSection: React.FC = () => {
                   Envoyer la demande
                 </button>
 
-                <p className="text-center text-[0.82rem] italic v2-serif text-[#3a2f23]/80">
+                <p className="text-center text-[0.82rem] v2-serif text-[#3a2f23]/80">
                   Vos réponses sont enregistrées de manière confidentielle. L’équipe revient vers vous avec une proposition adaptée.
                 </p>
               </form>
@@ -630,7 +630,7 @@ const TemoignagesSection: React.FC = () => {
         {tous.map((t, i) => (
           <figure key={`${t.by}-${i}`} className={`flex flex-col border-t border-[#9c7a44]/40 pt-10 ${tous.length > 1 ? '' : 'max-w-[980px]'}`}>
             <Quotes size={34} weight="fill" className="text-[#9c7a44]/40 mb-6" />
-            <blockquote className={`v2-serif italic text-[#1c1712] leading-[1.45] flex-1 ${tous.length > 1 ? 'text-[clamp(1.15rem,1.8vw,1.45rem)]' : 'text-[clamp(1.35rem,2.4vw,2rem)]'}`}>
+            <blockquote className={`v2-serif text-[#1c1712] leading-[1.45] flex-1 ${tous.length > 1 ? 'text-[clamp(1.15rem,1.8vw,1.45rem)]' : 'text-[clamp(1.35rem,2.4vw,2rem)]'}`}>
               {t.quote}
             </blockquote>
             <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{t.by}</figcaption>
@@ -673,7 +673,7 @@ const EventsSection: React.FC = () => {
         <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
           Événements &amp; Conférences
         </h2>
-        <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] mx-auto leading-snug">
+        <p className="mt-6 v2-serif text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] mx-auto leading-snug">
           Rencontres en direct, retraites, lancements, plus une tournée en préparation.
         </p>
       </div>
@@ -692,7 +692,7 @@ const EventsSection: React.FC = () => {
                   <span className="text-[0.6rem] uppercase tracking-[0.22em] text-[#7d6330]">{dateStr}</span>
                   <div className="min-w-0">
                     <h3 className="v2-serif text-[clamp(1.5rem,2.6vw,2.2rem)] font-light leading-[1.1] text-[#1c1712] transition-colors duration-300 group-hover:text-[#7d6330]">{ev.title}</h3>
-                    {ev.subtitle && <p className="mt-1.5 v2-serif italic text-[1.05rem] text-[#3a2f23]">{ev.subtitle}</p>}
+                    {ev.subtitle && <p className="mt-1.5 v2-serif text-[1.05rem] text-[#3a2f23]">{ev.subtitle}</p>}
                     {ev.location && (
                       <p className="mt-3 text-[0.7rem] uppercase tracking-[0.18em] text-[#1c1712]/60 flex items-center gap-2">
                         <MapPin size={13} weight="light" className="text-[#7d6330]" />{ev.location}
@@ -900,7 +900,7 @@ export default function KrystineV2() {
                 <span className="block">Krystine</span>
               </span>
               <span data-line className="block overflow-hidden">
-                <span className="block italic font-normal text-[#3a2f23]">St-Laurent</span>
+                <span className="block font-normal text-[#3a2f23]">St-Laurent</span>
               </span>
             </h1>
           </div>
@@ -969,7 +969,7 @@ export default function KrystineV2() {
               </button>
               <a
                 href="#conferences"
-                className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
+                className="v2-serif text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
               >
                 Découvrir la conférence
               </a>
@@ -1049,7 +1049,7 @@ export default function KrystineV2() {
             </div>
             <p
               data-beat
-              className="mt-4 v2-serif italic text-[#1c1712]/55 text-sm"
+              className="mt-4 v2-serif text-[#1c1712]/55 text-sm"
             >
               Du système de santé conventionnel à la scène
             </p>
@@ -1074,7 +1074,7 @@ export default function KrystineV2() {
         {/* Le One Talk */}
         <article data-reveal className="max-w-[900px] border-t border-[#9c7a44]/50 pt-10">
           <h3 className="v2-serif text-[clamp(1.8rem,3.2vw,2.6rem)] font-light leading-[1.1] text-[#1c1712]">{ONE_TALK.title}</h3>
-          <p className="mt-5 v2-serif italic text-[clamp(1.1rem,1.8vw,1.35rem)] leading-snug text-[#3a2f23]">{ONE_TALK.sousTitre}</p>
+          <p className="mt-5 v2-serif text-[clamp(1.1rem,1.8vw,1.35rem)] leading-snug text-[#3a2f23]">{ONE_TALK.sousTitre}</p>
           <p className="mt-6 max-w-[62ch] text-[0.98rem] leading-[1.85] text-[#3a2f23]">{ONE_TALK.texte}</p>
           <p className="mt-6 max-w-[62ch] border-l-2 border-[#9c7a44] pl-5 v2-serif text-[1.08rem] leading-[1.7] text-[#1c1712]">{ONE_TALK.promesse}</p>
         </article>
@@ -1151,7 +1151,7 @@ export default function KrystineV2() {
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
             Rester en lien
           </h2>
-          <p className="mt-6 v2-serif italic text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] mx-auto leading-snug">
+          <p className="mt-6 v2-serif text-[clamp(1.1rem,2vw,1.45rem)] text-[#3a2f23] max-w-[44ch] mx-auto leading-snug">
             Les nouvelles conférences, les tournées et les rendez-vous, déposés dans votre boîte, sans bruit.
           </p>
           <div className="mt-10">
