@@ -9,8 +9,6 @@ import SeuilOrigine from './SeuilOrigine';
 import ListeOrigine from './ListeOrigine';
 import { vignetteDeLecon } from '../VideoLecon';
 import VoletLecon from './VoletLecon';
-import { FenetreDocument, type DocLecon } from '../DocumentsLecon';
-import { compositionOrigine, visuelDOrigine } from '../../../pages/origine2/visuels';
 
 // L'espace de cours de l'Expérience Origine (les deux cohortes) : le seuil
 // compact, la liste des piliers à gauche, la leçon à droite. Sans questions
@@ -43,21 +41,8 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
   const fr = lang === 'FR';
   const [apercu, setApercu] = useState<{ nom: string; url: string } | null>(null);
   const nbTerminees = lecons.filter(l => terminees[l.id]).length;
-  // Jamais un arrêt sur image de la vidéo (les vignettes Wistia venues de Kajabi sont ignorées) :
-  // l'image déposée par Krystine, sinon le vrai visuel d'Origine, sinon la vignette composée.
-  const vignettePropre = (l: Lecon) => vignetteDeLecon(l) || visuelDOrigine(id, l, lecons);
-  const versDoc = (d: DocAffiche): DocLecon => ({ cle: d.chemin, nom: d.nom, pdf: d.pdf, obtenirUrl: () => urlDeDocumentLecon(id, d.source, d.index) });
-  // Dans la liste, une leçon-document montre la première page de son PDF (Krystine, 8 oct. 2026).
-  const visuelDeLigne = (l: Lecon) => {
-    const propre = vignetteDeLecon(l);
-    const premier = docsDe(l).find(d => d.pdf);
-    const estDocument = l.type === 'texte' && !l.chemin && !!premier;
-    return {
-      src: propre || (estDocument ? undefined : visuelDOrigine(id, l, lecons)),
-      doc: !propre && estDocument && premier ? versDoc(premier) : undefined,
-      c: compositionOrigine(l, fr),
-    };
-  };
+  // Jamais un arrêt sur image de la vidéo (les vignettes Wistia venues de Kajabi sont ignorées).
+  const vignettePropre = (l: Lecon) => vignetteDeLecon(l);
   // Les documents d'une leçon : les siens, plus ceux qu'elle emprunte à une autre leçon (COMPLEMENTS).
   const docsDe = (l: Lecon): DocAffiche[] => {
     const propres = (l.docs || []).map((d, index) => ({ nom: nomDeDocument(d.nom), pdf: /\.pdf$/i.test(d.nom), chemin: d.chemin, source: l.id, index }));
@@ -88,13 +73,11 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
     return rayonDeLecon(l) === 'avant' ? (fr ? 'Avant le parcours' : 'Before the path') : (fr ? 'Bibliothèque' : 'Library');
   };
 
-  // « Voir » : le PDF s'ouvre en grand dans la page (fenêtre par-dessus, via Portail).
-  const voirDocument = async (d: DocLecon) => {
-    const u = await d.obtenirUrl();
+  const ouvrirDocument = async (d: DocAffiche) => {
+    const u = await urlDeDocumentLecon(id, d.source, d.index);
     if (d.pdf) setApercu({ nom: d.nom, url: u });
     else window.open(u, '_blank', 'noopener');
   };
-  const ouvrirDocument = (d: DocAffiche) => voirDocument(versDoc(d));
 
   const suivanteExiste = !!courante && lecons.slice(lecons.findIndex(l => l.id === courante.id) + 1).some(l => !verrouillee(l));
 
@@ -126,9 +109,9 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
           </div>
         )}
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+        <div className={`mt-8 grid gap-6 ${apercu ? 'lg:grid-cols-[340px_minmax(0,1fr)_minmax(0,1fr)]' : 'lg:grid-cols-[340px_minmax(0,1fr)]'}`}>
           <aside className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pr-1">
-            <ListeOrigine lecons={lecons} courante={courante} terminees={terminees} verrouillee={verrouillee} visuelDe={visuelDeLigne} onOuvrir={onOuvrir} lang={lang} />
+            <ListeOrigine lecons={lecons} courante={courante} terminees={terminees} verrouillee={verrouillee} vignetteDe={vignettePropre} onOuvrir={onOuvrir} lang={lang} />
             <div className="mt-2">
               <ATelechargerOrigine documents={tousLesDocs} lang={lang} onOuvrir={d => { void ouvrirDocument(d); }} />
             </div>
@@ -142,7 +125,6 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
                 formationTitre={formation.titre}
                 autresTitres={lecons.map(l => l.titre)}
                 vignette={vignettePropre(courante)}
-                composition={compositionOrigine(courante, fr)}
                 position={position(courante)}
                 url={url}
                 chargement={chargement}
@@ -152,7 +134,7 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
                 lang={lang}
                 onTerminee={() => onTerminee(courante)}
                 onSuivante={suivanteExiste ? onSuivante : undefined}
-                documents={docsDe(courante).map(versDoc)}
+                documents={docsDe(courante)}
                 lien={COMPLEMENTS[id]?.[courante.id]?.lien}
                 extra={estCertificat ? (
                   <CertificatOrigine
@@ -167,7 +149,7 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
                     onReprendre={reprise && reprise.id !== courante.id ? () => onOuvrir(reprise) : undefined}
                   />
                 ) : undefined}
-                onVoirDocument={d => { void voirDocument(d); }}
+                onOuvrirDocument={d => { void ouvrirDocument(d); }}
                 onVignette={async f => { await poserVignetteLecon(id, courante.id, f); await onRafraichir(); }}
                 onDocument={async f => { await ajouterDocumentLecon(id, courante.id, f); await onRafraichir(); }}
               />
@@ -178,9 +160,24 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
             )}
           </div>
 
+          {apercu && (
+            <aside className="flex flex-col overflow-hidden rounded-[15px] border lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)]" style={{ borderColor: `${ORIGINE.olive}33`, background: '#f8f4ec' }}>
+              <div className="flex items-center justify-between gap-3 border-b px-4 py-3" style={{ borderColor: `${ORIGINE.olive}26` }}>
+                <p className="min-w-0 truncate text-sm" style={{ color: ORIGINE.encre }}><i className="fa-solid fa-file-pdf mr-2" style={{ color: ORIGINE.olive }} />{apercu.nom}</p>
+                <div className="flex shrink-0 items-center gap-2">
+                  <a href={apercu.url} target="_blank" rel="noopener noreferrer" className="rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest" style={{ borderColor: `${ORIGINE.or}80`, color: ORIGINE.encre }}>
+                    {fr ? 'Ouvrir' : 'Open'}
+                  </a>
+                  <button type="button" onClick={() => setApercu(null)} aria-label={fr ? 'Fermer l’aperçu' : 'Close preview'} className="h-8 w-8 rounded-full hover:bg-[#1c2420]/6" style={{ color: ORIGINE.olive }}>
+                    <i className="fa-solid fa-xmark" />
+                  </button>
+                </div>
+              </div>
+              <iframe src={`${apercu.url}#toolbar=0&view=FitH`} title={apercu.nom} className="h-[70vh] w-full flex-1 bg-white lg:h-auto" />
+            </aside>
+          )}
         </div>
       </div>
-      <FenetreDocument doc={apercu} lang={lang} onFermer={() => setApercu(null)} />
       {modales}
     </div>
   );

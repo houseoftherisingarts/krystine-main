@@ -20,23 +20,12 @@ interface Props {
   lang: 'FR' | 'EN' | string;
   /** Classes du lecteur une fois lancé. */
   className?: string;
-  /** Un visuel dessiné (vignette composée, visuel carré) à montrer à la place de l'image d'affiche. */
-  afficheNode?: React.ReactNode;
 }
 
-const VideoLecon: React.FC<Props> = ({ url, affiche, lang, className, afficheNode }) => {
+const VideoLecon: React.FC<Props> = ({ url, affiche, lang, className }) => {
   const [lancee, setLancee] = useState(false);
   const fr = lang === 'FR';
 
-  if (lancee && afficheNode) {
-    // Le visuel reste dessous : une leçon audio (fichier sans image) le garde à l'écran pendant l'écoute.
-    return (
-      <div className="relative aspect-video w-full overflow-hidden rounded-[15px] bg-[#1c1712]">
-        {afficheNode}
-        <video src={url} controls autoPlay playsInline preload="auto" className="absolute inset-0 h-full w-full" />
-      </div>
-    );
-  }
   if (lancee) {
     return <video src={url} poster={affiche} controls autoPlay playsInline preload="auto" className={className} />;
   }
@@ -47,7 +36,7 @@ const VideoLecon: React.FC<Props> = ({ url, affiche, lang, className, afficheNod
       aria-label={fr ? 'Lancer la vidéo' : 'Play the video'}
       className="group relative block aspect-video w-full overflow-hidden rounded-[15px] bg-[#1c1712]"
     >
-      {afficheNode || <img src={affiche} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />}
+      <img src={affiche} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
       <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
       <span aria-hidden className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#EEE7DB]/90 text-[#28352F] shadow-[0_12px_30px_-10px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-105 md:h-20 md:w-20">
         <i className="fa-solid fa-play ml-1 text-xl md:text-2xl" />

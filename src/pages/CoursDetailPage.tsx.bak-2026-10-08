@@ -22,8 +22,6 @@ import SeuilVata from '../components/cours/SeuilVata';
 import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import VideoLecon, { vignetteDeLecon } from '../components/cours/VideoLecon';
-import VignetteComposee, { compositionCours } from '../components/cours/VignetteComposee';
-import { DocumentsLecon, FenetreDocument, PALETTE_COURS } from '../components/cours/DocumentsLecon';
 import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
@@ -854,9 +852,7 @@ const CoursDetailPage: React.FC = () => {
                     {lecons.map(l => (
                       <li key={l.id} className="flex items-center gap-3 text-sm text-[#38403a]/70 dark:text-white/70">
                         {l.type === 'audio' && vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined) ? (
-                          (id !== FORMATION_VATA && !vignetteDeLecon(l) ? <VignetteComposee c={compositionCours(l, lang === 'FR')} taille="pastille" cote="h-9 w-9" /> : (
-                            <img src={vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined)} alt="" className="h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25" />
-                          ))
+                          <img src={vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined)} alt="" className="h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25" />
                         ) : (
                           <i className={`fa-solid ${ICONES[l.type]} w-4 text-[#8B4A2F]/70`} />
                         )}
@@ -873,7 +869,7 @@ const CoursDetailPage: React.FC = () => {
         ) : (
           <div
             ref={chapitre}
-            className={`mt-8 grid gap-6 ${estVata && accessible ? 'lg:grid-cols-[320px_1fr] xl:grid-cols-[300px_minmax(0,1fr)_280px]' : 'lg:grid-cols-[320px_1fr]'} ${
+            className={`mt-8 grid gap-6 ${apercuPdf ? 'lg:grid-cols-[300px_minmax(0,1fr)_minmax(0,1fr)]' : estVata && accessible ? 'lg:grid-cols-[320px_1fr] xl:grid-cols-[300px_minmax(0,1fr)_280px]' : 'lg:grid-cols-[320px_1fr]'} ${
               estVata ? 'mx-auto max-w-[1720px] scroll-mt-24 px-5 pt-6 md:px-10' : ''
             }`}
           >
@@ -972,9 +968,7 @@ const CoursDetailPage: React.FC = () => {
                         style={sem && courante?.id === l.id ? { background: sem.couleur.encre } : undefined}
                       >
                         {l.type === 'audio' && !verrou && !terminees[l.id] && vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined) ? (
-                          (id !== FORMATION_VATA && !vignetteDeLecon(l) ? <VignetteComposee c={compositionCours(l, lang === 'FR')} taille="pastille" cote="h-9 w-9" /> : (
-                            <img src={vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined)} alt="" className={`h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25 ${courante?.id === l.id ? 'ring-2 ring-[#BA7B39]' : ''}`} />
-                          ))
+                          <img src={vignetteAudio(l, id === FORMATION_VATA ? undefined : formation || undefined) || (id === FORMATION_VATA ? chapitreDeModule(l.moduleNom)?.vignette : undefined)} alt="" className={`h-9 w-9 shrink-0 rounded-[9px] object-cover border border-[#BA7B39]/25 ${courante?.id === l.id ? 'ring-2 ring-[#BA7B39]' : ''}`} />
                         ) : (
                           <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
                         )}
@@ -1031,94 +1025,87 @@ const CoursDetailPage: React.FC = () => {
                     );
                   })()}
                   <h2 className="mt-1 font-serif text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.15] text-[#293027] dark:text-white">{courante.titre}</h2>
-                  {/* Les documents de la leçon : à droite sur ordinateur, sous le titre sur téléphone (Krystine, 8 oct. 2026). */}
-                  {(() => {
-                    const docs = (courante.docs || []).map((d, i) => ({
-                      cle: d.chemin,
-                      nom: nomDocumentLisible(d.nom, courante.titre, courante.docs!.length),
-                      pdf: /\.pdf$/i.test(d.nom),
-                      obtenirUrl: () => urlDeDocumentLecon(id, courante.id, i),
-                    }));
-                    return (
-                      <div className={docs.length ? 'mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start xl:grid-cols-[minmax(0,1fr)_290px]' : ''}>
-                        {docs.length > 0 && (
-                          <DocumentsLecon
-                            documents={docs}
-                            lang={lang}
-                            palette={PALETTE_COURS}
-                            className="lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1"
-                            onVoir={async d => {
-                              try {
-                                const url = await d.obtenirUrl();
-                                if (d.pdf) setApercu({ nom: d.nom, url });
-                                else window.open(url, '_blank', 'noopener');
-                              }
-                              catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
-                            }}
-                          />
-                        )}
-                        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
-                        <div className="mt-5">
-                          {chargeLecon ? (
-                            <p className="text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>
-                          ) : erreur ? (
-                            <p className="text-sm text-red-600">{erreur}</p>
-                          ) : urlCourante ? (
-                            courante.type === 'video' ? (
-                              <VideoLecon
-                                key={courante.id}
-                                url={urlCourante}
-                                affiche={vignetteDeLecon(courante) || chapitreDeModule(courante.moduleNom)?.bandeau || chapitreDeModule(courante.moduleNom)?.image || formation?.imageUrl || (id === FORMATION_VATA ? '/vata/couverture.webp' : '/assets/foyer-visuel-16x9.jpg')}
-                                afficheNode={id !== FORMATION_VATA && !(vignetteDeLecon(courante) || chapitreDeModule(courante.moduleNom)?.bandeau || chapitreDeModule(courante.moduleNom)?.image)
-                                  ? <VignetteComposee c={compositionCours(courante, lang === 'FR')} taille="banniere" /> : undefined}
-                                lang={lang}
-                                className="w-full rounded-[15px] bg-black"
-                              />
-                            ) : courante.type === 'audio' ? (
-                              <LecteurAudioCours
-                                key={courante.id}
-                                url={urlCourante}
-                                titre={courante.titre}
-                                pochette={vignetteAudio(courante, id === FORMATION_VATA ? undefined : formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
-                                soustitre={(() => {
-                                  const s = chapitreDeModule(courante.moduleNom);
-                                  return s ? libelleSemaine(s) : courante.moduleNom;
-                                })()}
-                                lang={lang}
-                                onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}
-                                onSuivante={prochaineOuverte ? suivante : undefined}
-                                onPrecedente={precedenteOuverte ? precedente : undefined}
-                              />
-                            ) : (
-                              <a
-                                href={urlCourante} target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]"
-                              >
-                                <i className={`fa-solid ${ICONES[courante.type]}`} />
-                                {lang === 'FR' ? 'Ouvrir le document' : 'Open the document'}
-                              </a>
-                            )
-                          ) : null}
-                        </div>
-                        <p className="mt-3 text-[12px] text-[#38403a]/55 dark:text-white/50">
-                          {lang === 'FR' ? 'Un problème technique ? Écrivez-nous à ' : 'A technical issue? Write to us at '}
-                          <a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2 hover:text-[#8B4A2F]">teamksl@inspiratanature.com</a>
-                        </p>
-                        {/* Sur Vata, le texte se justifie sous le lecteur (Krystine n'aime pas
-                            le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
-                        {courante.texte?.trim() && (
-                          <TexteLecon
-                            texte={sansRepetitions(
-                              nettoyerKajabi(courante.texte, courante.titre, formation?.titre),
-                              lecons.slice(0, Math.max(0, lecons.findIndex(l => l.id === courante.id))).filter(l => l.moduleNom === courante.moduleNom && l.texte?.trim()).map(l => nettoyerKajabi(l.texte!, l.titre, formation?.titre)),
-                            )}
-                            className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80 ${estVata ? 'text-justify hyphens-auto [&_h3]:text-left [&_h4]:text-left' : ''}`}
-                          />
-                        )}
-                        </div>
-                      </div>
-                    );
-                  })()}
+                  <div className="mt-5">
+                    {chargeLecon ? (
+                      <p className="text-sm text-[#38403a]/50 dark:text-white/50">{lang === 'FR' ? 'Chargement…' : 'Loading…'}</p>
+                    ) : erreur ? (
+                      <p className="text-sm text-red-600">{erreur}</p>
+                    ) : urlCourante ? (
+                      courante.type === 'video' ? (
+                        <VideoLecon
+                          key={courante.id}
+                          url={urlCourante}
+                          affiche={vignetteDeLecon(courante) || chapitreDeModule(courante.moduleNom)?.bandeau || chapitreDeModule(courante.moduleNom)?.image || formation?.imageUrl || (id === FORMATION_VATA ? '/vata/couverture.webp' : '/assets/foyer-visuel-16x9.jpg')}
+                          lang={lang}
+                          className="w-full rounded-[15px] bg-black"
+                        />
+                      ) : courante.type === 'audio' ? (
+                        <LecteurAudioCours
+                          key={courante.id}
+                          url={urlCourante}
+                          titre={courante.titre}
+                          pochette={vignetteAudio(courante, id === FORMATION_VATA ? undefined : formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
+                          soustitre={(() => {
+                            const s = chapitreDeModule(courante.moduleNom);
+                            return s ? libelleSemaine(s) : courante.moduleNom;
+                          })()}
+                          lang={lang}
+                          onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}
+                          onSuivante={prochaineOuverte ? suivante : undefined}
+                          onPrecedente={precedenteOuverte ? precedente : undefined}
+                        />
+                      ) : (
+                        <a
+                          href={urlCourante} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]"
+                        >
+                          <i className={`fa-solid ${ICONES[courante.type]}`} />
+                          {lang === 'FR' ? 'Ouvrir le document' : 'Open the document'}
+                        </a>
+                      )
+                    ) : null}
+                  </div>
+                  <p className="mt-3 text-[12px] text-[#38403a]/55 dark:text-white/50">
+                    {lang === 'FR' ? 'Un problème technique ? Écrivez-nous à ' : 'A technical issue? Write to us at '}
+                    <a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2 hover:text-[#8B4A2F]">teamksl@inspiratanature.com</a>
+                  </p>
+                  {/* Sur Vata, le texte se justifie sous le lecteur (Krystine n'aime pas
+                      le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
+                  {courante.texte?.trim() && (
+                    <TexteLecon
+                      texte={sansRepetitions(
+                        nettoyerKajabi(courante.texte, courante.titre, formation?.titre),
+                        lecons.slice(0, Math.max(0, lecons.findIndex(l => l.id === courante.id))).filter(l => l.moduleNom === courante.moduleNom && l.texte?.trim()).map(l => nettoyerKajabi(l.texte!, l.titre, formation?.titre)),
+                      )}
+                      className={`${courante.chemin ? 'mt-6' : 'mt-2'} max-w-[68ch] text-[#3a2f23] dark:text-white/80 ${estVata ? 'text-justify hyphens-auto [&_h3]:text-left [&_h4]:text-left' : ''}`}
+                    />
+                  )}
+
+                  {/* Les documents déposés par Krystine sous la leçon */}
+                  {(courante.docs?.length ?? 0) > 0 && (
+                    <div className="mt-6">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-[#8B4A2F]">{lang === 'FR' ? 'Documents de la leçon' : 'Lesson documents'}</p>
+                      <ul className="mt-2 space-y-2">
+                        {courante.docs!.map((d, i) => (
+                          <li key={d.chemin}>
+                            <button
+                              onClick={async () => {
+                                try {
+                                  const url = await urlDeDocumentLecon(id, courante.id, i);
+                                  if (/\.pdf$/i.test(d.nom)) setApercu({ nom: nomDocumentLisible(d.nom, courante.titre, courante.docs!.length), url });
+                                  else window.open(url, '_blank', 'noopener');
+                                }
+                                catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
+                              }}
+                              className="inline-flex items-center gap-2 rounded-full border border-[#BA7B39]/40 px-4 py-2 text-sm text-[#8B4A2F] transition-colors hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]"
+                            >
+                              <i className={`fa-solid ${/\.pdf$/i.test(d.nom) ? 'fa-file-pdf' : 'fa-file-arrow-down'}`} /> {nomDocumentLisible(d.nom, courante.titre, courante.docs!.length)}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {!formation?.questionsFermees && !estVata && <QuestionsLecon formationId={id} lecon={courante} />}
                   <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -1185,7 +1172,7 @@ const CoursDetailPage: React.FC = () => {
                 première page (public/vata/documents/<leçon>.jpg). À droite sur
                 grand écran, sous la leçon ailleurs. Un clic ouvre l'aperçu
                 complet, qui porte son bouton « Ouvrir ». */}
-            {estVata && accessible && (() => {
+            {estVata && accessible && !apercuPdf && (() => {
               const rang = courante ? rangDeModule(courante.moduleNom) : 0;
               // Les leçons PDF de la semaine, puis les documents joints aux autres
               // leçons (le journal de bord vit sous une leçon audio, 5 oct. 2026).
@@ -1232,8 +1219,31 @@ const CoursDetailPage: React.FC = () => {
               );
             })()}
 
-            {/* Le PDF s'ouvre en grand dans la page, par-dessus (Krystine, 8 oct. 2026). */}
-            <FenetreDocument doc={apercuPdf} lang={lang} onFermer={() => setApercu(null)} />
+            {/* Le volet d'aperçu du PDF, à droite, qui colle en haut et défile seul */}
+            {apercuPdf && (
+              <aside className="flex flex-col overflow-hidden rounded-[20px] border border-white/60 bg-white/55 backdrop-blur-md lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)] dark:border-white/10 dark:bg-[#293027]/55">
+                <div className="flex items-center justify-between gap-3 border-b border-[#293027]/10 px-4 py-3 dark:border-white/10">
+                  <p className="min-w-0 truncate text-sm text-[#293027] dark:text-white"><i className="fa-solid fa-file-pdf mr-2 text-[#8B4A2F]" />{apercuPdf.nom}</p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <a href={apercuPdf.url} target="_blank" rel="noopener noreferrer" className="rounded-full border border-[#BA7B39]/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#8B4A2F] hover:bg-[#BA7B39]/10 dark:text-[#d9a05b]">
+                      {lang === 'FR' ? 'Ouvrir' : 'Open'}
+                    </a>
+                    <button type="button" onClick={() => setApercu(null)} aria-label={lang === 'FR' ? 'Fermer l’aperçu' : 'Close preview'} className="h-8 w-8 rounded-full text-[#293027]/60 hover:bg-white/70 dark:text-white/60 dark:hover:bg-white/10">
+                      <i className="fa-solid fa-xmark" />
+                    </button>
+                  </div>
+                </div>
+                {etroit ? (
+                  <div className="flex justify-center px-4 py-8">
+                    <a href={apercuPdf.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-xs font-bold uppercase tracking-widest text-[#293027] hover:bg-[#9c6630]">
+                      <i className="fa-solid fa-file-pdf" />{lang === 'FR' ? 'Ouvrir le PDF' : 'Open the PDF'}
+                    </a>
+                  </div>
+                ) : (
+                  <iframe src={`${apercuPdf.url}#toolbar=0&view=FitH`} title={apercuPdf.nom} className="h-[70vh] w-full flex-1 bg-white lg:h-auto" />
+                )}
+              </aside>
+            )}
           </div>
         )}
 

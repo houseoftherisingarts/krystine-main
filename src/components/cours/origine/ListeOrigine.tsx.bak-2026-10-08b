@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import type { Lecon } from '../../../firebase/formations';
-import VignetteComposee, { type Composition } from '../VignetteComposee';
-import { PremierePage, type DocLecon } from '../DocumentsLecon';
 import { ORIGINE, PILIERS, type Pilier, rayonDeLecon, semaineDeLecon, titreDeLecon, titreDeModule } from '../../../pages/origine2/piliers';
 
 // La liste des leçons de l'Expérience Origine : trois piliers repliés, chacun
@@ -19,8 +17,7 @@ interface Props {
   courante: Lecon | null;
   terminees: Record<string, boolean>;
   verrouillee: (l: Lecon) => boolean;
-  /** Le visuel de la ligne : une image, sinon la première page du document, sinon la vignette composée. */
-  visuelDe: (l: Lecon) => { src?: string; doc?: DocLecon; c: Composition };
+  vignetteDe: (l: Lecon) => string | undefined;
   onOuvrir: (l: Lecon) => void;
   lang: 'FR' | 'EN';
 }
@@ -31,7 +28,7 @@ const Repli: React.FC<{ ouvert: boolean; children: React.ReactNode }> = ({ ouver
   </div>
 );
 
-const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouillee, visuelDe, onOuvrir, lang }) => {
+const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouillee, vignetteDe, onOuvrir, lang }) => {
   const fr = lang === 'FR';
   const { avant, parPilier, bibli } = useMemo(() => {
     const avant: Groupe[] = [];
@@ -71,7 +68,7 @@ const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouille
         const verrou = verrouillee(l);
         const active = courante?.id === l.id;
         const faite = !!terminees[l.id];
-        const v = verrou ? undefined : visuelDe(l);
+        const v = !verrou && vignetteDe(l);
         return (
           <li key={l.id}>
             <button type="button" onClick={() => onOuvrir(l)} disabled={verrou}
@@ -79,14 +76,7 @@ const ListeOrigine: React.FC<Props> = ({ lecons, courante, terminees, verrouille
                 active ? 'bg-[#BA7B39] text-[#1c2420]' : verrou ? 'cursor-not-allowed opacity-45' : sombre ? 'text-[#EEE7DB]/90 hover:bg-white/10' : 'text-[#1c2420]/85 hover:bg-[#1c2420]/6'
               }`}>
               {v ? (
-                <span className="relative h-10 w-10">
-                  {v.src ? <img src={v.src} alt="" className="h-10 w-10 rounded-[8px] object-cover" />
-                    : v.doc ? <PremierePage doc={v.doc} className="h-10 w-10 rounded-[8px]" />
-                    : <VignetteComposee c={v.c} taille="pastille" />}
-                  {faite && (
-                    <span aria-hidden className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#BA7B39] text-[8px] text-[#1c2420] ring-2 ring-[#f4efe6]"><i className="fa-solid fa-check" /></span>
-                  )}
-                </span>
+                <img src={v} alt="" className="h-10 w-10 rounded-[8px] object-cover" />
               ) : (
                 <span className={`flex h-10 w-10 items-center justify-center rounded-[8px] ${active ? 'bg-[#1c2420]/12' : sombre ? 'bg-white/10' : 'bg-[#1c2420]/8'}`}>
                   <i className={`fa-solid ${verrou ? 'fa-lock' : faite ? 'fa-circle-check' : ICONES[l.type] || 'fa-file'} text-[13px] ${faite && !active ? 'text-[#BA7B39]' : ''}`} />

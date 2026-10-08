@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T11:42:07.133Z",
+  "generatedAt": "2026-10-08T12:18:56.423Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1652,6 +1652,76 @@
       "folder": "origine2",
       "kind": "video",
       "size": 1247642
+    },
+    {
+      "path": "/origine2/lecons/ancrer.webp",
+      "name": "ancrer.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 207400
+    },
+    {
+      "path": "/origine2/lecons/cle-1.webp",
+      "name": "cle-1.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 203630
+    },
+    {
+      "path": "/origine2/lecons/documents.webp",
+      "name": "documents.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 48640
+    },
+    {
+      "path": "/origine2/lecons/integration.webp",
+      "name": "integration.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 142016
+    },
+    {
+      "path": "/origine2/lecons/lire.webp",
+      "name": "lire.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 260498
+    },
+    {
+      "path": "/origine2/lecons/meditations.webp",
+      "name": "meditations.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 120318
+    },
+    {
+      "path": "/origine2/lecons/musique.webp",
+      "name": "musique.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 150852
+    },
+    {
+      "path": "/origine2/lecons/questions.webp",
+      "name": "questions.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 133136
+    },
+    {
+      "path": "/origine2/lecons/reflexions.webp",
+      "name": "reflexions.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 54128
+    },
+    {
+      "path": "/origine2/lecons/trier.webp",
+      "name": "trier.webp",
+      "folder": "origine2/lecons",
+      "kind": "image",
+      "size": 215866
     },
     {
       "path": "/plan-automne/entete.jpg",
