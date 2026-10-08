@@ -7322,5 +7322,19 @@
       "public/i18n/en.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-08T14:37:36.005Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e722f38f",
+    "message": "Conférencière (/conferenciere, /speaking, /krystine) : le film de démonstration au premier écran, avec un vrai lecteur (lecture au clic, barre, durée, son), bouton « Voir Krystine sur scène » à côté de « Inviter Krystine »; l'ancienne boucle muette plus bas est retirée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
