@@ -7336,5 +7336,19 @@
       "public/assets-manifest.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-08T14:39:29.663Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e6c8d927",
+    "message": "Conférencière (/conferenciere, /speaking, /krystine) : plus aucun italique sur la page (titre, citations, liens), selon la règle du site",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
