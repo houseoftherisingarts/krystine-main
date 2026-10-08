@@ -1030,7 +1030,7 @@ export default function KrystineV2() {
         <div data-reveal className="max-w-[900px] mb-14">
           <Kicker className="mb-5">Chapitre 02 · La conférence</Kicker>
           <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,4.2vw,3.4rem)]">
-            Une conférence. Plusieurs portes de programmation.
+            Une conférence, plusieurs portes.
           </h2>
         </div>
 
