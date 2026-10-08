@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 import SplitType from 'split-type';
 import {
   ArrowUpRight, ArrowDown, CaretDown, Check, CircleNotch,
-  MapPin, Quotes,
+  MapPin, Quotes, Play, Pause, SpeakerHigh, SpeakerSlash, CornersOut,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
 import NewsletterSignup from '../../components/NewsletterSignup';
@@ -434,73 +434,141 @@ const FaqSection: React.FC = () => {
   );
 };
 
-/* ════════════════════════ Section · Le film ════════════════════════ */
+/* ════════════════════════ Hero · le film de démonstration ════════════════════════ */
 
-// Le film de conférence 2026 (Krystine, 26 septembre 2026), sur le modèle de
-// l'accueil : plein cadre, voile vert profond à gauche, texte par-dessus. La
-// boucle est la version sans les écrans de texte, pour que rien ne se superpose.
-const FilmSection: React.FC = () => {
-  const ref = useRef<HTMLVideoElement>(null);
-  const [son, setSon] = useState(false);
-  useEffect(() => {
-    const v = ref.current; if (!v) return;
-    v.src = window.innerWidth > 900 ? '/accueil/assets/film/conference-2026-1080.mp4' : '/accueil/assets/film/conference-2026-720.mp4';
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) v.play().catch(() => {}); else if (v.muted) v.pause();
-    }, { threshold: 0.2 });
-    io.observe(v);
-    return () => io.disconnect();
-  }, []);
-  const basculer = () => {
-    const v = ref.current; if (!v) return;
-    v.muted = !v.muted; setSon(!v.muted);
-    if (!v.muted) v.play().catch(() => {});
+// Demandé par Krystine le 8 octobre 2026 : le film de démonstration au premier
+// écran, avec un vrai lecteur (lecture au clic, barre, durée, son). Source : le
+// film promo 2024, version complète de 56 s avec son (v1). Rien ne démarre seul;
+// au téléphone, la lecture part au toucher. Il remplace l'ancienne boucle muette
+// plus bas sur la page (un seul motif central par page).
+const PROMO = 'https://storage.googleapis.com/inspirata/Base%20site/promo-2024/';
+const mmss = (t: number) => {
+  const s = Math.max(0, Math.round(t || 0));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+};
+export type FilmHeroRef = { jouer: () => void };
+
+const FilmHero = forwardRef<FilmHeroRef>((_, ref) => {
+  const v = useRef<HTMLVideoElement>(null);
+  const [src] = useState(() =>
+    PROMO + (typeof window !== 'undefined' && window.innerWidth > 900 ? 'promo-ksl-1080.mp4' : 'promo-ksl-720.mp4'),
+  );
+  const [lance, setLance] = useState(false);
+  const [joue, setJoue] = useState(false);
+  const [muet, setMuet] = useState(false);
+  const [t, setT] = useState(0);
+  const [duree, setDuree] = useState(56);
+
+  const jouer = () => {
+    const el = v.current; if (!el) return;
+    el.muted = false; setMuet(false);
+    setLance(true);
+    el.play().catch(() => {});
   };
+  useImperativeHandle(ref, () => ({ jouer }));
+  const basculer = () => {
+    const el = v.current; if (!el) return;
+    if (el.paused) jouer(); else el.pause();
+  };
+  const chercher = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = v.current; if (!el || !el.duration) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    el.currentTime = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * el.duration;
+  };
+  const pleinEcran = () => {
+    const el = v.current as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null;
+    if (!el) return;
+    if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+    else el.webkitEnterFullscreen?.();
+  };
+  const pct = duree ? (t / duree) * 100 : 0;
+
   return (
-    <section className="relative w-full overflow-hidden bg-[#1b2622] min-h-[clamp(34rem,82vh,52rem)] flex items-center">
-      <video
-        ref={ref}
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        poster="/accueil/assets/film/conference-2026-poster.jpg"
-        aria-label="Krystine St-Laurent en conférence"
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ filter: 'sepia(0.34) saturate(0.68) brightness(0.86) contrast(0.94)' }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{ background: 'radial-gradient(120% 90% at 70% 45%, rgba(186,123,57,.16) 0%, rgba(27,20,12,0) 55%, rgba(20,15,10,.55) 100%), linear-gradient(90deg, rgba(27,38,34,.94) 0%, rgba(27,38,34,.78) 38%, rgba(27,38,34,.28) 72%, rgba(27,38,34,.12) 100%)' }}
-      />
-      <div data-reveal className="relative z-10 w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,6rem)]">
-        <div className="max-w-[34rem]">
-          <p className="text-[0.66rem] uppercase tracking-[0.3em] text-[#d9a05b]">Krystine sur scène</p>
-          <h2 className="mt-5 v2-serif font-light leading-[1.06] text-[#EEE7DB] text-[clamp(2.2rem,4.4vw,3.6rem)]">
-            Plus de réponses. Moins de confiance ?
-          </h2>
-          <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
-            <a
-              href="#reserver"
-              className="inline-flex items-center gap-2.5 bg-[#BA7B39] px-7 py-3.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712] transition-colors hover:bg-[#d9a05b]"
+    <figure id="film" className="relative w-full scroll-mt-28">
+      <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
+      <div data-portrait-clip className="relative w-full aspect-video overflow-hidden bg-[#1c1712]" style={{ clipPath: 'inset(0% 0% 0% 0%)' }}>
+        <video
+          ref={v}
+          src={src}
+          poster={PROMO + 'promo-ksl-poster-1920.webp'}
+          playsInline
+          preload="metadata"
+          aria-label="Voir Krystine sur scène, film de démonstration"
+          className="absolute inset-0 h-full w-full object-cover"
+          onClick={basculer}
+          onLoadedMetadata={(e) => setDuree(e.currentTarget.duration || 56)}
+          onTimeUpdate={(e) => setT(e.currentTarget.currentTime)}
+          onPlay={() => { setJoue(true); setLance(true); }}
+          onPause={() => setJoue(false)}
+          onEnded={() => setJoue(false)}
+          onVolumeChange={(e) => setMuet(e.currentTarget.muted)}
+        />
+
+        {!lance && (
+          <button
+            type="button"
+            onClick={jouer}
+            className="group absolute inset-0 flex items-end justify-end p-[clamp(1rem,2.2vw,1.5rem)] text-left max-sm:p-3"
+            aria-label="Voir Krystine sur scène, lire le film avec le son"
+          >
+            <span className="inline-flex items-center gap-3.5 bg-[#1c1712] px-5 py-3.5 text-[#f4efe6] transition-colors duration-300 group-hover:bg-[#3a2f23] max-sm:gap-2.5 max-sm:px-2.5 max-sm:py-2.5">
+              <span className="flex h-9 w-9 items-center justify-center border border-[#f4efe6]/50">
+                <Play size={16} weight="fill" />
+              </span>
+              <span className="flex flex-col max-sm:hidden">
+                <span className="text-[0.72rem] uppercase tracking-[0.2em]">Voir Krystine sur scène</span>
+                <span className="mt-1 text-[0.66rem] uppercase tracking-[0.18em] text-[#f4efe6]/70">Film &middot; {mmss(duree)} &middot; avec le son</span>
+              </span>
+            </span>
+          </button>
+        )}
+
+        {lance && (
+          <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-[#1c1712]/80 px-3 py-2 text-[#f4efe6] max-sm:gap-2 max-sm:px-1.5 max-sm:py-0.5">
+            <button type="button" onClick={basculer} aria-label={joue ? 'Pause' : 'Lecture'} className="flex h-9 w-9 items-center justify-center hover:text-[#d9a05b]">
+              {joue ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" />}
+            </button>
+            <div
+              role="slider"
+              aria-label="Progression du film"
+              aria-valuemin={0}
+              aria-valuemax={Math.round(duree)}
+              aria-valuenow={Math.round(t)}
+              tabIndex={0}
+              onClick={chercher}
+              onKeyDown={(e) => {
+                const el = v.current; if (!el) return;
+                if (e.key === 'ArrowRight') el.currentTime = Math.min(el.duration, el.currentTime + 5);
+                if (e.key === 'ArrowLeft') el.currentTime = Math.max(0, el.currentTime - 5);
+              }}
+              className="relative h-6 flex-1 cursor-pointer"
             >
-              Inviter Krystine <ArrowUpRight size={14} weight="regular" />
-            </a>
+              <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-[#f4efe6]/30" />
+              <span className="absolute left-0 top-1/2 h-[3px] -translate-y-1/2 bg-[#d9a05b]" style={{ width: `${pct}%` }} />
+            </div>
+            <span className="min-w-[5.6rem] text-right text-[0.72rem] tabular-nums tracking-[0.06em]">{mmss(t)} / {mmss(duree)}</span>
             <button
               type="button"
-              onClick={basculer}
-              aria-pressed={son}
-              className="inline-flex items-center gap-2.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#EEE7DB] border-b border-[#EEE7DB]/60 pb-1 hover:border-[#d9a05b] hover:text-[#d9a05b]"
+              onClick={() => { const el = v.current; if (el) el.muted = !el.muted; }}
+              aria-label={muet ? 'Remettre le son' : 'Couper le son'}
+              className="flex h-9 w-9 items-center justify-center hover:text-[#d9a05b]"
             >
-              {son ? 'Couper le son' : 'Voir le film, avec le son'}
+              {muet ? <SpeakerSlash size={18} /> : <SpeakerHigh size={18} />}
+            </button>
+            <button type="button" onClick={pleinEcran} aria-label="Plein écran" className="flex h-9 w-9 items-center justify-center hover:text-[#d9a05b] max-sm:hidden">
+              <CornersOut size={18} />
             </button>
           </div>
-        </div>
+        )}
       </div>
-    </section>
+      <figcaption className="sm:hidden mt-4 flex items-center justify-between gap-4 whitespace-nowrap text-[0.66rem] uppercase tracking-[0.22em] text-[#1c1712]/60 max-sm:tracking-[0.14em]">
+        <span className="text-[#1c1712]/80">Voir Krystine sur scène</span>
+        <span className="tabular-nums">{mmss(duree)}</span>
+      </figcaption>
+    </figure>
   );
-};
+});
+FilmHero.displayName = 'FilmHero';
 
 /* ════════════════════════ Bande · Médias et kit de presse ════════════════════════ */
 
@@ -656,6 +724,7 @@ const EventsSection: React.FC = () => {
 
 export default function KrystineV2() {
   const root = useRef<HTMLDivElement>(null);
+  const film = useRef<FilmHeroRef>(null);
 
   useEffect(() => {
     const reduce =
@@ -707,12 +776,6 @@ export default function KrystineV2() {
         ease: power3,
         delay: 0.35,
       });
-      gsap.from('[data-portrait-img]', {
-        scale: 1.14,
-        duration: 1.9,
-        ease: power3,
-        delay: 0.35,
-      });
 
       // ── HERO cover-lines + meta + CTA : fade-up échelonné ──
       gsap.from('[data-fade]', {
@@ -722,18 +785,6 @@ export default function KrystineV2() {
         ease: power3,
         stagger: 0.09,
         delay: 0.7,
-      });
-
-      // ── Parallaxe douce du portrait au scroll (transform only) ──
-      gsap.to('[data-portrait-img]', {
-        yPercent: 8,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '[data-hero]',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
       });
 
       // ── PREMIER TEMPS DE SCROLL : statement révélé ligne par ligne ──
@@ -854,36 +905,13 @@ export default function KrystineV2() {
             </h1>
           </div>
 
-          {/* PORTRAIT */}
-          <div className="order-2 lg:row-start-1 lg:row-span-2 lg:col-start-2 self-stretch relative flex">
-            <div className="relative w-full self-center">
-              {/* filet brass d'encadrement */}
-              <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-              <div
-                data-portrait-clip
-                className="relative w-full aspect-[5/6] overflow-hidden"
-                style={{ clipPath: 'inset(0% 0% 0% 0%)' }}
-              >
-                <img
-                  data-portrait-img
-                  src="/conferences/krystine-scene-haut.webp"
-                  alt="Krystine St-Laurent sur scène, en conférence"
-                  className="h-full w-full object-cover object-[40%_30%] will-change-transform"
-                />
-                {/* voile très léger bas pour asseoir la légende */}
-                <div
-                  className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none"
-                  style={{ background: 'linear-gradient(to top, rgba(28,23,18,0.45), transparent)' }}
-                  aria-hidden
-                />
-                {/* légende couverture */}
-                <p
-                  data-fade
-                  className="absolute bottom-4 left-4 right-4 v2-serif text-[#f4efe6] text-sm tracking-wide max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:rounded-[15px] max-md:border max-md:border-[#f6f3ee]/15 max-md:bg-[#161f1a]/60 max-md:px-3.5 max-md:py-2.5 max-md:backdrop-blur-md"
-                >
-                  « Qu’est-ce qui nourrit et soutient réellement la vie ? »
-                </p>
-              </div>
+          {/* FILM DE DÉMONSTRATION (remplace le portrait, 8 octobre 2026) */}
+          <div className="order-2 lg:row-start-1 lg:row-span-2 lg:col-start-2 relative self-start lg:pt-[3.1rem]">
+            <div className="relative w-full">
+              <FilmHero ref={film} />
+              <p data-fade className="mt-[clamp(2rem,6vh,3.5rem)] max-w-[24ch] v2-serif font-light text-[clamp(1.35rem,2.2vw,1.9rem)] leading-[1.25] text-[#1c1712] max-sm:mt-8">
+                « Qu’est-ce qui nourrit et soutient réellement la vie&nbsp;? »
+              </p>
             </div>
           </div>
 
@@ -928,6 +956,17 @@ export default function KrystineV2() {
                 Inviter Krystine
                 <ArrowUpRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
+              <button
+                type="button"
+                onClick={() => {
+                  document.getElementById('film')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  film.current?.jouer();
+                }}
+                className="group inline-flex items-center gap-2.5 bg-[#1c1712] px-5 py-3 text-[0.72rem] uppercase tracking-[0.2em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#3a2f23]"
+              >
+                <Play size={13} weight="fill" />
+                Voir Krystine sur scène
+              </button>
               <a
                 href="#conferences"
                 className="v2-serif italic text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
@@ -952,8 +991,6 @@ export default function KrystineV2() {
           </span>
         </div>
       </section>
-
-      <FilmSection />
 
       {/* ─────────── PREMIER TEMPS DE SCROLL · son histoire ─────────── */}
       <section
