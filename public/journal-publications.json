@@ -7693,5 +7693,24 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T21:34:27.795Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8a52deb6",
+    "message": "Corrections du parcours complet : bouton « Un commentaire ? » réduit à une pastille « ? » au téléphone (il cachait du texte), logo du haut ramène à l'accueil au lieu de rejouer l'intro, quiz au téléphone (la bande Vata · Pitta · Kapha ne coupe plus la vidéo), lien presse de /conferenciere mène au formulaire, politique de confidentialité au style magazine crème",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "_shot-tmp 2.mjs",
+      "components/pages/PrivacyPolicy.tsx",
+      "public/assets-manifest.json",
+      "src/components/layout/AidePepin.tsx",
+      "src/components/layout/NavBar.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
