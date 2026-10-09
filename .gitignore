@@ -69,3 +69,6 @@ brag-output*/
 
 # Cache des routes de la vérification du matin (régénéré à chaque passage)
 scripts/qa/verif-routes.json
+
+# Copies de sauvegarde : elles vivent dans ~/.iris/sauvegardes, jamais dans le dépôt ni en ligne
+*.bak*
