@@ -92,7 +92,7 @@ const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
       {PREUVES.map(({ nom, logo, note, grand }) => (
         <li key={nom} className="flex shrink-0 items-center gap-3">
           {logo
-            ? <img src={logo} alt={nom} width={LOGO_DIMS[logo]?.[0]} height={LOGO_DIMS[logo]?.[1]} className={grand ? 'h-[clamp(44px,4.6vw,64px)] w-auto shrink-0' : 'h-[clamp(24px,2.6vw,36px)] w-auto shrink-0'} />
+            ? <img src={logo} alt={nom} width={Math.round((grand ? 56 : 32) * (LOGO_DIMS[logo]?.[0] ?? 4) / (LOGO_DIMS[logo]?.[1] ?? 1))} height={grand ? 56 : 32} style={{ width: Math.round((grand ? 56 : 32) * (LOGO_DIMS[logo]?.[0] ?? 4) / (LOGO_DIMS[logo]?.[1] ?? 1)), height: grand ? 56 : 32, maxWidth: 'none', flex: '0 0 auto' }} />
             : <span className="v2-serif text-[clamp(1.25rem,2.1vw,1.75rem)] font-medium leading-none text-[#1c1712]">{nom}</span>}
           {note && <span className="text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-[#4a3d2e]">{note}</span>}
         </li>
