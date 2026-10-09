@@ -7386,5 +7386,19 @@
       "src/pages/concepts/KrystineV2.tsx",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T12:30:23.562Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bd023b7a",
+    "message": "Médias (/medias) : sous la vidéo de Bien, la carte des Rituels essentiels (27 $) remplace le coffret des trois saisons, pas encore disponible",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
