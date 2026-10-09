@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 import SplitType from 'split-type';
 import { motion } from 'framer-motion';
 import {
-  ArrowUpRight, ArrowDown, ArrowRight, Microphone, BookOpen, Television,
+  ArrowUpRight, ArrowDown, ArrowRight, Microphone, BookOpen,
   Coins, Lock, Star,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
@@ -512,37 +512,31 @@ export default function MediasV2() {
             )}
           </div>
 
-          {/* Coffret des 3 saisons · bientôt, 30 $ ou 250 niskas */}
+          {/* Rituels essentiels · à la place du coffret, pas encore disponible (Krystine, 9 oct. 2026) */}
           <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">
-            <span className="inline-grid place-items-center w-12 h-12 rounded-full bg-[#9c7a44] text-[#faf6ee] mb-7">
-              <Television size={22} weight="light" />
-            </span>
+            <a href="/rituels-essentiels" className="block overflow-hidden border border-[#9c7a44]/35 mb-7" aria-label="Rituels essentiels inspirés de l'Ayurveda">
+              <img src="/rituels-essentiels/carte-fondu.webp" alt="Rituels essentiels inspirés de l'Ayurveda : gestes simples à l'huile" loading="lazy" className="aspect-[16/10] w-full object-cover" />
+            </a>
             <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">
-              {lang === 'FR' ? 'Bientôt disponible' : 'Coming soon'}
+              {lang === 'FR' ? 'Commencer, dès ce soir' : 'Start tonight'}
             </span>
             <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">
-              {lang === 'FR' ? 'Le coffret des trois saisons' : 'The three-season box set'}
+              {lang === 'FR' ? 'Rituels essentiels inspirés de l’Ayurveda' : 'Essential rituals inspired by Ayurveda'}
             </h3>
             <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
               {lang === 'FR'
-                ? 'L’intégrale de Santé la vie, le coffret des trois saisons en un seul accès. Elle sera offerte dans votre espace dès sa sortie.'
-                : 'The complete Santé la vie, all three seasons together in a single access. It will be offered in your space once it launches.'}
+                ? 'Des pratiques courtes qui redonnent ancrage et direction : l’automassage, les soins du nez et de la bouche, les soins des mains et des pieds.'
+                : 'Short practices that bring back grounding and direction: self-massage, care for the nose and mouth, care for the hands and feet.'}
             </p>
             <div className="mt-8 pt-6 border-t border-[#1c1712]/12 flex items-end justify-between gap-4">
-              <div>
-                <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">30&nbsp;$</span>
-                {jeu && <span className="block mt-1.5 text-[0.68rem] uppercase tracking-[0.16em] text-[#1c1712]/45">
-                  {lang === 'FR' ? 'ou 250 niskas' : 'or 250 niskas'}
-                </span>}
-              </div>
-              <button
-                type="button"
-                disabled
-                aria-disabled="true"
-                className="inline-flex items-center gap-2.5 bg-[#1c1712]/15 px-7 py-3.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712]/45 cursor-not-allowed"
+              <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">27&nbsp;$</span>
+              <a
+                href="/rituels-essentiels"
+                className="inline-flex items-center gap-2.5 bg-[#1c1712] px-7 py-3.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#3a2f23]"
               >
-                {lang === 'FR' ? 'Bientôt disponible' : 'Coming soon'}
-              </button>
+                {lang === 'FR' ? 'Commencer ce soir' : 'Start tonight'}
+                <ArrowRight size={14} weight="regular" />
+              </a>
             </div>
           </div>
         </div>
