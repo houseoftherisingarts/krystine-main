@@ -211,6 +211,14 @@ export const acheterAvecNiskas = onCall(
       ? (await db.collection(`formations/${SANTE_LA_VIE_ID}/lecons`).where('moduleNom', '==', SAISONS[saison]).get()).docs.map((d) => d.id)
       : [];
     if (saison && episodesSaison.length === 0) throw new HttpsError('not-found', 'Cette saison est vide.');
+    // Toute l'émission déjà possédée (achat sans liste d'épisodes) : rien à
+    // vendre, et surtout ne jamais la restreindre à un épisode ou à une saison.
+    if (leconId || saison) {
+      const achat = await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).get();
+      if (achat.exists && !(achat.data() as { episodes?: unknown }).episodes) {
+        throw new HttpsError('already-exists', 'Toute l\'émission est déjà à vous.');
+      }
+    }
 
     await db.runTransaction(async (tx) => {
       if ((await tx.get(evt)).exists) throw new HttpsError('already-exists', 'Cet article est déjà à vous.');
@@ -339,7 +347,10 @@ async function offrirMusique(db: Firestore, uid: string, source: string): Promis
 /** Offre la première saison de l'émission que la membre n'a pas encore, ou null si elle les a toutes.
  *  Cadeau entièrement numérique : les épisodes s'ouvrent dans son espace, rien ne part par la poste. */
 async function offrirSaison(db: Firestore, uid: string, source: string): Promise<{ saison: string; nom: string } | null> {
-  const deja = ((await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).get()).data() as { episodes?: Record<string, unknown> } | undefined)?.episodes || {};
+  const achat = await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).get();
+  // Toute l'émission déjà possédée : aucune saison à offrir (et jamais de restriction).
+  if (achat.exists && !(achat.data() as { episodes?: unknown }).episodes) return null;
+  const deja = (achat.data() as { episodes?: Record<string, unknown> } | undefined)?.episodes || {};
   for (const saison of Object.keys(SAISONS)) {
     const lecons = await db.collection(`formations/${SANTE_LA_VIE_ID}/lecons`).where('moduleNom', '==', SAISONS[saison]).get();
     const ids = lecons.docs.map((d) => d.id);

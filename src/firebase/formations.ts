@@ -147,6 +147,15 @@ export async function etatAchat(uid: string, formationId: string): Promise<'aucu
   return (snap.data() as { suspendu?: boolean }).suspendu ? 'suspendu' : 'actif';
 }
 
+/** Un achat partiel (Santé la vie à l'épisode ou à la saison) porte la liste
+ *  des épisodes possédés; obtenirLecon refuse les autres. Null : aucun achat,
+ *  ou un achat complet sans liste (tout est ouvert). */
+export async function episodesPossedes(uid: string, formationId: string): Promise<Set<string> | null> {
+  const snap = await getDoc(doc(db(), 'achatsFormations', uid, 'formations', formationId));
+  const episodes = snap.exists() ? (snap.data() as { episodes?: Record<string, unknown> }).episodes : undefined;
+  return episodes ? new Set(Object.keys(episodes)) : null;
+}
+
 /** La date d'achat et la provenance d'un achat, pour le goutte-à-goutte de Vata. */
 export async function infosAchat(uid: string, formationId: string): Promise<{ source?: string; acheteLe?: Date } | null> {
   const snap = await getDoc(doc(db(), 'achatsFormations', uid, 'formations', formationId));

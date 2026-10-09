@@ -321,6 +321,10 @@ export const creerSessionSaison = onCall(
     if (!req.auth) throw new HttpsError('unauthenticated', 'Connectez-vous pour acheter.');
     const saison = String(req.data?.saison || '');
     if (!SAISONS[saison]) throw new HttpsError('invalid-argument', 'Cette saison est introuvable.');
+    const achat = await getFirestore().doc(`achatsFormations/${req.auth.uid}/formations/${SANTE_LA_VIE_ID}`).get();
+    if (achat.exists && !(achat.data() as { episodes?: unknown }).episodes) {
+      throw new HttpsError('already-exists', 'Toute l\'émission est déjà à vous.');
+    }
 
     const body = new URLSearchParams({
       mode: 'payment',
@@ -673,7 +677,12 @@ export const stripeWebhook = onRequest(
       const db = getFirestore();
       const saison = String(session.metadata?.saison || '');
       const moduleNom = SAISONS[saison];
-      if (moduleNom) {
+      // Qui possède déjà toute l'émission (achat sans liste d'épisodes) ne doit
+      // jamais se retrouver restreint à une saison.
+      const dejaComplet = await db.doc(`achatsFormations/${uid}/formations/${SANTE_LA_VIE_ID}`).get()
+        .then((d) => d.exists && !(d.data() as { episodes?: unknown }).episodes);
+      if (dejaComplet) console.warn(`[paiements] saison ${saison} payée par ${uid}, qui possède déjà toute l'émission`);
+      if (moduleNom && !dejaComplet) {
         const lecons = await db.collection(`formations/${SANTE_LA_VIE_ID}/lecons`).where('moduleNom', '==', moduleNom).get();
         const episodes: Record<string, FieldValue> = {};
         for (const d of lecons.docs) episodes[d.id] = FieldValue.serverTimestamp();
@@ -754,6 +763,10 @@ export const stripeWebhook = onRequest(
     }
     await refAchat.set({
       ...champsVersements,
+      // Santé la vie achetée en entier : la liste des épisodes déjà possédés
+      // (un épisode ou une saison, en niskas ou en argent) disparaît, sinon
+      // obtenirLecon continuerait de refuser tous les autres (9 oct. 2026).
+      ...(formationId === SANTE_LA_VIE_ID ? { episodes: FieldValue.delete() } : {}),
       titre: f.titre || formationId,
       imageUrl: f.imageUrl || '',
       montant: (session.amount_total || 0) / 100,

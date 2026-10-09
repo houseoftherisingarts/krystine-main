@@ -8,11 +8,12 @@ import { FORMATION_VATA, SEMAINES_VATA, rangDeModule as rangModuleVata, semaines
 import { urlDeDocumentLecon, poserQuestion, suivreQuestions, repondreQuestion, type QuestionLecon } from '../firebase/formations';
 import { Navigate, useParams, Link, useNavigate } from 'react-router-dom';
 import {
-  getFormation, getLecons, getProgression, marquerLecon, etatAchat, infosAchat,
+  getFormation, getLecons, getProgression, marquerLecon, etatAchat, infosAchat, episodesPossedes,
   urlDeLecon, marquerFormationTerminee,
   type Formation, type Lecon,
 } from '../firebase/formations';
 import { useAuth, useUI } from '../contexts/AppContext';
+import { SANTE_LA_VIE_ID } from '../lib/pointsConfig';
 import CadreFoyer from '../components/communaute/CadreFoyer';
 import { getMember } from '../firebase/firestore';
 import { restaurerKajabiAuto } from '../firebase/kajabi';
@@ -95,6 +96,9 @@ const CoursDetailPage: React.FC = () => {
     `${(s as { etiquette?: { fr: string; en: string } }).etiquette ? etiquetteSemaine(s as never, lang === 'FR') : s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
   const CHAPITRES = programme?.chapitres ?? [];
   const [achete, setAchete] = useState(false);
+  // Santé la vie achetée à l'épisode ou à la saison : seuls ces épisodes s'ouvrent
+  // (même règle que obtenirLecon). Null : achat complet, ou aucun achat.
+  const [episodesAchetes, setEpisodesAchetes] = useState<Set<string> | null>(null);
   // Un achat en versements dont un prélèvement a échoué : le cours se ferme
   // et un message remplace les leçons jusqu'au paiement.
   const [suspendu, setSuspendu] = useState(false);
@@ -178,8 +182,9 @@ const CoursDetailPage: React.FC = () => {
   const [relecture, setRelecture] = useState(0);
   useEffect(() => { if (user) restaurerKajabiAuto(user.uid).then(r => { if (r.restaurees) setRelecture(x => x + 1); }); }, [user]);
   useEffect(() => {
-    if (!user || !id) { setAchete(false); setSuspendu(false); setAccesVie(false); setVerifAcces(false); return; }
+    if (!user || !id) { setAchete(false); setSuspendu(false); setAccesVie(false); setVerifAcces(false); setEpisodesAchetes(null); return; }
     setVerifAcces(true);
+    episodesPossedes(user.uid, id).then(setEpisodesAchetes).catch(() => setEpisodesAchetes(null));
     etatAchat(user.uid, id)
       .then(e => { setAchete(e === 'actif'); setSuspendu(e === 'suspendu'); })
       .catch(() => {}).finally(() => setVerifAcces(false));
@@ -230,8 +235,11 @@ const CoursDetailPage: React.FC = () => {
   const departVata = jourSimule != null ? new Date(maintenantRef - jourSimule * 86400000) : achatVata?.acheteLe;
   // L'admin voit tout, sauf lorsqu'elle simule une acheteuse.
   const toutVoir = isAdmin && jourSimule == null;
+  const nonAchete = (l: Lecon) => !!episodesAchetes && !episodesAchetes.has(l.id);
   const verrouillee = (l: Lecon) => !toutVoir && ((id === 'foyer' && !ouvert) || rangDe(l.mois) > porteOuverteRang
-    || rangModuleVata(l.moduleNom) > semainesVata);
+    || rangModuleVata(l.moduleNom) > semainesVata || nonAchete(l));
+  /** Santé la vie : « Module 2 » se lit « Saison 2 » (le nom technique sert à la vente à la saison). */
+  const nomModule = (nom?: string) => (id === SANTE_LA_VIE_ID && nom ? nom.replace(/^Module (\d+)$/, lang === 'FR' ? 'Saison $1' : 'Season $1') : nom);
   /** La date d'ouverture d'une semaine de Vata (« 12 octobre »), si elle est connue. */
   const ouvertureSemaine = (rang: number): string | undefined => {
     if (id !== FORMATION_VATA || !departVata || semainesVata === Infinity || rang < 2) return undefined;
@@ -936,7 +944,7 @@ const CoursDetailPage: React.FC = () => {
                               <span className="block text-[9px] opacity-70">{(sem as { etiquette?: unknown }).etiquette ? etiquetteSemaine(sem as never, lang === 'FR') : sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
                               <span className="block leading-snug">{lang === 'FR' ? sem.sens.fr : sem.sens.en}</span>
                             </span>
-                          ) : <span className="min-w-0 truncate">{g.nom}</span>}
+                          ) : <span className="min-w-0 truncate">{nomModule(g.nom)}</span>}
                         </span>
                         <span className="flex shrink-0 items-center gap-2 text-[#38403a]/50 dark:text-white/50">
                           <span className="normal-case tracking-normal">{faites}/{g.items.length}</span>
@@ -961,7 +969,7 @@ const CoursDetailPage: React.FC = () => {
                         key={l.id}
                         onClick={() => ouvrir(l)}
                         disabled={verrou}
-                        title={verrou ? (l.mois ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : ouvertureSemaine(rangModuleVata(l.moduleNom)) ? (lang === 'FR' ? `S'ouvre le ${ouvertureSemaine(rangModuleVata(l.moduleNom))}` : `Opens on ${ouvertureSemaine(rangModuleVata(l.moduleNom))}`) : (lang === 'FR' ? 'Cette semaine s\'ouvrira bientôt' : 'This week opens soon')) : undefined}
+                        title={verrou ? (nonAchete(l) ? (lang === 'FR' ? 'Cet épisode ne vous appartient pas encore' : 'This episode is not yours yet') : l.mois ? (lang === 'FR' ? `S'ouvre avec la porte de ${l.mois}` : `Opens with the ${l.mois} door`) : ouvertureSemaine(rangModuleVata(l.moduleNom)) ? (lang === 'FR' ? `S'ouvre le ${ouvertureSemaine(rangModuleVata(l.moduleNom))}` : `Opens on ${ouvertureSemaine(rangModuleVata(l.moduleNom))}`) : (lang === 'FR' ? 'Cette semaine s\'ouvrira bientôt' : 'This week opens soon')) : undefined}
                         className={`flex w-full items-center gap-3 rounded-[14px] px-3 py-2.5 text-left text-sm transition-colors ${
                           courante?.id === l.id
                             ? (sem ? 'text-[#F7F3EA]' : 'bg-[#BA7B39] text-[#293027]')
@@ -1082,7 +1090,7 @@ const CoursDetailPage: React.FC = () => {
                                 pochette={vignetteAudio(courante, id === FORMATION_VATA ? undefined : formation || undefined) || chapitreDeModule(courante.moduleNom)?.vignette}
                                 soustitre={(() => {
                                   const s = chapitreDeModule(courante.moduleNom);
-                                  return s ? libelleSemaine(s) : courante.moduleNom;
+                                  return s ? libelleSemaine(s) : nomModule(courante.moduleNom);
                                 })()}
                                 lang={lang}
                                 onFin={() => { if (!terminees[courante.id]) void basculerTerminee(courante); }}

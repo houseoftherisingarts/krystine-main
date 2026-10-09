@@ -723,6 +723,12 @@ const EventsSection: React.FC = () => {
 /* ════════════════════════ Page ════════════════════════ */
 
 export default function KrystineV2() {
+  // Arrivée par /conferenciere#reserver (bouton « Inviter Krystine » de /medias) : descendre au formulaire.
+  useEffect(() => {
+    if (window.location.hash !== '#reserver') return;
+    const t = window.setTimeout(() => document.getElementById('reserver')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+    return () => window.clearTimeout(t);
+  }, []);
   const root = useRef<HTMLDivElement>(null);
   const film = useRef<FilmHeroRef>(null);
 

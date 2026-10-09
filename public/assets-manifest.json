@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T13:21:57.011Z",
+  "generatedAt": "2026-10-09T16:18:22.766Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1731,6 +1731,41 @@
       "size": 52629991
     },
     {
+      "path": "/medias/sante-la-vie-montage.jpg",
+      "name": "sante-la-vie-montage.jpg",
+      "folder": "medias",
+      "kind": "image",
+      "size": 119319
+    },
+    {
+      "path": "/medias/sante-la-vie-montage.mp4",
+      "name": "sante-la-vie-montage.mp4",
+      "folder": "medias",
+      "kind": "video",
+      "size": 13086665
+    },
+    {
+      "path": "/medias/sujets/porte-1.webp",
+      "name": "porte-1.webp",
+      "folder": "medias/sujets",
+      "kind": "image",
+      "size": 46414
+    },
+    {
+      "path": "/medias/sujets/porte-2.webp",
+      "name": "porte-2.webp",
+      "folder": "medias/sujets",
+      "kind": "image",
+      "size": 122568
+    },
+    {
+      "path": "/medias/sujets/porte-3.webp",
+      "name": "porte-3.webp",
+      "folder": "medias/sujets",
+      "kind": "image",
+      "size": 147350
+    },
+    {
       "path": "/origine/logo-origine.webp",
       "name": "logo-origine.webp",
       "folder": "origine",
@@ -2456,7 +2491,7 @@
       "name": "sante-la-vie.jpg",
       "folder": "racine",
       "kind": "image",
-      "size": 973546
+      "size": 265996
     },
     {
       "path": "/vexel-logo.png",
