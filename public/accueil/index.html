@@ -961,7 +961,8 @@
 .saison-btn:hover svg{transform:translateX(4px)}
 .saison-fine{margin-top:1rem;font-size:.82rem;letter-spacing:.06em;color:var(--ink-soft)}
 .saison-cadre{margin:0;position:relative;border:1px solid #9c7a44;padding:.6rem;background:#f4efe6;box-shadow:0 30px 70px rgba(28,23,18,.12)}
-.saison-ph{aspect-ratio:4/3;overflow:hidden;background:#d9c7a8}
+.saison-ph{aspect-ratio:16/9;overflow:hidden;background:#0b0b0a}
+.saison-lien{display:inline-block;margin-top:1.1rem;margin-left:.2rem;font-family:var(--sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:.2rem}
 .saison-ph video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.95)}
 .saison-etiq{position:absolute;left:1.4rem;bottom:1.4rem;background:var(--ink);color:#f4efe6;font-family:var(--sans);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:.5rem .8rem}
 
@@ -1334,14 +1335,15 @@
         <div class="saison-filet" aria-hidden="true"></div>
         <p class="saison-p">L'air devient sec, le vent se lève et tout s'accélère. Vata (Vent et Espace) prend de la place : la peau tiraille, le sommeil devient plus léger, le mental court.</p>
         <p class="saison-p">Pour traverser ces mois-là, le corps demande de la chaleur, de l'huile et des gestes répétés chaque jour.</p>
-        <a class="saison-btn" href="/boutique">Les essentiels de la saison <svg viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+        <a class="saison-btn" href="/quiz">De quoi ai-je besoin en ce moment ? · Le quiz <svg viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+        <a class="saison-lien" href="/boutique">Les essentiels de la saison</a>
         <p class="saison-fine">Du 22 septembre au 31 janvier</p>
       </div>
       <figure class="saison-cadre reveal d2">
         <div class="saison-ph">
-          <img src="/accueil/assets/saison-huile.webp" alt="Une huile corporelle INSPIRATA AYURVEDA versée dans la paume" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block" />
+          <a href="/quiz" aria-label="Faire le quiz : de quoi ai-je besoin en ce moment ?" style="display:block;width:100%;height:100%"><video id="saisonVid" muted loop playsinline preload="none" poster="/quiz/quiz-dosha-revisee-poster.jpg" aria-hidden="true"><source src="/quiz/quiz-dosha-revisee.mp4" type="video/mp4" /></video></a>
         </div>
-        <figcaption class="saison-etiq">La chaleur de l’huile, chaque jour</figcaption>
+        <figcaption class="saison-etiq">Le quiz · 3 minutes</figcaption>
       </figure>
     </div>
   </section>

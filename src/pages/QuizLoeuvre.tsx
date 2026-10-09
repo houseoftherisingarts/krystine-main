@@ -1253,23 +1253,23 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 const INSIDE = [
   {
     n: '01',
-    titleFR: 'Dix lectures de votre nature',
-    titleEN: 'Ten readings of your nature',
-    bodyFR: "Constitution, sommeil, digestion, stress, énergie, changement, mental, émotions, épuisement et tempérament : dix dimensions du corps et de l'instant, une question à la fois.",
+    titleFR: 'Vous répondez à dix questions',
+    titleEN: 'You answer ten questions',
+    bodyFR: "Le sommeil, la digestion, le stress, l'énergie, le mental, les émotions… Une question à la fois. Suivez votre premier réflexe.",
     bodyEN: 'Build, sleep, digestion, stress, energy, change, mind, emotions, exhaustion and temperament: ten dimensions of body and moment, one question at a time.',
   },
   {
     n: '02',
-    titleFR: 'Votre dominance, en pourcentages',
-    titleEN: 'Your dominance, in percentages',
-    bodyFR: 'Vata (Vent et Espace), Pitta (Feu et Eau) ou Kapha (Eau et Terre) : votre répartition unique du moment, calculée à partir de vos réponses, sans jugement et sans bonne ou mauvaise réponse.',
+    titleFR: 'Vous voyez ce qui domine en ce moment',
+    titleEN: 'You see what dominates right now',
+    bodyFR: 'Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre), en pourcentages, tout de suite à l’écran. Il n’y a ni bonne ni mauvaise réponse.',
     bodyEN: 'Vata (Wind and Space), Pitta (Fire and Water) or Kapha (Water and Earth): your unique balance of the moment, drawn from your answers, with no judgment and no right or wrong answer.',
   },
   {
     n: '03',
-    titleFR: 'Votre résultat, puis la suite',
-    titleEN: 'Your result, then what follows',
-    bodyFR: "Votre résultat complet arrive par courriel. Si vous le souhaitez, la suite de votre lecture suit : des lettres pour reconnaître comment votre dominance se manifeste, ce qui l'accentue et comment elle évolue.",
+    titleFR: 'Vous recevez votre lecture par courriel',
+    titleEN: 'You receive your reading by email',
+    bodyFR: "Votre résultat complet, puis, si vous le souhaitez, quelques lettres pour reconnaître comment cette dominance se manifeste, ce qui l'accentue et comment elle évolue.",
     bodyEN: "Your full result arrives by email. If you wish, the rest of your reading follows: letters to recognize how your dominance shows up, what amplifies it and how it evolves.",
   },
 ];
@@ -1380,6 +1380,16 @@ const QuizLoeuvre: React.FC = () => {
                   ? 'Par Krystine St-Laurent, autrice de Nature & Ayurveda et de Féminité & Ayurveda (Éditions de l’Homme)'
                   : 'By Krystine St-Laurent, author of Nature & Ayurveda and Féminité & Ayurveda (Éditions de l’Homme)'}
               </p>
+              {/* Ce qu'est l'Ayurveda, dans les mots du livre (Krystine, 9 oct. 2026) :
+                  Nature & Ayurveda, Éditions de l'Homme, 2018, p. 41. Citation exacte, jamais paraphrasée. */}
+              {lang === 'FR' && (
+                <figure className="mt-7 max-w-[54ch] border-l-2 border-[#9c7a44] pl-5">
+                  <blockquote className="v2-serif text-[1.05rem] leading-[1.65] text-[#1c1712]">
+                    « L’Ayurveda est un art de vivre, une invitation à créer de l’espace dans sa vie pour prendre soin de soi et se connaître davantage, c’est une incitation à renouer avec la nature et notre propre nature. »
+                  </blockquote>
+                  <figcaption className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] text-[#7d6330]">Krystine St-Laurent, Nature &amp; Ayurveda, p. 41</figcaption>
+                </figure>
+              )}
             </motion.div>
             <motion.div {...heroFade(0.55)} className="mt-11 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
@@ -1477,16 +1487,16 @@ const QuizLoeuvre: React.FC = () => {
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#efe6d7]">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-x-[clamp(2.5rem,6vw,6rem)] gap-y-8 items-end mb-14">
           <Reveal>
-            <Kicker className="mb-5">{lang === 'FR' ? 'Ce qui vous attend' : 'What you get'}</Kicker>
+            <Kicker className="mb-5">{lang === 'FR' ? 'Comment cela se passe' : 'How it works'}</Kicker>
             <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-              {lang === 'FR' ? 'Le miroir de votre nature' : 'The mirror of your nature'}
+              {lang === 'FR' ? 'Trois minutes, trois étapes' : 'Three minutes, three steps'}
             </h2>
           </Reveal>
           <Reveal delay={0.12}>
             <p className="v2-serif font-light text-[clamp(1.1rem,1.9vw,1.45rem)] leading-snug text-[#3a2f23] max-w-[46ch]">
               {lang === 'FR'
-                ? 'Dix questions, votre dominance du moment et ce qui l’accentue. Suivez votre premier réflexe.'
-                : 'Ten questions, your dominance of the moment and what amplifies it. Trust your first instinct.'}
+                ? 'Vous répondez à dix questions, vous voyez aussitôt ce qui domine en vous en ce moment, et votre résultat complet arrive par courriel.'
+                : 'You answer ten questions, you see right away what dominates in you right now, and your full result arrives by email.'}
             </p>
           </Reveal>
         </div>
