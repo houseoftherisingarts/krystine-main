@@ -7905,5 +7905,21 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:47:43.289Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2c0b9095",
+    "message": "Corrections du tour des boutons : menu du téléphone opaque (on ne lit plus la page à travers), une seule vidéo à la fois sur Médias, libellé « Vue et entendue à » centré (le bouton commentaire ne le cache plus)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/layout/NavBar.tsx",
+      "src/components/v2/BandePreuve.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
