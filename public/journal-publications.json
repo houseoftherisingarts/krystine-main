@@ -7552,5 +7552,19 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:52:23.766Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8fab01a4",
+    "message": "Médias (/medias) : bandeau, « FM » à côté du logo du 98,5 et « Best-sellers » sous les Éditions de l'Homme (le 3e tome n'est pas encore en vente)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
