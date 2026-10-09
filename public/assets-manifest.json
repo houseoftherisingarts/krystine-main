@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T17:27:46.123Z",
+  "generatedAt": "2026-10-09T20:49:18.855Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -70,6 +70,13 @@
       "folder": "accueil/assets",
       "kind": "video",
       "size": 3097688
+    },
+    {
+      "path": "/accueil/assets/saison-huile.webp",
+      "name": "saison-huile.webp",
+      "folder": "accueil/assets",
+      "kind": "image",
+      "size": 42592
     },
     {
       "path": "/accueil/assets/texture-cream.jpg",

@@ -71,13 +71,15 @@ const SUJETS: { q: string; public: string }[] = [
 
 // La bande « Vue et entendue à » de /conferenciere (KrystineV2.tsx, MEDIAS),
 // précédée de l'éditeur (kit de presse, carte « livres »). Aucun chiffre ajouté.
+const LOGO_DIMS: Record<string, [number, number]> = {'/medias/logos/98-5.png': [213, 160], '/medias/logos/bien.png': [87, 160], '/medias/logos/coup-de-pouce.png': [302, 160], '/medias/logos/editions-de-l-homme.png': [635, 160], '/medias/logos/matv.png': [475, 160], '/medias/logos/tva.png': [502, 160], '/medias/logos/videotron.png': [816, 160]};
+
 const PREUVES: { nom: string; logo?: string; note?: string; grand?: boolean }[] = [
-  { nom: 'Éditions de l’Homme', logo: '/medias/logos/editions-de-l-homme.png', note: 'Best-sellers' },
+  { nom: 'Éditions de l’Homme', logo: '/medias/logos/editions-de-l-homme.png', note: 'Best-sellers', grand: true },
   { nom: 'Santé la vie', note: 'Série télé · 3 saisons' },
   { nom: 'MAtv', logo: '/medias/logos/matv.png' },
   { nom: 'Vidéotron', logo: '/medias/logos/videotron.png' },
   { nom: 'TVA', logo: '/medias/logos/tva.png', note: 'Salut Bonjour' },
-  { nom: 'Bien', logo: '/medias/logos/bien.png', grand: true },
+  { nom: 'Bien', logo: '/medias/logos/bien.png', grand: true, note: 'Émission' },
   { nom: '98,5 FM', logo: '/medias/logos/98-5.png', note: 'FM' },
   { nom: 'Coup de Pouce', logo: '/medias/logos/coup-de-pouce.png' },
   { nom: 'Mieux-Être', note: 'Magazine' },
@@ -90,7 +92,7 @@ const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
       {PREUVES.map(({ nom, logo, note, grand }) => (
         <li key={nom} className="flex shrink-0 items-center gap-3">
           {logo
-            ? <img src={logo} alt={nom} loading="lazy" className={grand ? 'h-[clamp(44px,4.6vw,64px)] w-auto' : 'h-[clamp(24px,2.6vw,36px)] w-auto'} />
+            ? <img src={logo} alt={nom} width={LOGO_DIMS[logo]?.[0]} height={LOGO_DIMS[logo]?.[1]} className={grand ? 'h-[clamp(44px,4.6vw,64px)] w-auto shrink-0' : 'h-[clamp(24px,2.6vw,36px)] w-auto shrink-0'} />
             : <span className="v2-serif text-[clamp(1.25rem,2.1vw,1.75rem)] font-medium leading-none text-[#1c1712]">{nom}</span>}
           {note && <span className="text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-[#4a3d2e]">{note}</span>}
         </li>

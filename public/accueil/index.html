@@ -174,6 +174,18 @@
   .seen .track{display:flex}
   .seen .wm{flex:0 0 auto;padding:0 2.6rem;text-align:center;font-family:var(--serif);font-weight:600;font-size:clamp(1.05rem,1.5vw,1.45rem);letter-spacing:.06em;color:var(--ink);opacity:.3;transform:translateY(6px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,.8,.24,1);line-height:1;white-space:nowrap;border-left:1px solid rgba(58,49,38,.12)}
   .seen .wm small{display:block;font:500 .54rem/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);margin-top:.45rem}
+
+  /* Bandeau épais des médias (Krystine, 9 oct. 2026) : logos foncés, noms en gras, même bandeau que /medias */
+  .seen{background:#171a16;padding:3rem 0 3.2rem;border-top:1px solid rgba(187,154,94,.35);border-bottom:1px solid rgba(187,154,94,.35)}
+  .seen .wm img.lg{opacity:.88}
+  .seen .lbl{font-size:.85rem;font-weight:700;color:var(--ink);letter-spacing:.26em}
+  .seen .row{margin-top:1.9rem}
+  .seen .wm{display:flex;align-items:center;gap:.8rem;padding:0 2.4rem;border-left:0;opacity:1;transform:none}
+  .seen .wm img.lg{height:clamp(24px,2.6vw,36px);width:auto;display:block;flex-shrink:0}
+  .seen .wm img.bien{height:clamp(44px,4.6vw,64px)}
+  .seen .wm img.edh{height:clamp(40px,3.8vw,54px)}
+  .seen .wm .nm{font-family:var(--serif);font-weight:600;font-size:clamp(1.3rem,2.2vw,1.85rem);color:#EEE7DB;letter-spacing:.02em}
+  .seen .wm small{display:inline;margin:0;font:600 .72rem/1 var(--sans);letter-spacing:.16em;color:#c9a96a}
   .seen.lit .wm{opacity:1;transform:none}
   .seen .wm:nth-child(1){transition-delay:.05s}.seen .wm:nth-child(2){transition-delay:.15s}.seen .wm:nth-child(3){transition-delay:.25s}.seen .wm:nth-child(4){transition-delay:.35s}.seen .wm:nth-child(5){transition-delay:.45s}.seen .wm:nth-child(6){transition-delay:.55s}.seen .wm:nth-child(7){transition-delay:.65s}
   @media (max-width:640px){ .seen .wm{padding:0 1.5rem} }
@@ -956,8 +968,8 @@
 .saison-etiq{position:absolute;left:1.4rem;bottom:1.4rem;background:var(--ink);color:#f4efe6;font-family:var(--sans);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:.5rem .8rem}
 
 /* --- 2. Lisibilité, tous écrans --- */
-.seen .lbl{font-size:.78rem;color:var(--brass-deep)}
-.seen .wm small{font-size:.7rem;color:var(--ink-soft)}
+.seen .lbl{font-size:.85rem;color:#c9a96a}
+.seen .wm small{font-size:.72rem;color:#c9a96a}
 .offer-origine .o-eyebrow{font-size:clamp(.75rem,.9vw,.8rem)}
 .offer-origine .o-desc{font-size:clamp(1rem,1.1vw,1.06rem);line-height:1.7}
 .offer-origine .o-fine{font-size:.88rem}
@@ -1091,7 +1103,7 @@
     <div class="logo">Krystine<br/>St-Laurent</div>
     <div class="navlinks">
       <a href="/liste-attente?programme=origine2">Expérience Origine</a><a href="/formations">Formations</a>
-      <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace membre</a>
+      <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#krystine">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold btn-gold--nav">Accéder à mon espace membre</a>
     </div>
   </nav>
 
@@ -1103,7 +1115,7 @@
   <div id="mnavOverlay" class="mnav-overlay" aria-hidden="true">
     <nav class="mnav-links">
       <a href="/liste-attente?programme=origine2">Expérience Origine</a><a href="/formations">Formations</a>
-      <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#apropos">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
+      <a href="/medias">Médias &amp; Livres</a><a href="/conferenciere">Conférences</a><a href="/boutique">Boutique</a><a href="#krystine">À propos</a><a href="#contact">Contact</a><a href="/compte" class="btn-gold" style="margin-top:.5rem">Accéder à mon espace membre</a>
     </nav>
     <div class="mnav-lang" id="mnavLang" role="group" aria-label="Langue"></div>
   </div>
@@ -1122,8 +1134,6 @@
         <div class="h-rule reveal d2" aria-hidden="true"><span></span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg><span></span></div>
         <div class="sub reveal d2">Nous avons appris à chercher les réponses à l'extérieur. Pourtant, le corps et la nature parlent un langage que nous avons simplement oublié de lire.</div>
         <div class="h-rule plain reveal d3" aria-hidden="true"><span></span></div>
-        <div class="lede-row reveal d3"><svg class="sprig" viewBox="0 0 26 34" aria-hidden="true"><path d="M13 32V7"/><path d="M13 13C9.5 12 7.5 9.5 7.5 5.5c3.5.5 5.5 3 5.5 7.5Z"/><path d="M13 13c3.5-1 5.5-3.5 5.5-7.5-3.5.5-5.5 3-5.5 7.5Z"/><path d="M13 21c-3.5-1-5.5-3.5-5.5-7.5 3.5.5 5.5 3 5.5 7.5Z"/><path d="M13 21c3.5-1 5.5-3.5 5.5-7.5-3.5.5-5.5 3-5.5 7.5Z"/></svg><p class="lede">Depuis près de 40 ans, <b class="gold">Krystine St-Laurent</b> relie les savoirs traditionnels, l'Ayurveda, les cycles et l'expérience de la nature pour transmettre des repères qui permettent de mieux comprendre ce qui se joue en soi.</p></div>
-        <div class="besoin reveal d4"><p class="besoin-t">En 3 minutes, le quiz aide à reconnaître les éléments qui prennent le plus de place et ce qu'ils peuvent indiquer sur les besoins du moment.</p></div>
         <div class="cta-row reveal d4"><a class="cta" href="/quiz"><span class="cta-txt"><span class="cta-main">De quoi ai-je besoin en ce moment&nbsp;?</span><span class="cta-pt"> · </span><span class="cta-sub">Le quiz · 3 minutes</span></span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a><a class="cta cta-ligne" href="#portes"><span class="cta-txt">Par où commencer&nbsp;?</span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a></div>
       </div>
     </div>
@@ -1137,82 +1147,53 @@
   <!-- ===== TEL QUE VU À ===== -->
   <section class="seen" id="medias-vus" aria-label="Médias">
     <div class="mx">
-      <div class="lbl">Tel que vu à</div>
+      <div class="lbl">Vue et entendue à</div>
       <div class="row">
 <div class="marq">
         <div class="track">
-        <div class="wm">Vidéotron<small>Télévision</small></div>
-        <div class="wm">Salut Bonjour<small>TVA</small></div>
-        <div class="wm">Mieux-Être<small>Magazine</small></div>
-        <div class="wm">Coup de Pouce<small>Magazine</small></div>
-        <div class="wm">Bien<small>Émission</small></div>
-        <div class="wm">98.5 FM<small>Radio</small></div>
-        <div class="wm">Santé la Vie<small>Série télé · 3 saisons</small></div>
+        <div class="wm"><img class="lg edh" src="/medias/logos/editions-de-l-homme-blanc.png" alt="Éditions de l’Homme" width="635" height="160"><small>Best-sellers</small></div>
+        <div class="wm"><span class="nm">Santé la vie</span><small>Série télé · 3 saisons</small></div>
+        <div class="wm"><img class="lg" src="/medias/logos/matv-blanc.png" alt="MAtv" width="475" height="160"></div>
+        <div class="wm"><img class="lg" src="/medias/logos/videotron-blanc.png" alt="Vidéotron" width="816" height="160"></div>
+        <div class="wm"><img class="lg" src="/medias/logos/tva-blanc.png" alt="TVA" width="502" height="160"><small>Salut Bonjour</small></div>
+        <div class="wm"><img class="lg bien" src="/medias/logos/bien-blanc.png" alt="Bien" width="87" height="160"><small>Émission</small></div>
+        <div class="wm"><img class="lg" src="/medias/logos/98-5-blanc.png" alt="98,5 FM" width="213" height="160"><small>FM</small></div>
+        <div class="wm"><img class="lg" src="/medias/logos/coup-de-pouce-blanc.png" alt="Coup de Pouce" width="302" height="160"></div>
+        <div class="wm"><span class="nm">Mieux-Être</span><small>Magazine</small></div>
         </div>
         <div class="track dup" aria-hidden="true">
-        <div class="wm">Vidéotron<small>Télévision</small></div>
-        <div class="wm">Salut Bonjour<small>TVA</small></div>
-        <div class="wm">Mieux-Être<small>Magazine</small></div>
-        <div class="wm">Coup de Pouce<small>Magazine</small></div>
-        <div class="wm">Bien<small>Émission</small></div>
-        <div class="wm">98.5 FM<small>Radio</small></div>
-        <div class="wm">Santé la Vie<small>Série télé · 3 saisons</small></div>
+        <div class="wm"><img class="lg edh" src="/medias/logos/editions-de-l-homme-blanc.png" alt="Éditions de l’Homme" width="635" height="160"><small>Best-sellers</small></div>
+        <div class="wm"><span class="nm">Santé la vie</span><small>Série télé · 3 saisons</small></div>
+        <div class="wm"><img class="lg" src="/medias/logos/matv-blanc.png" alt="MAtv" width="475" height="160"></div>
+        <div class="wm"><img class="lg" src="/medias/logos/videotron-blanc.png" alt="Vidéotron" width="816" height="160"></div>
+        <div class="wm"><img class="lg" src="/medias/logos/tva-blanc.png" alt="TVA" width="502" height="160"><small>Salut Bonjour</small></div>
+        <div class="wm"><img class="lg bien" src="/medias/logos/bien-blanc.png" alt="Bien" width="87" height="160"><small>Émission</small></div>
+        <div class="wm"><img class="lg" src="/medias/logos/98-5-blanc.png" alt="98,5 FM" width="213" height="160"><small>FM</small></div>
+        <div class="wm"><img class="lg" src="/medias/logos/coup-de-pouce-blanc.png" alt="Coup de Pouce" width="302" height="160"></div>
+        <div class="wm"><span class="nm">Mieux-Être</span><small>Magazine</small></div>
         </div>
 </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== EXPÉRIENCE ORIGINE 2, sous le hero (Krystine, 27 septembre 2026 : l'offre de l'automne passe en premier) ===== -->
-  <section class="plus plus-eo2" id="origine-2">
+  <!-- ===== BIO · qui est Krystine (sous les livres) ===== -->
+  <section class="bio" id="krystine">
     <div class="mx">
-      <div class="plus-grid" style="margin-top:0">
-        <a class="offer offer-origine reveal" href="/liste-attente?programme=origine2">
-          <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
-          <div class="o-body">
-            <div>
-              <span class="o-eyebrow">Une seule ouverture par année · Automne 2026</span>
-              <h2 class="o-title">Expérience Origine</h2>
-              <p class="o-edition">2<sup>e</sup> édition</p>
-              <div class="o-filet" aria-hidden="true"></div>
-              <p class="o-tag">Relier ce que nous avons appris à séparer.</p>
-              <p class="o-desc">Expérience Origine revient cet automne pour une nouvelle édition.</p>
-              <span class="o-bouton">Rejoindre la liste d’attente <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
-              <p class="o-fine">Soyez parmi les premières informées lors de l’ouverture des inscriptions.</p>
-            </div>
-            <div class="o-porte">
-              <img src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg" data-edit-key="accueil.origine.enveloppe" alt="L'enveloppe d'Expérience Origine 2" loading="lazy" decoding="async" />
-              <span class="o-voile" aria-hidden="true"></span>
-              <span class="o-sceau" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
+      <div class="bio-copy reveal">
+        <p class="bio-eyebrow">Qui vous guide</p>
+        <h2>Krystine St-Laurent</h2>
+        <p class="bio-sub">Près de 40 ans à relier ce que nous avons appris à séparer.</p>
+        <div class="bio-rule" aria-hidden="true"></div>
+        <p class="bio-p">Pendant des années, Krystine a œuvré en soins intensifs et en recherche clinique, dans les coulisses du système, avant de choisir l&#39;Ayurveda, les plantes médicinales et l&#39;aromathérapie. Depuis, elle relie la rigueur de la science à la sagesse de la nature, pour que chaque personne apprenne à écouter son propre corps.</p>
+        <p class="bio-p">Autrice de la Trilogie d&#39;Origine, près de 1 200 pages dont deux best-sellers, elle a créé l&#39;émission Santé la vie et le podcast Au-delà des tendances.</p>
+        <p class="bio-p" style="font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)">Publiée aux Éditions de l&#39;Homme</p>
+        <a class="more" href="/conferenciere">Découvrir son parcours →</a>
       </div>
-
-    </div>
-  </section>
-
-  <!-- ===== LA SAISON FROIDE (8 oct. 2026) : l'ambiance de la saison, les mots de la boutique (src/lib/saisonBoutique.ts),
-       la vraie matière : l'érable roux filmé par Krystine (public/vata/banniere-automne). Le bouton répond à un besoin : prendre soin cette saison. ===== -->
-  <section class="saison" id="saison" aria-labelledby="saison-titre">
-    <div class="mx saison-grid">
-      <div class="saison-copy reveal">
-        <p class="saison-ey"><span class="saison-pt" aria-hidden="true"></span>La saison froide · Vata (Vent et Espace)</p>
-        <h2 id="saison-titre">Ce que la saison<br/>nous demande</h2>
-        <div class="saison-filet" aria-hidden="true"></div>
-        <p class="saison-p">L'air devient sec, le vent se lève et tout s'accélère. Vata (Vent et Espace) prend de la place : la peau tiraille, le sommeil devient plus léger, le mental court.</p>
-        <p class="saison-p">Pour traverser ces mois-là, le corps demande de la chaleur, de l'huile et des gestes répétés chaque jour.</p>
-        <a class="saison-btn" href="/boutique">Les essentiels de la saison <svg viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
-        <p class="saison-fine">Du 22 septembre au 31 janvier</p>
+      <div class="bio-frame reveal d2">
+        <div class="ph"><img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" referrerpolicy="no-referrer" /></div>
+        <p class="bio-cap">Krystine St-Laurent</p>
       </div>
-      <figure class="saison-cadre reveal d2">
-        <div class="saison-ph">
-          <video id="saisonVid" muted loop playsinline preload="none" poster="/vata/banniere-automne.jpg" aria-label="Un érable roux dans le vent d'octobre"><source src="/vata/banniere-automne.mp4" type="video/mp4" /></video>
-        </div>
-        <figcaption class="saison-etiq">L'érable d'octobre, filmé par Krystine</figcaption>
-      </figure>
     </div>
   </section>
 
@@ -1222,7 +1203,7 @@
       <h2 class="sec-title reveal">Par où commencer</h2>
       <div class="rule reveal d1"></div>
       <div class="fan" id="fan">
-        <a class="card" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Nous n'avons jamais eu autant de choix. Et jamais autant de choses n'ont choisi à notre place." data-link="Écouter"><img src="/accueil/assets/portes/podcast-photo.webp" alt="Krystine St-Laurent assise, un tournesol à la main" width="560" height="750" loading="lazy" decoding="async"><span class="fn">01</span><span class="verb">Écouter</span></a>
+        <a class="card" href="/podcast" data-num="01" data-title="Le Podcast" data-desc="Nous n'avons jamais eu autant de choix. Et jamais autant de choses n'ont choisi à notre place." data-link="Écouter"><img src="/accueil/assets/portes/podcast.webp" alt="Un micro et une tasse de café, le podcast Au-delà des tendances" width="560" height="750" loading="lazy" decoding="async"><span class="fn">01</span><span class="verb">Écouter</span></a>
         <a class="card" href="/medias#livres" data-num="02" data-title="La Trilogie" data-desc="Les fondations écrites de l'œuvre : sagesse du corps, cycles, plantes, alimentation et saisons." data-link="Lire"><img src="/accueil/assets/portes/livres-photo.webp" alt="Un livre ouvert sur une page ornée d'une fleur" width="560" height="750" loading="lazy" decoding="async"><span class="fn">02</span><span class="verb">Lire</span></a>
         <a class="card" href="/conferenciere" data-num="03" data-title="Les Conférences" data-desc="Voir plus clair dans un monde saturé de conseils. Comprendre ce qui influence nos choix. Repartir avec des repères concrets pour choisir ce qui nous convient vraiment." data-link="Rencontrer"><img src="/accueil/assets/portes/conferences-scene.webp" alt="Krystine St-Laurent sur scène, au micro" width="560" height="750" loading="lazy" decoding="async"><span class="fn">03</span><span class="verb">Rencontrer</span></a>
         <a class="card" href="/formations" data-num="04" data-title="Les Formations" data-desc="Des parcours en ligne, saison après saison, pour apprendre l'Ayurveda et le vivre chez soi : alimentation, plantes, soins et gestion du stress." data-link="Approfondir"><img src="/accueil/assets/portes/formations-photo.webp" alt="Krystine St-Laurent enseignant devant son apothicairerie" width="560" height="750" loading="lazy" decoding="async"><span class="fn">04</span><span class="verb">Approfondir</span></a>
@@ -1314,6 +1295,59 @@
     </div>
   </section>
 
+  <!-- ===== EXPÉRIENCE ORIGINE 2, sous le hero (Krystine, 27 septembre 2026 : l'offre de l'automne passe en premier) ===== -->
+  <section class="plus plus-eo2" id="origine-2">
+    <div class="mx">
+      <div class="plus-grid" style="margin-top:0">
+        <a class="offer offer-origine reveal" href="/liste-attente?programme=origine2">
+          <span class="o-halo" aria-hidden="true"><span></span><span></span></span>
+          <div class="o-body">
+            <div>
+              <span class="o-eyebrow">Une seule ouverture par année · Automne 2026</span>
+              <h2 class="o-title">Expérience Origine</h2>
+              <p class="o-edition">2<sup>e</sup> édition</p>
+              <div class="o-filet" aria-hidden="true"></div>
+              <p class="o-tag">Relier ce que nous avons appris à séparer.</p>
+              <p class="o-desc">Expérience Origine revient cet automne pour une nouvelle édition.</p>
+              <span class="o-bouton">Rejoindre la liste d’attente <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></span>
+              <p class="o-fine">Soyez parmi les premières informées lors de l’ouverture des inscriptions.</p>
+            </div>
+            <div class="o-porte">
+              <img src="https://storage.googleapis.com/origine1/banner%20origine%20enveloppe.jpg" data-edit-key="accueil.origine.enveloppe" alt="L'enveloppe d'Expérience Origine 2" loading="lazy" decoding="async" />
+              <span class="o-voile" aria-hidden="true"></span>
+              <span class="o-sceau" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10M7 12h10"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== LA SAISON FROIDE (8 oct. 2026) : l'ambiance de la saison, les mots de la boutique (src/lib/saisonBoutique.ts),
+       la vraie matière : l'érable roux filmé par Krystine (public/vata/banniere-automne). Le bouton répond à un besoin : prendre soin cette saison. ===== -->
+  <section class="saison" id="saison" aria-labelledby="saison-titre">
+    <div class="mx saison-grid">
+      <div class="saison-copy reveal">
+        <p class="saison-ey"><span class="saison-pt" aria-hidden="true"></span>La saison froide · Vata (Vent et Espace)</p>
+        <h2 id="saison-titre">Ce que la saison<br/>nous demande</h2>
+        <div class="saison-filet" aria-hidden="true"></div>
+        <p class="saison-p">L'air devient sec, le vent se lève et tout s'accélère. Vata (Vent et Espace) prend de la place : la peau tiraille, le sommeil devient plus léger, le mental court.</p>
+        <p class="saison-p">Pour traverser ces mois-là, le corps demande de la chaleur, de l'huile et des gestes répétés chaque jour.</p>
+        <a class="saison-btn" href="/boutique">Les essentiels de la saison <svg viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a>
+        <p class="saison-fine">Du 22 septembre au 31 janvier</p>
+      </div>
+      <figure class="saison-cadre reveal d2">
+        <div class="saison-ph">
+          <img src="/accueil/assets/saison-huile.webp" alt="Une huile corporelle INSPIRATA AYURVEDA versée dans la paume" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block" />
+        </div>
+        <figcaption class="saison-etiq">La chaleur de l’huile, chaque jour</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <!-- ===== TOME 3 · inscription remontée avant la trilogie (26 sept. 2026, trafic) ===== -->
   <section class="tome" id="tome3">
     <div class="mx">
@@ -1342,27 +1376,6 @@
           <p>Vous voulez plus qu'une infolettre ? Contenus exclusifs et promotions spéciales :</p>
           <a href="/compte" class="btn-gold">Accéder à mon espace</a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== COMMENT TOUT SE RELIE ===== -->
-  <section class="relie" id="apropos">
-    <div class="mx">
-      <div class="copy2 reveal">
-        <h2>Comment tout<br/>se relie</h2>
-        <p>Chaque porte mène au même centre : revenir au corps, au rythme, à la nature et à ce qui organise la vie de l'intérieur.</p>
-        <a class="more" href="#oeuvre">Voir l'ensemble de l'œuvre →</a>
-      </div>
-      <div class="web reveal d2">
-        <svg class="spokes" viewBox="0 0 100 100" aria-hidden="true"><circle class="ring" cx="50" cy="50" r="38"/><line class="spk s0" x1="50" y1="50" x2="50" y2="12"/><line class="spk s1" x1="50" y1="50" x2="83" y2="31"/><line class="spk s2" x1="50" y1="50" x2="83" y2="69"/><line class="spk s3" x1="50" y1="50" x2="50" y2="88"/><line class="spk s4" x1="50" y1="50" x2="17" y2="69"/><line class="spk s5" x1="50" y1="50" x2="17" y2="31"/></svg>
-        <div class="hcore">Retour au point d'origine</div>
-        <a class="hnode n0" href="/medias#livres" style="top:12%;left:50%"><span class="ni"><svg class="an-bloom" viewBox="0 0 48 48"><path d="M8.5 12.5c4-2.6 9-3.1 13-1.4v25.4c-4-1.7-9-1.2-13 1.4V12.5Z"/><path d="M39.5 12.5c-4-2.6-9-3.1-13-1.4v25.4c4-1.7 9-1.2 13 1.4V12.5Z"/><path d="M12.5 17.5c2.5-1 5.2-1.3 7.5-.7M12.5 23c2.5-1 5.2-1.3 7.5-.7M35.5 17.5c-2.5-1-5.2-1.3-7.5-.7M35.5 23c-2.5-1-5.2-1.3-7.5-.7"/></svg></span><span class="nt">Les Livres</span></a>
-        <a class="hnode n1" href="/podcast" style="top:31%;left:83%"><span class="ni"><svg class="an-pulse" viewBox="0 0 48 48"><path d="M24 8a5.5 5.5 0 0 1 5.5 5.5v8a5.5 5.5 0 0 1-11 0v-8A5.5 5.5 0 0 1 24 8Z"/><path d="M14.5 20a9.5 9.5 0 0 0 19 0M24 29.5V37M17.5 37h13"/><path d="M10 14.5a16 16 0 0 0 0 11M38 14.5a16 16 0 0 1 0 11"/></svg></span><span class="nt">Le Podcast</span></a>
-        <a class="hnode n2" href="https://inspiratanature.com/?country=CA&amp;locale=fr" target="_blank" rel="noopener noreferrer" style="top:69%;left:83%"><span class="ni"><svg class="an-sway" viewBox="0 0 48 48"><path d="M20.5 7h7M22 7v4.5h4V7"/><path d="M26 11.5c3.5 2.5 5.5 6 5.5 10.5V33a4.5 4.5 0 0 1-4.5 4.5h-6a4.5 4.5 0 0 1-4.5-4.5V22c0-4.5 2-8 5.5-10.5"/><path d="M24 20c1.8 2.3 2.8 4.2 2.8 6a2.8 2.8 0 1 1-5.6 0c0-1.8 1-3.7 2.8-6Z"/></svg></span><span class="nt">Les huiles corporelles</span></a>
-        <a class="hnode n3" href="/liste-attente?programme=origine2" style="top:88%;left:50%"><span class="ni"><svg class="an-spin" viewBox="0 0 48 48"><path d="M26 24a2 2 0 0 1-4 0 4.2 4.2 0 0 1 8.4 0 7.4 7.4 0 0 1-14.8 0 10.6 10.6 0 0 1 21.2 0 14 14 0 0 1-28 0"/></svg></span><span class="nt">Expérience Origine</span></a>
-        <a class="hnode n4" href="/conferenciere" style="top:69%;left:17%"><span class="ni"><svg class="an-bloom" viewBox="0 0 48 48"><circle cx="24" cy="14" r="3.6"/><path d="M18 22.5c1.2-2.8 3.3-4.3 6-4.3s4.8 1.5 6 4.3"/><path d="M17.5 37V27.5h13V37M15.5 27.5l2.2-4.2h12.6l2.2 4.2"/><path d="M34.5 11.5a9 9 0 0 1 2.8 6M13.5 11.5a9 9 0 0 0-2.8 6"/></svg></span><span class="nt">Les Conférences</span></a>
-        <a class="hnode n5" href="/liste-attente?programme=retraite" style="top:31%;left:17%"><span class="ni"><svg class="an-sway" viewBox="0 0 48 48"><path d="M17 37V26.5l8.5-6.8 8.5 6.8V37H17Z"/><path d="M22.5 37v-5.8h6V37"/><path d="M9.5 37v-3.2M6.5 34l3-5.2 3 5.2ZM7.3 29.3l2.2-3.8 2.2 3.8"/></svg></span><span class="nt">Les Retraites</span></a>
       </div>
     </div>
   </section>
@@ -1408,26 +1421,6 @@
       </div>
       <div class="tri-foot reveal d3">La trilogie pose les fondations écrites. Le retour au point d'origine devient l'axe de l'œuvre.</div>
     </div>
-    </div>
-  </section>
-
-  <!-- ===== BIO · qui est Krystine (sous les livres) ===== -->
-  <section class="bio" id="krystine">
-    <div class="mx">
-      <div class="bio-copy reveal">
-        <p class="bio-eyebrow">Qui vous guide</p>
-        <h2>Krystine St-Laurent</h2>
-        <p class="bio-sub">Près de 40 ans à relier ce que nous avons appris à séparer.</p>
-        <div class="bio-rule" aria-hidden="true"></div>
-        <p class="bio-p">Pendant des années, Krystine a œuvré en soins intensifs et en recherche clinique, dans les coulisses du système, avant de choisir l&#39;Ayurveda, les plantes médicinales et l&#39;aromathérapie. Depuis, elle relie la rigueur de la science à la sagesse de la nature, pour que chaque personne apprenne à écouter son propre corps.</p>
-        <p class="bio-p">Autrice de la Trilogie d&#39;Origine, près de 1 200 pages dont deux best-sellers, elle a créé l&#39;émission Santé la vie et le podcast Au-delà des tendances.</p>
-        <p class="bio-p" style="font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)">Publiée aux Éditions de l&#39;Homme</p>
-        <a class="more" href="/conferenciere">Découvrir son parcours →</a>
-      </div>
-      <div class="bio-frame reveal d2">
-        <div class="ph"><img src="https://wsrv.nl/?url=storage.googleapis.com/origine1/krystine%20red%20NG.webp&w=1000&output=webp" alt="Krystine St-Laurent" loading="lazy" referrerpolicy="no-referrer" /></div>
-        <p class="bio-cap">Krystine St-Laurent</p>
-      </div>
     </div>
   </section>
 
