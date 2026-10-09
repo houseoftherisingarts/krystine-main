@@ -7482,5 +7482,19 @@
       "public/assets-manifest.json",
       "public/medias/sante-la-vie-montage.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:44:46.054Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ffe997e3",
+    "message": "Médias (/medias) : vidéo de Bien et carte des Rituels essentiels alignées à la même largeur; carte des Rituels sur fond vert profond; phrase de transition « Pour découvrir ce dont parle Krystine dans l'extrait de l'émission, les rituels avec huiles et plantes »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
