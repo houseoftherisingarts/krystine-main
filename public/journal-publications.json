@@ -7632,5 +7632,20 @@
       "public/accueil/partage.jpg",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-09T17:16:34.245Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e2d49eff",
+    "message": "Accueil : l'image de partage Facebook devient l'affiche « Dans les médias »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "index.html",
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
