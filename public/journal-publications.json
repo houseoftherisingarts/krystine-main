@@ -7350,5 +7350,41 @@
       "public/assets-manifest.json",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T12:20:21.726Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d377e0f1",
+    "message": "Médias (/medias) : émission Bien en entier dès la présentation de Krystine (6 min 21, sans le passage des orteils); accueil (/accueil) : vraies photos des tuiles « Par où commencer »; Bilan du matin : section « Occasions de conférences » (veille de 2 h); page /dimanches mise à jour mais cachée (hors Google, aucun lien, renvoi /dimanches-origine retiré); PDF des 3 rituels déposé, bloc toujours caché; salle du direct sans pourboire; courriels des Dimanches et du direct",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/newsletter/dimanches.ts",
+      "functions/src/newsletter/live.ts",
+      "functions/src/newsletter/welcome.ts",
+      "public/accueil/assets/portes/formations-photo.webp",
+      "public/accueil/assets/portes/inspirata-photo.webp",
+      "public/accueil/assets/portes/livres-photo.webp",
+      "public/accueil/assets/portes/podcast-photo.webp",
+      "public/accueil/assets/portes/retraites-photo.webp",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/boutique/trois-rituels-du-moment.pdf",
+      "public/medias/bien-2021.jpg",
+      "public/medias/bien-2021.mp4",
+      "scripts/dimanches/carte.html",
+      "scripts/dimanches/faire-carte.mjs",
+      "scripts/dimanches/retire/carte-dix-couples.pdf",
+      "src/components/v2/RituelPdf.tsx",
+      "src/lib/dimanches.ts",
+      "src/pages/DimanchesPage.tsx",
+      "src/pages/DirectPage.tsx",
+      "src/pages/concepts/KrystineV2.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
