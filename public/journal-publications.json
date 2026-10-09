@@ -7414,5 +7414,31 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:18:31.041Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a2a7ba4a",
+    "message": "Médias (/medias) refaite pour les productrices : montage de Santé la vie (trois saisons) en tête avec « Inviter Krystine », bande « Vue et entendue à », sujets d'entrevue « Pourquoi autant de confusion ? » et ses trois portes avec photos de conférence, bloc en anglais, vidéo de Bien plus bas, photo de Santé la vie remplacée; conférencière : « Inviter Krystine » descend au formulaire; Santé la vie (cours masqué) : achats d'épisodes, saisons et programme complet corrigés",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/niskas.ts",
+      "functions/src/paiements.ts",
+      "public/assets-manifest.json",
+      "public/medias/sante-la-vie-montage.jpg",
+      "public/medias/sante-la-vie-montage.mp4",
+      "public/medias/sujets/porte-1.webp",
+      "public/medias/sujets/porte-2.webp",
+      "public/medias/sujets/porte-3.webp",
+      "public/sante-la-vie.jpg",
+      "src/firebase/formations.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/concepts/KrystineV2.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
