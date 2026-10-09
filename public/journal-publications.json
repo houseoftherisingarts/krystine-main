@@ -7601,5 +7601,20 @@
       "src/pages/TemoignageConference.tsx",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T17:11:29.599Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "39f669b6",
+    "message": "Accueil : nouveau titre et nouvelle description de partage (Facebook et autres) : « Krystine St-Laurent · Autrice best-seller, conférencière et fondatrice d’INSPIRATA Ayurveda »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "index.html",
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
