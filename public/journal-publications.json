@@ -7921,5 +7921,23 @@
       "src/components/v2/BandePreuve.tsx",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:55:22.354Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "09e8de5d",
+    "message": "Pied de page (tout le site et l'accueil) : « Sagesse ayurvédique pour une vie consciente » remplacé par la devise de Krystine, « Relier ce que nous avons appris à séparer »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "_shot-tmp 3.mjs",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/components/layout/Footer.tsx",
+      "src/lib/pageMeta.ts"
+    ]
   }
 ]
