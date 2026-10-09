@@ -7496,5 +7496,33 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:48:54.971Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "510cb73f",
+    "message": "Médias (/medias) : « Vue et entendue à » devient un bandeau épais qui traverse l'écran, noms en gras et plus foncés, défilement lent (arrêt au survol, fixe si le mouvement est réduit); carte des Rituels sans débordement au téléphone",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/medias/logos/98-5-blanc.png",
+      "public/medias/logos/98-5.png",
+      "public/medias/logos/bien-blanc.png",
+      "public/medias/logos/bien.png",
+      "public/medias/logos/coup-de-pouce-blanc.png",
+      "public/medias/logos/coup-de-pouce.png",
+      "public/medias/logos/editions-de-l-homme-blanc.png",
+      "public/medias/logos/editions-de-l-homme.png",
+      "public/medias/logos/matv-blanc.png",
+      "public/medias/logos/matv.png",
+      "public/medias/logos/tva-blanc.png",
+      "public/medias/logos/tva.png",
+      "public/medias/logos/videotron-blanc.png",
+      "public/medias/logos/videotron.png",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
