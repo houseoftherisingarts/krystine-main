@@ -7877,5 +7877,19 @@
       "hosting"
     ],
     "fichiers": []
+  },
+  {
+    "quand": "2026-10-09T23:34:08.755Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "1e42bffe",
+    "message": "Quiz (/quiz) : la phrase de Nature & Ayurveda (p. 41) plus légère, centrée juste avant la carte « Quelques clés de l'Ayurveda » (coins arrondis); un picto pour chacune des trois étapes",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
