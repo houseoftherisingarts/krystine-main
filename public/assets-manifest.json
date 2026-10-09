@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T17:16:25.446Z",
+  "generatedAt": "2026-10-09T17:27:46.123Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1742,14 +1742,14 @@
       "name": "partage.jpg",
       "folder": "medias",
       "kind": "image",
-      "size": 117460
+      "size": 126118
     },
     {
       "path": "/medias/sante-la-vie-montage.jpg",
       "name": "sante-la-vie-montage.jpg",
       "folder": "medias",
       "kind": "image",
-      "size": 130538
+      "size": 141401
     },
     {
       "path": "/medias/sante-la-vie-montage.mp4",
