@@ -342,7 +342,7 @@ const ListeAttenteLoeuvre: React.FC<{ forcedProgramme?: ProgrammeKey }> = ({ for
           >
             <button
               type="button"
-              onClick={() => navigate(-1)}
+              onClick={() => { if (window.history.state?.idx > 0) navigate(-1); else window.location.href = '/accueil/'; }}
               className="inline-flex items-center gap-2 text-[#7d6330] text-[0.62rem] uppercase tracking-[0.26em] hover:text-[#1c1712] transition-colors duration-300 mb-9"
             >
               <ArrowLeft size={13} /> {lang === 'FR' ? 'Retour' : 'Back'}

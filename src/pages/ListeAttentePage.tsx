@@ -181,7 +181,7 @@ const ListeAttentePage: React.FC = () => {
         {/* Top breadcrumb — quiet link back to where the visitor came from. */}
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={() => { if (window.history.state?.idx > 0) navigate(-1); else window.location.href = '/accueil/'; }}
           className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-[#2a2015]/55 hover:text-[#7d6330] transition-colors mb-6 md:mb-10"
         >
           <i className="fa-solid fa-arrow-left text-[9px]" />

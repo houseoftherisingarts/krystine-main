@@ -597,7 +597,7 @@ export default function MediasV2() {
       {/* ─────────── INVITER · la même porte qu'au seuil, en français et en anglais ─────────── */}
       <section id="inviter" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#efe6d7] border-t border-[#9c7a44]/25 scroll-mt-24">
         <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-14 md:grid-cols-[1.2fr_0.8fr]">
-          <div data-reveal id="entrevue" className="flex flex-col items-start scroll-mt-28">
+          <div data-reveal id="entrevue" className="flex flex-col items-start scroll-mt-36">
             <Kicker className="mb-5">Pour une entrevue</Kicker>
             <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,3.6vw,3rem)]">Demander une entrevue</h2>
             <span className="mt-6 block h-px w-12 bg-[#9c7a44]" aria-hidden />
@@ -611,7 +611,7 @@ export default function MediasV2() {
             <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,3.6vw,3rem)]">Invite Krystine</h2>
             <span className="mt-6 block h-px w-12 bg-[#9c7a44]" aria-hidden />
             <p className="mt-6 max-w-[46ch] text-base leading-[1.8] text-[#3a2f23]">{BIO_EN}</p>
-            <p className="mt-4 text-[0.66rem] uppercase tracking-[0.22em] text-[#1c1712]/60">French, English or both</p>
+            <p className="mt-4 text-[0.66rem] uppercase tracking-[0.22em] text-[#1c1712]/60">French primarily, English on request, bilingual possible</p>
             <BoutonNoir href={ENTREVUE} className="mt-8">Request an interview</BoutonNoir>
           </div>
         </div>

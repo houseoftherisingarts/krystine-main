@@ -490,7 +490,7 @@ const FilmHero = forwardRef<FilmHeroRef>((_, ref) => {
         <video
           ref={v}
           src={src}
-          poster={PROMO + 'promo-ksl-poster-1920.webp'}
+          poster="/conferences/mont-tremblant-2024.webp"
           playsInline
           preload="metadata"
           aria-label="Voir Krystine sur scène, film de démonstration"
@@ -610,7 +610,7 @@ const TemoignagesSection: React.FC = () => {
             </figure>
             <figure className="min-w-0">
               <Quotes size={40} weight="fill" className="mb-6 text-[#BA7B39]" />
-              <blockquote className="v2-serif font-light leading-[1.32] text-[#EEE7DB] text-[clamp(1.45rem,2.5vw,2.25rem)]">
+              <blockquote className="v2-serif font-light leading-[1.45] text-[#EEE7DB] text-[clamp(1.2rem,1.9vw,1.6rem)]">
                 {premier.quote}
               </blockquote>
               <figcaption className="mt-8 text-[0.72rem] uppercase tracking-[0.22em] text-[#BA7B39]">{premier.by}</figcaption>
@@ -956,35 +956,30 @@ export default function KrystineV2() {
         data-hero
         className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(3rem,7vh,5rem)]"
       >
-        <div className="grid items-end gap-x-[clamp(2rem,4vw,4.5rem)] gap-y-7 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
-          <div className="min-w-0">
-            <p data-fade className="mb-5 text-[0.75rem] uppercase tracking-[0.3em] text-[#7d6330]">
+        {/* Même gabarit que /medias (Krystine, 9 oct. 2026) : le texte à gauche, le film dans son cadre à droite. */}
+        <div className="grid gap-x-[clamp(2rem,4vw,4.5rem)] gap-y-7 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:grid-rows-[auto_auto]">
+          <div className="order-1 min-w-0 lg:col-start-1 lg:row-start-1 lg:self-end">
+            <p data-fade className="mb-5 text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330]">
               Conférencière &middot; Autrice best-seller
             </p>
-            <h1 className="v2-serif font-light leading-[0.92] text-[#1c1712] text-[clamp(3rem,6.6vw,6.4rem)]">
+            <h1 className="v2-serif font-light leading-[0.92] text-[#1c1712] text-[clamp(2.9rem,6.4vw,6.2rem)]">
               <span data-line className="block overflow-hidden pb-[0.06em]">
-                <span className="block">Krystine <span className="whitespace-nowrap">St-Laurent</span></span>
+                <span className="block">{estConference ? 'Sur scène' : <>Krystine <span className="whitespace-nowrap">St-Laurent</span></>}</span>
               </span>
             </h1>
           </div>
-          <div className="min-w-0 lg:pb-3">
-            <p data-fade className="v2-serif font-light text-[clamp(1.3rem,2vw,1.7rem)] leading-[1.3] text-[#1c1712] max-w-[30ch]">
-              Comment choisir dans un monde qui pense de plus en plus à notre place&nbsp;?
-            </p>
+          <div className="order-2 min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-center">
+            <FilmHero ref={film} />
           </div>
-        </div>
-
-        {/* Le film de démonstration, en grand, embarqué : lecture au clic avec le son. */}
-        <div className="mt-[clamp(2rem,5vh,3.5rem)]">
-          <FilmHero ref={film} />
-        </div>
-
-        <div data-fade className="mt-[clamp(2rem,5vh,3rem)] flex flex-wrap items-center gap-x-9 gap-y-5">
-          <BoutonNoir href="#reserver">Inviter Krystine</BoutonNoir>
-          <LienSouligne href="#conferences">Découvrir la conférence</LienSouligne>
-          <p className="w-full text-[0.8rem] uppercase tracking-[0.18em] text-[#1c1712]/80 sm:w-auto">
-            En français, en anglais ou dans les deux
-          </p>
+          <div className="order-3 min-w-0 lg:col-start-1 lg:row-start-2 lg:self-start">
+            <p data-fade className="max-w-[40ch] text-[1.05rem] leading-[1.75] text-[#3a2f23]">
+              Comment choisir dans un monde qui pense de plus en plus à notre place&nbsp;? Krystine St-Laurent porte cette question sur scène, au Canada, aux États-Unis et en Europe. Français principalement, anglais sur demande, bilingue possible.
+            </p>
+            <div data-fade className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-5">
+              <BoutonNoir href="#reserver">Inviter Krystine</BoutonNoir>
+              <LienSouligne href="#conferences">Découvrir la conférence</LienSouligne>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1000,20 +995,17 @@ export default function KrystineV2() {
         {/* La grande conversation, commune à tout le site (Krystine, 9 oct. 2026) :
             la conférence en est une porte, les entrevues des médias en sont d'autres. */}
         <div data-reveal className="mb-[clamp(3.5rem,8vh,6rem)] border-b border-[#1c1712]/15 pb-[clamp(2.5rem,6vh,4rem)]">
-          <Kicker className="mb-5">La grande conversation</Kicker>
-          <p className="v2-serif font-light leading-[1.08] text-[#1c1712] text-[clamp(1.9rem,3.6vw,3.2rem)]">
-            <span className="block">Plus d’information que jamais.</span>
-            <span className="block">Pourquoi autant de confusion&nbsp;?</span>
-          </p>
+          <p className="v2-serif text-[clamp(1.15rem,1.8vw,1.5rem)] font-light text-[#7d6330]">Plus d’information que jamais.</p>
+          <h2 className="mt-2 v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2.1rem,4.6vw,4rem)]">Pourquoi autant de confusion&nbsp;?</h2>
         </div>
-        <div className="grid items-start gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div className="grid items-start gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
           <article data-reveal className="min-w-0">
             <Kicker className="mb-5">La conférence</Kicker>
-            <h2 className="v2-serif font-light leading-[1.04] text-[#1c1712] text-[clamp(2.05rem,4.4vw,4rem)]">
+            <h3 className="v2-serif font-light leading-[1.1] text-[#1c1712] text-[clamp(1.6rem,2.6vw,2.3rem)]">
               <span className="block">Plus de réponses.</span>
               <span className="block">Moins de confiance&nbsp;?</span>
-            </h2>
-            <p className="mt-6 v2-serif font-light text-[clamp(1.2rem,1.9vw,1.55rem)] leading-[1.4] text-[#1c1712] max-w-[40ch]">{ONE_TALK.sousTitre}</p>
+            </h3>
+            <p className="mt-4 v2-serif font-light text-[clamp(1.1rem,1.6vw,1.3rem)] leading-[1.45] text-[#3a2f23] max-w-[44ch]">{ONE_TALK.sousTitre}</p>
             <Filet className="mt-8" />
             <p className="mt-8 max-w-[60ch] text-[1.05rem] leading-[1.8] text-[#1c1712]">{ONE_TALK.texte}</p>
             <p className="mt-7 max-w-[58ch] border-l-2 border-[#9c7a44] pl-5 v2-serif text-[1.2rem] leading-[1.6] text-[#1c1712]">{ONE_TALK.promesse}</p>
@@ -1026,7 +1018,7 @@ export default function KrystineV2() {
               loading="lazy"
               width={1254}
               height={1254}
-              className="relative block aspect-[4/5] w-full object-cover object-[45%_30%]"
+              className="relative block aspect-[3/2] w-full object-cover object-[45%_30%]"
             />
             <span className="absolute left-0 top-0 bg-[#1c1712] px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.24em] text-[#f4efe6]">Sur scène</span>
           </figure>
@@ -1035,7 +1027,7 @@ export default function KrystineV2() {
         {/* Les portes : des contextes pour la même conférence, pas d'autres conférences */}
         <div data-reveal className="mt-[clamp(4rem,10vh,6.5rem)]">
           <Kicker className="mb-4">Portes de programmation</Kicker>
-          <h3 className="v2-serif font-light leading-[1.08] text-[#1c1712] text-[clamp(1.7rem,3vw,2.6rem)]">Une conférence, plusieurs portes.</h3>
+          <h3 className="v2-serif font-light leading-[1.1] text-[#1c1712] text-[clamp(1.5rem,2.4vw,2.1rem)]">Une conférence, plusieurs portes.</h3>
           <ol className="mt-10 grid gap-x-[clamp(1.25rem,2.5vw,2.25rem)] gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {PORTES.map((porte, i) => (
               <li key={porte.titre} className="min-w-0 border-t border-[#9c7a44]/60 pt-5">
