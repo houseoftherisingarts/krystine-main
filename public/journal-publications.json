@@ -7616,5 +7616,21 @@
       "public/accueil/index.html",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-09T17:12:50.023Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4e8d4c87",
+    "message": "Accueil : nouvelle image de partage Facebook (Krystine sur scène, titre « Autrice best-seller, conférencière et fondatrice d’INSPIRATA Ayurveda », ligne Livres · Au-delà des tendances · Conférences · INSPIRATA Ayurveda)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "index.html",
+      "public/accueil/index.html",
+      "public/accueil/partage.jpg",
+      "public/assets-manifest.json"
+    ]
   }
 ]
