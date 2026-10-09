@@ -7440,5 +7440,19 @@
       "src/pages/concepts/KrystineV2.tsx",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:35:00.498Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a814ddeb",
+    "message": "Médias (/medias) : nouvelle image d'affiche de la vidéo du haut, « Dans les médias » (livres, podcast, télé, radio, conférences)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/medias/sante-la-vie-montage.jpg"
+    ]
   }
 ]
