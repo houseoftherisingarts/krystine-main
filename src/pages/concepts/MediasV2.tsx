@@ -71,13 +71,13 @@ const SUJETS: { q: string; public: string }[] = [
 
 // La bande « Vue et entendue à » de /conferenciere (KrystineV2.tsx, MEDIAS),
 // précédée de l'éditeur (kit de presse, carte « livres »). Aucun chiffre ajouté.
-const PREUVES: { nom: string; logo?: string; note?: string }[] = [
+const PREUVES: { nom: string; logo?: string; note?: string; grand?: boolean }[] = [
   { nom: 'Éditions de l’Homme', logo: '/medias/logos/editions-de-l-homme.png', note: '3 livres · 2 best-sellers' },
   { nom: 'Santé la vie', note: 'Série télé · 3 saisons' },
   { nom: 'MAtv', logo: '/medias/logos/matv.png' },
   { nom: 'Vidéotron', logo: '/medias/logos/videotron.png' },
   { nom: 'TVA', logo: '/medias/logos/tva.png', note: 'Salut Bonjour' },
-  { nom: 'Bien', logo: '/medias/logos/bien.png' },
+  { nom: 'Bien', logo: '/medias/logos/bien.png', grand: true },
   { nom: '98,5 FM', logo: '/medias/logos/98-5.png' },
   { nom: 'Coup de Pouce', logo: '/medias/logos/coup-de-pouce.png' },
   { nom: 'Mieux-Être', note: 'Magazine' },
@@ -87,10 +87,10 @@ const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
   // Bandeau épais qui traverse l'écran (Krystine, 9 oct. 2026) : noms en gras, encre foncée, défilement lent.
   const rangee = (cache: boolean) => (
     <ul aria-hidden={cache || undefined} className="flex shrink-0 items-center gap-x-[clamp(2.5rem,5vw,4.5rem)] pr-[clamp(2.5rem,5vw,4.5rem)]">
-      {PREUVES.map(({ nom, logo, note }) => (
+      {PREUVES.map(({ nom, logo, note, grand }) => (
         <li key={nom} className="flex shrink-0 items-center gap-3">
           {logo
-            ? <img src={logo} alt={nom} loading="lazy" className="h-[clamp(24px,2.6vw,36px)] w-auto" />
+            ? <img src={logo} alt={nom} loading="lazy" className={grand ? 'h-[clamp(44px,4.6vw,64px)] w-auto' : 'h-[clamp(24px,2.6vw,36px)] w-auto'} />
             : <span className="v2-serif text-[clamp(1.25rem,2.1vw,1.75rem)] font-medium leading-none text-[#1c1712]">{nom}</span>}
           {note && <span className="text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-[#4a3d2e]">{note}</span>}
         </li>
