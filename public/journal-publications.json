@@ -7454,5 +7454,19 @@
       "public/assets-manifest.json",
       "public/medias/sante-la-vie-montage.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:36:00.414Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "0887f3a9",
+    "message": "Médias (/medias) : affiche du haut, logo Santé la vie sur fond noir, lettres blanches",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/medias/sante-la-vie-montage.jpg"
+    ]
   }
 ]
