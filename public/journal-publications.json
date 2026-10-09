@@ -7820,5 +7820,22 @@
       "src/pages/concepts/KrystineV2.tsx",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:12:49.343Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bb0a62dd",
+    "message": "Conférencière (/conferenciere) : haut de page avec le film en fondu de l'accueil (conférence 2026 en boucle, voile vert profond, « Voir le film, avec le son »); bandeau « Vue et entendue à » en vert profond avec logos ivoire et le logo de Santé la vie, sur l'accueil, Médias et Conférencière",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/medias/logos/sante-la-vie-blanc.png",
+      "src/components/v2/BandePreuve.tsx",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
