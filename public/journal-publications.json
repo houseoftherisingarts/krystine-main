@@ -7647,5 +7647,20 @@
       "public/accueil/index.html",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-09T17:27:54.370Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "32b57601",
+    "message": "Médias (/medias) et accueil : nouvelle affiche « Dans les médias » (titre, phrase, six tuiles avec logos blancs : Livres avec le 3e à paraître en 2027, Podcast, Télé, Santé la vie, Radio et presse, Conférences) en image de partage et en affiche de la vidéo",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/medias/partage.jpg",
+      "public/medias/sante-la-vie-montage.jpg"
+    ]
   }
 ]
