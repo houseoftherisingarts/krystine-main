@@ -7837,5 +7837,19 @@
       "src/components/v2/BandePreuve.tsx",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:13:53.352Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cf1812d4",
+    "message": "Conférencière (/conferenciere) et bio (/krystine) : les dates retirées des légendes des photos de scène (lancement du premier livre, Mont-Tremblant)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/KrystineV2.tsx"
+    ]
   }
 ]
