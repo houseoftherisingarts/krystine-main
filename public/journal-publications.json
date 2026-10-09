@@ -7400,5 +7400,19 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T13:22:18.643Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f1fcb0b9",
+    "message": "Médias (/medias) : la carte « Regarder les épisodes » est retirée; les Rituels essentiels prennent toute la largeur sous la vidéo de Bien",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
