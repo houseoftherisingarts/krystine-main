@@ -6,6 +6,7 @@ import {
 import {
   ArrowRight, ArrowLeft, ArrowDown, Check, ArrowCounterClockwise,
   LockSimple, Clock, Wind, Flame, Leaf,
+  ChatCircleText, ChartDonut, EnvelopeSimpleOpen,
 } from '@phosphor-icons/react';
 import { useApp } from '../contexts/AppContext';
 import { CONTENT } from '../content';
@@ -1253,6 +1254,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
 const INSIDE = [
   {
     n: '01',
+    Icone: ChatCircleText,
     titleFR: 'Vous répondez à dix questions',
     titleEN: 'You answer ten questions',
     bodyFR: "Le sommeil, la digestion, le stress, l'énergie, le mental, les émotions… Une question à la fois. Suivez votre premier réflexe.",
@@ -1260,6 +1262,7 @@ const INSIDE = [
   },
   {
     n: '02',
+    Icone: ChartDonut,
     titleFR: 'Vous voyez ce qui domine en ce moment',
     titleEN: 'You see what dominates right now',
     bodyFR: 'Vata (Vent et Espace), Pitta (Feu et Eau) et Kapha (Eau et Terre), en pourcentages, tout de suite à l’écran. Il n’y a ni bonne ni mauvaise réponse.',
@@ -1267,6 +1270,7 @@ const INSIDE = [
   },
   {
     n: '03',
+    Icone: EnvelopeSimpleOpen,
     titleFR: 'Vous recevez votre lecture par courriel',
     titleEN: 'You receive your reading by email',
     bodyFR: "Votre résultat complet, puis, si vous le souhaitez, quelques lettres pour reconnaître comment cette dominance se manifeste, ce qui l'accentue et comment elle évolue.",
@@ -1380,16 +1384,6 @@ const QuizLoeuvre: React.FC = () => {
                   ? 'Par Krystine St-Laurent, autrice de Nature & Ayurveda et de Féminité & Ayurveda (Éditions de l’Homme)'
                   : 'By Krystine St-Laurent, author of Nature & Ayurveda and Féminité & Ayurveda (Éditions de l’Homme)'}
               </p>
-              {/* Ce qu'est l'Ayurveda, dans les mots du livre (Krystine, 9 oct. 2026) :
-                  Nature & Ayurveda, Éditions de l'Homme, 2018, p. 41. Citation exacte, jamais paraphrasée. */}
-              {lang === 'FR' && (
-                <figure className="mt-7 max-w-[54ch] border-l-2 border-[#9c7a44] pl-5">
-                  <blockquote className="v2-serif text-[1.05rem] leading-[1.65] text-[#1c1712]">
-                    « L’Ayurveda est un art de vivre, une invitation à créer de l’espace dans sa vie pour prendre soin de soi et se connaître davantage, c’est une incitation à renouer avec la nature et notre propre nature. »
-                  </blockquote>
-                  <figcaption className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] text-[#7d6330]">Krystine St-Laurent, Nature &amp; Ayurveda, p. 41</figcaption>
-                </figure>
-              )}
             </motion.div>
             <motion.div {...heroFade(0.55)} className="mt-11 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
@@ -1466,8 +1460,20 @@ const QuizLoeuvre: React.FC = () => {
 
       {/* ─────────── QUELQUES CLÉS DE L'AYURVEDA · la carte vert profond ─────────── */}
       <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#f4efe6]">
+        {/* L'Ayurveda dans les mots du livre, juste avant la carte (Krystine, 9 oct. 2026) :
+            Nature & Ayurveda, Éditions de l'Homme, 2018, p. 41. Citation exacte, jamais paraphrasée. */}
+        {lang === 'FR' && (
+          <Reveal className="max-w-[40rem] mx-auto mb-[clamp(2.5rem,6vh,4rem)] text-center">
+            <p className="mb-4 text-[0.68rem] uppercase tracking-[0.28em] text-[#7d6330]">L’Ayurveda, en une phrase</p>
+            <blockquote className="v2-serif font-light text-[clamp(1.15rem,1.8vw,1.45rem)] leading-[1.6] text-[#1c1712]">
+              « L’Ayurveda est un art de vivre, une invitation à créer de l’espace dans sa vie pour prendre soin de soi et se connaître davantage, c’est une incitation à renouer avec la nature et notre propre nature. »
+            </blockquote>
+            <span className="mx-auto mt-5 block h-px w-10 bg-[#9c7a44]" aria-hidden />
+            <p className="mt-4 text-[0.7rem] uppercase tracking-[0.16em] text-[#3a2f23]/80">Krystine St-Laurent · Nature &amp; Ayurveda, p. 41</p>
+          </Reveal>
+        )}
         <Reveal className="max-w-[44rem] mx-auto">
-          <div className="bg-[#28352F] px-[clamp(1.5rem,5vw,3.5rem)] pt-[clamp(2rem,4.5vw,3rem)] pb-[clamp(1.5rem,3.5vw,2.25rem)] text-[#EEE7DB]">
+          <div className="rounded-[15px] overflow-hidden bg-[#28352F] px-[clamp(1.5rem,5vw,3.5rem)] pt-[clamp(2rem,4.5vw,3rem)] pb-[clamp(1.5rem,3.5vw,2.25rem)] text-[#EEE7DB]">
             <h2 className="text-center v2-serif font-light leading-[1.1] text-[#EEE7DB] text-[clamp(1.6rem,3.4vw,2.3rem)]">
               {lang === 'FR' ? 'Quelques clés de l’Ayurveda' : 'A few keys to Ayurveda'}
             </h2>
@@ -1504,7 +1510,12 @@ const QuizLoeuvre: React.FC = () => {
           {INSIDE.map((it, i) => (
             <Reveal key={it.n} delay={i * 0.12}>
               <DrawRule className="w-full" delay={0.1 + i * 0.12} />
-              <span className="mt-6 block v2-serif font-light text-[2.4rem] leading-none text-[#7d6330] tabular-nums">{it.n}</span>
+              <div className="mt-6 flex items-center gap-4">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#28352F] text-[#f2c39c] shadow-[0_10px_24px_-14px_rgba(28,23,18,0.7)]" aria-hidden>
+                  <it.Icone size={26} weight="light" />
+                </span>
+                <span className="v2-serif font-light text-[2rem] leading-none text-[#7d6330] tabular-nums">{it.n}</span>
+              </div>
               <h3 className="mt-4 v2-serif font-light text-[1.45rem] leading-[1.15] text-[#1c1712]">
                 {lang === 'FR' ? it.titleFR : it.titleEN}
               </h3>
