@@ -7580,5 +7580,26 @@
       "public/assets-manifest.json",
       "src/firebase/firestore.ts"
     ]
+  },
+  {
+    "quand": "2026-10-09T17:04:35.240Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "38b89adf",
+    "message": "Courriel de remerciement automatique pour les mots laissés après une conférence (/conferenciere/temoignage) : PDF des 3 rituels du moment et code surprise MOT10; PDF des 3 rituels remplacé par la version approuvée; Médias (/medias) : légende de Bien « lors du lancement de Féminité & Ayurveda » et image de partage Facebook (affiche Dans les médias)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/merciTemoignage.ts",
+      "public/assets-manifest.json",
+      "public/boutique/trois-rituels-du-moment.pdf",
+      "public/medias/partage.jpg",
+      "src/lib/pageMeta.ts",
+      "src/pages/TemoignageConference.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
