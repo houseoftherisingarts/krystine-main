@@ -7891,5 +7891,19 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:43:02.809Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7ca97874",
+    "message": "Quiz (/quiz) : haut de page allégé (titre à la taille des autres pages, vidéo à droite en taille moyenne au lieu d'une bannière plein écran), et « À quoi cela sert de le savoir ? » avec la phrase de Nature & Ayurveda (p. 108-109)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
