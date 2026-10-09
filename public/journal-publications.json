@@ -7800,5 +7800,25 @@
       "src/pages/client/ClientPreferences.tsx.bak-2026-10-08",
       "src/pages/vata/offre.ts.bak-2026-10-07"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:06:12.952Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d5ab6838",
+    "message": "Conférencière (/conferenciere) au gabarit de Médias (texte à gauche, film dans un cadre avec une salle pleine, titres sobres, grande conversation), langues simplifiées partout (« Français principalement, anglais sur demande, bilingue possible »), pastille « ? » en bas à droite au téléphone, bouton Retour de la liste d'attente vers l'accueil, arrivée du formulaire d'entrevue aérée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "src/components/layout/AidePepin.tsx",
+      "src/pages/ListeAttenteLoeuvre.tsx",
+      "src/pages/ListeAttentePage.tsx",
+      "src/pages/concepts/KrystineV2.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
