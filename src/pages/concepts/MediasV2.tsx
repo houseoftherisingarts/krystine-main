@@ -478,45 +478,13 @@ export default function MediasV2() {
           </figure>
         </div>
 
-        <div data-reveal className="grid md:grid-cols-2 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
-          {/* Regarder les épisodes · espace client, en niskas */}
-          <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">
-            <span className="inline-grid place-items-center w-12 h-12 rounded-full border border-[#9c7a44]/40 text-[#7d6330] mb-7">
-              <Coins size={22} weight="light" />
-            </span>
-            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">
-              {lang === 'FR' ? 'Dans votre espace' : 'In your space'}
-            </span>
-            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">
-              {lang === 'FR' ? 'Regarder les épisodes' : 'Watch the episodes'}
-            </h3>
-            <p className="mt-4 text-[0.95rem] leading-[1.8] text-[#3a2f23] flex-1">
-              {!jeu
-                ? (lang === 'FR'
-                  ? 'Les épisodes de Santé la vie se regardent dans votre espace, une saison complète pour 30 $ CA. Ils rejoignent vos téléchargements pour de bon.'
-                  : 'The episodes of Santé la vie are watched in your space, a full season for $30 CAD. They join your downloads for good.')
-                : lang === 'FR'
-                ? 'Les épisodes de Santé la vie se regardent dans votre espace : 25 niskas l’épisode, et une saison complète pour 175 niskas ou 30 $ CA, au choix. Les niskas se gagnent en visitant votre espace, et s’achètent aussi directement là.'
-                : 'The episodes of Santé la vie are watched in your space: 25 niskas per episode, and a full season for 175 niskas or $30 CAD, your choice. Niskas are earned by visiting your space, and can also be bought there directly.'}
-            </p>
-            {user ? (
-              <a
-                href="/compte?onglet=telechargements"
-                className="group mt-8 inline-flex w-fit items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
-              >
-                {lang === 'FR' ? 'Ouvrir mon espace' : 'Open my space'}
-                <ArrowRight size={14} weight="regular" className="transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            ) : (
-              <BoutonCompte taille="md" className="mt-8 w-fit" />
-            )}
-          </div>
-
+        <div data-reveal className="mx-auto max-w-[1100px] border border-[#1c1712]/12">
           {/* Rituels essentiels · à la place du coffret, pas encore disponible (Krystine, 9 oct. 2026) */}
-          <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">
-            <a href="/rituels-essentiels" className="block overflow-hidden border border-[#9c7a44]/35 mb-7" aria-label="Rituels essentiels inspirés de l'Ayurveda">
+          <div className="grid items-center gap-x-[clamp(1.75rem,4vw,3.5rem)] p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee] md:grid-cols-2">
+            <a href="/rituels-essentiels" className="block overflow-hidden border border-[#9c7a44]/35 mb-7 md:mb-0" aria-label="Rituels essentiels inspirés de l'Ayurveda">
               <img src="/rituels-essentiels/carte-fondu.webp" alt="Rituels essentiels inspirés de l'Ayurveda : gestes simples à l'huile" loading="lazy" className="aspect-[16/10] w-full object-cover" />
             </a>
+            <div className="flex flex-col">
             <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">
               {lang === 'FR' ? 'Commencer, dès ce soir' : 'Start tonight'}
             </span>
@@ -537,6 +505,7 @@ export default function MediasV2() {
                 {lang === 'FR' ? 'Commencer ce soir' : 'Start tonight'}
                 <ArrowRight size={14} weight="regular" />
               </a>
+            </div>
             </div>
           </div>
         </div>
