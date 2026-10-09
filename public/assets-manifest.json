@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T23:55:14.307Z",
+  "generatedAt": "2026-10-09T23:55:47.519Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2498,14 +2498,14 @@
       "name": "quiz-dosha-revisee-poster.jpg",
       "folder": "quiz",
       "kind": "image",
-      "size": 95044
+      "size": 54794
     },
     {
       "path": "/quiz/quiz-dosha-revisee.mp4",
       "name": "quiz-dosha-revisee.mp4",
       "folder": "quiz",
       "kind": "video",
-      "size": 5281914
+      "size": 1243432
     },
     {
       "path": "/quiz/quiz-dosha.mp4",
