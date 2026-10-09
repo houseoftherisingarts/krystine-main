@@ -72,13 +72,13 @@ const SUJETS: { q: string; public: string }[] = [
 // La bande « Vue et entendue à » de /conferenciere (KrystineV2.tsx, MEDIAS),
 // précédée de l'éditeur (kit de presse, carte « livres »). Aucun chiffre ajouté.
 const PREUVES: { nom: string; logo?: string; note?: string; grand?: boolean }[] = [
-  { nom: 'Éditions de l’Homme', logo: '/medias/logos/editions-de-l-homme.png', note: '3 livres · 2 best-sellers' },
+  { nom: 'Éditions de l’Homme', logo: '/medias/logos/editions-de-l-homme.png', note: 'Best-sellers' },
   { nom: 'Santé la vie', note: 'Série télé · 3 saisons' },
   { nom: 'MAtv', logo: '/medias/logos/matv.png' },
   { nom: 'Vidéotron', logo: '/medias/logos/videotron.png' },
   { nom: 'TVA', logo: '/medias/logos/tva.png', note: 'Salut Bonjour' },
   { nom: 'Bien', logo: '/medias/logos/bien.png', grand: true },
-  { nom: '98,5 FM', logo: '/medias/logos/98-5.png' },
+  { nom: '98,5 FM', logo: '/medias/logos/98-5.png', note: 'FM' },
   { nom: 'Coup de Pouce', logo: '/medias/logos/coup-de-pouce.png' },
   { nom: 'Mieux-Être', note: 'Magazine' },
 ];
