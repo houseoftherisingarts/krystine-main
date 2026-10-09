@@ -7538,5 +7538,19 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:51:35.691Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "241e0ac0",
+    "message": "Médias (/medias) : logo de Bien agrandi dans le bandeau « Vue et entendue à »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
