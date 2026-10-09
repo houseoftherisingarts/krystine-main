@@ -7524,5 +7524,19 @@
       "public/medias/logos/videotron.png",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:50:37.249Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cd7911c6",
+    "message": "Médias (/medias) : bandeau « Vue et entendue à » avec les logos (Éditions de l'Homme, MAtv, Vidéotron, TVA, Bien, 98,5 FM, Coup de Pouce), Santé la vie et Mieux-Être en toutes lettres",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
