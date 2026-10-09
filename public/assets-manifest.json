@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T16:44:36.623Z",
+  "generatedAt": "2026-10-09T16:48:46.396Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1743,6 +1743,104 @@
       "folder": "medias",
       "kind": "video",
       "size": 13086665
+    },
+    {
+      "path": "/medias/logos/98-5-blanc.png",
+      "name": "98-5-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 12518
+    },
+    {
+      "path": "/medias/logos/98-5.png",
+      "name": "98-5.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 12513
+    },
+    {
+      "path": "/medias/logos/bien-blanc.png",
+      "name": "bien-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 4224
+    },
+    {
+      "path": "/medias/logos/bien.png",
+      "name": "bien.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 4229
+    },
+    {
+      "path": "/medias/logos/coup-de-pouce-blanc.png",
+      "name": "coup-de-pouce-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 19588
+    },
+    {
+      "path": "/medias/logos/coup-de-pouce.png",
+      "name": "coup-de-pouce.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 19586
+    },
+    {
+      "path": "/medias/logos/editions-de-l-homme-blanc.png",
+      "name": "editions-de-l-homme-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 20084
+    },
+    {
+      "path": "/medias/logos/editions-de-l-homme.png",
+      "name": "editions-de-l-homme.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 20085
+    },
+    {
+      "path": "/medias/logos/matv-blanc.png",
+      "name": "matv-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 9021
+    },
+    {
+      "path": "/medias/logos/matv.png",
+      "name": "matv.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 9021
+    },
+    {
+      "path": "/medias/logos/tva-blanc.png",
+      "name": "tva-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 9353
+    },
+    {
+      "path": "/medias/logos/tva.png",
+      "name": "tva.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 9357
+    },
+    {
+      "path": "/medias/logos/videotron-blanc.png",
+      "name": "videotron-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 11530
+    },
+    {
+      "path": "/medias/logos/videotron.png",
+      "name": "videotron.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 11542
     },
     {
       "path": "/medias/sujets/porte-1.webp",

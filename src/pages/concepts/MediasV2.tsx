@@ -82,19 +82,26 @@ const PREUVES: [string, string][] = [
   ['Mieux-Être', 'Magazine'],
 ];
 
-const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => (
-  <section aria-label={lang === 'FR' ? 'Vue et entendue à' : 'As seen on'} className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(2.5rem,6vh,4rem)] bg-[#efe6d7] border-y border-[#9c7a44]/25">
-    <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330] mb-7">{lang === 'FR' ? 'Vue et entendue à' : 'As seen on'}</p>
-    <ul className="grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4 lg:gap-x-10">
+const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
+  // Bandeau épais qui traverse l'écran (Krystine, 9 oct. 2026) : noms en gras, encre foncée, défilement lent.
+  const rangee = (cache: boolean) => (
+    <ul aria-hidden={cache || undefined} className="flex shrink-0 items-center gap-x-[clamp(2.5rem,5vw,4.5rem)] pr-[clamp(2.5rem,5vw,4.5rem)]">
       {PREUVES.map(([nom, genre]) => (
-        <li key={nom} className="leading-none">
-          <span className="v2-serif block text-[clamp(1.1rem,1.5vw,1.35rem)] text-[#1c1712]">{nom}</span>
-          <span className="mt-2 block text-[0.6rem] uppercase tracking-[0.18em] text-[#1c1712]/60 leading-snug">{genre}</span>
+        <li key={nom} className="flex shrink-0 items-baseline gap-3">
+          <span className="v2-serif text-[clamp(1.5rem,2.6vw,2.2rem)] font-medium leading-none text-[#1c1712]">{nom}</span>
+          <span className="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-[#4a3d2e]">{genre}</span>
         </li>
       ))}
     </ul>
-  </section>
-);
+  );
+  return (
+    <section aria-label={lang === 'FR' ? 'Vue et entendue à' : 'As seen on'} className="relative w-full overflow-hidden bg-[#efe6d7] border-y-2 border-[#9c7a44]/40 py-[clamp(2.25rem,5vh,3.5rem)]">
+      <style>{`@keyframes ksl-defile{from{transform:translateX(0)}to{transform:translateX(-50%)}}.ksl-defile{animation:ksl-defile 48s linear infinite}.ksl-defile:hover{animation-play-state:paused}@media (prefers-reduced-motion:reduce){.ksl-defile{animation:none;flex-wrap:wrap}}`}</style>
+      <p className="px-[clamp(1.5rem,5vw,5.5rem)] mb-6 text-[0.85rem] font-semibold uppercase tracking-[0.26em] text-[#1c1712]">{lang === 'FR' ? 'Vue et entendue à' : 'As seen on'}</p>
+      <div className="ksl-defile flex w-max">{rangee(false)}{rangee(true)}</div>
+    </section>
+  );
+};
 
 /** Une vidéo embarquée : affiche, lecture au clic avec le son. */
 const BIEN = { src: '/medias/bien-2021.mp4', poster: '/medias/bien-2021.jpg', label: 'Krystine St-Laurent présente Féminité & Ayurveda à Nathalie Simard, émission Bien, 2 septembre 2021', bouton: ['Regarder l’extrait de l’émission Bien, avec le son', 'Watch the Bien segment, with sound'] as [string, string], etiquette: 'Émission Bien', legende: 'Émission Bien · 2 septembre 2021' };
@@ -566,7 +573,7 @@ export default function MediasV2() {
             <a href="/rituels-essentiels" className="block overflow-hidden border border-[#BA7B39]/50 mb-7 md:mb-0" aria-label="Rituels essentiels inspirés de l'Ayurveda">
               <img src="/rituels-essentiels/carte-fondu.webp" alt="Rituels essentiels inspirés de l'Ayurveda : gestes simples à l'huile" loading="lazy" className="aspect-[16/10] w-full object-cover" />
             </a>
-            <div className="flex flex-col">
+            <div className="flex min-w-0 flex-col">
             <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#BA7B39] mb-4">
               {lang === 'FR' ? 'Commencer, dès ce soir' : 'Start tonight'}
             </span>
