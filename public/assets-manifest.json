@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T17:11:21.202Z",
+  "generatedAt": "2026-10-09T17:12:42.140Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -49,6 +49,13 @@
       "folder": "5elements",
       "kind": "image",
       "size": 49106
+    },
+    {
+      "path": "/accueil/partage.jpg",
+      "name": "partage.jpg",
+      "folder": "accueil",
+      "kind": "image",
+      "size": 113055
     },
     {
       "path": "/accueil/assets/hero-ml-poster.jpg",
