@@ -7712,5 +7712,26 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/concepts/KrystineV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T22:26:43.126Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c8102762",
+    "message": "Conférencière (/conferenciere) refaite au style Médias (film en grand, bandeau des logos, la grande conversation « Plus d’information que jamais. Pourquoi autant de confusion ? » en tête de la conférence, témoignage en grand, formulaire), arrivée directe sur #conferences; Médias : « Demander une entrevue » avec un formulaire court pour les productrices; admin : ventes INSPIRATA AYURVEDA et Krystine St-Laurent côte à côte au tableau de bord",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/qa/conferenciere-v2-shots.mjs",
+      "src/components/v2/BandePreuve.tsx",
+      "src/components/v2/DemandeEntrevue.tsx",
+      "src/pages/admin/sections/DashboardSection.tsx",
+      "src/pages/admin/sections/dashboard/CommandesStripeCard.tsx",
+      "src/pages/admin/sections/dashboard/VentesDeuxMaisonsCard.tsx",
+      "src/pages/concepts/KrystineV2.tsx",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
