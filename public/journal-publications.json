@@ -7866,5 +7866,16 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:28:27.249Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3a63a879",
+    "message": "Quiz (/quiz) : la phrase de Nature & Ayurveda (p. 41) passe dans une bannière vert profond, juste avant « Quelques clés de l'Ayurveda »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": []
   }
 ]
