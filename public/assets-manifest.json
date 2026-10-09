@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T23:06:04.114Z",
+  "generatedAt": "2026-10-09T23:12:40.997Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1834,6 +1834,13 @@
       "folder": "medias/logos",
       "kind": "image",
       "size": 9021
+    },
+    {
+      "path": "/medias/logos/sante-la-vie-blanc.png",
+      "name": "sante-la-vie-blanc.png",
+      "folder": "medias/logos",
+      "kind": "image",
+      "size": 42287
     },
     {
       "path": "/medias/logos/tva-blanc.png",
