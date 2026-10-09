@@ -1,14 +1,16 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import SplitType from 'split-type';
 import {
-  ArrowUpRight, ArrowDown, CaretDown, Check, CircleNotch,
+  ArrowUpRight, CaretDown, Check, CircleNotch,
   MapPin, Quotes, Play, Pause, SpeakerHigh, SpeakerSlash, CornersOut,
 } from '@phosphor-icons/react';
 import { useApp } from '../../contexts/AppContext';
+import { BoutonNoir, LienSouligne, Filet, CarteVerte } from '../../components/v2/Magazine';
+import { BandePreuve } from '../../components/v2/BandePreuve';
 import NewsletterSignup from '../../components/NewsletterSignup';
 import LiveEventsSection from '../../components/LiveEvents';
 import { getEventsPublics, getTemoignagesPublies, addBookingRequest, type EventDoc } from '../../firebase/firestore';
@@ -31,8 +33,6 @@ gsap.registerPlugin(ScrollTrigger);
  */
 
 const EASE = 'cubic-bezier(0.22,1,0.36,1)';
-
-const COVERLINES = ['Près de 40 ans de pratique', 'La trilogie · Éditions de l’Homme', 'USA, Canada & Europe'];
 
 /* ════════════════════════ Données éditoriales ════════════════════════ */
 
@@ -283,7 +283,7 @@ const BookingSection: React.FC = () => {
       className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7] scroll-mt-24"
     >
       <div data-reveal className="max-w-[760px] mx-auto text-center mb-14">
-        <Kicker className="mb-5">Chapitre 04 · Réserver Krystine</Kicker>
+        <Kicker className="mb-5">Réserver Krystine</Kicker>
         <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">
           Faire une demande
         </h2>
@@ -508,7 +508,7 @@ const FilmHero = forwardRef<FilmHeroRef>((_, ref) => {
           <button
             type="button"
             onClick={jouer}
-            className="group absolute inset-0 flex items-end justify-end p-[clamp(1rem,2.2vw,1.5rem)] text-left max-sm:p-3"
+            className="group absolute inset-0 flex items-center justify-center p-[clamp(1rem,2.2vw,1.5rem)] text-left max-sm:items-end max-sm:justify-end max-sm:p-3"
             aria-label="Voir Krystine sur scène, lire le film avec le son"
           >
             <span className="inline-flex items-center gap-3.5 bg-[#1c1712] px-5 py-3.5 text-[#f4efe6] transition-colors duration-300 group-hover:bg-[#3a2f23] max-sm:gap-2.5 max-sm:px-2.5 max-sm:py-2.5">
@@ -570,41 +570,6 @@ const FilmHero = forwardRef<FilmHeroRef>((_, ref) => {
 });
 FilmHero.displayName = 'FilmHero';
 
-/* ════════════════════════ Bande · Médias et kit de presse ════════════════════════ */
-
-// Les médias où Krystine a été vue et entendue, repris tels quels de l'ancienne
-// page /speaking (archives/speaking-2026-09-26), sans logos inventés; puis le
-// kit de presse (/presse : photos, biographies, faits), qu'une productrice
-// cherche en premier. Ajouté le 28 septembre 2026 à la demande de Krystine.
-const MEDIAS: [string, string][] = [
-  ['Vidéotron', 'Télévision'],
-  ['Salut Bonjour', 'TVA'],
-  ['Santé la vie', 'Série télé · 3 saisons'],
-  ['98,5 FM', 'Radio'],
-  ['Coup de Pouce', 'Magazine'],
-  ['Mieux-Être', 'Magazine'],
-  ['Bien', 'Émission télé'],
-];
-
-const MediasBande: React.FC = () => (
-  <section aria-label="Médias" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(3rem,7vh,5rem)] bg-[#efe6d7] border-y border-[#9c7a44]/25">
-    <div data-reveal className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-      <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330] shrink-0">Vue et entendue à</p>
-      <ul className="flex flex-wrap gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-5">
-        {MEDIAS.map(([nom, genre]) => (
-          <li key={nom} className="leading-none">
-            <span className="v2-serif block text-[clamp(1.05rem,1.6vw,1.4rem)] text-[#1c1712]">{nom}</span>
-            <span className="mt-1.5 block text-[0.56rem] uppercase tracking-[0.2em] text-[#1c1712]/55">{genre}</span>
-          </li>
-        ))}
-      </ul>
-      <a href="#reserver" className="shrink-0 self-start border-b border-[#1c1712] pb-0.5 text-[0.9rem] text-[#1c1712] hover:text-[#7d6330] hover:border-[#9c7a44] lg:self-center">
-        Photos et biographies pour la presse, sur demande
-      </a>
-    </div>
-  </section>
-);
-
 /* ════════════════════════ Section · Témoignages ════════════════════════ */
 
 // Les paroles fixes plus celles que Krystine approuve dans l'admin
@@ -616,29 +581,55 @@ const TemoignagesSection: React.FC = () => {
       .then((ts) => setRecus(ts.map((t) => ({ quote: t.texte, by: [t.nom, t.role, t.evenement].filter(Boolean).join(' · ') }))))
       .catch(() => setRecus([]));
   }, []);
-  const tous = [...TESTIMONIALS, ...recus];
+  const [premier, ...autres] = [...TESTIMONIALS, ...recus];
   return (
-    <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6]">
-      <div data-reveal className="max-w-[760px] mb-16">
-        <Kicker className="mb-5">Ce que l’on en dit</Kicker>
-        <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-          Après son passage
-        </h2>
+    <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,8rem)] bg-[#efe6d7]">
+      <div data-reveal className="mb-10">
+        <Kicker className="mb-4">Ce que l’on en dit</Kicker>
+        <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.1rem,4.4vw,3.6rem)]">Après son passage</h2>
       </div>
 
-      <div data-reveal className={`grid gap-y-12 ${tous.length > 1 ? 'md:grid-cols-2 gap-x-[clamp(2rem,4vw,4rem)]' : ''}`}>
-        {tous.map((t, i) => (
-          <figure key={`${t.by}-${i}`} className={`flex flex-col border-t border-[#9c7a44]/40 pt-10 ${tous.length > 1 ? '' : 'max-w-[980px]'}`}>
-            <Quotes size={34} weight="fill" className="text-[#9c7a44]/40 mb-6" />
-            <blockquote className={`v2-serif text-[#1c1712] leading-[1.45] flex-1 ${tous.length > 1 ? 'text-[clamp(1.15rem,1.8vw,1.45rem)]' : 'text-[clamp(1.35rem,2.4vw,2rem)]'}`}>
-              {t.quote}
-            </blockquote>
-            <figcaption className="mt-7 text-[0.62rem] uppercase tracking-[0.2em] text-[#7d6330]">{t.by}</figcaption>
-          </figure>
-        ))}
+      {/* La seule carte vert profond de la page. */}
+      <div data-reveal>
+        <CarteVerte>
+          <div className="grid items-center gap-x-[clamp(2rem,4vw,4rem)] gap-y-9 p-[clamp(1.5rem,4vw,3.75rem)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <figure className="min-w-0">
+              <div className="overflow-hidden border border-[#BA7B39]/45 p-1.5">
+                <img
+                  src="/conferences/lancement-2018.webp"
+                  alt="Krystine St-Laurent sur scène devant une salle comble, au lancement de son premier livre en 2018"
+                  loading="lazy"
+                  width={2200}
+                  height={1237}
+                  className="block aspect-[16/10] w-full object-cover"
+                />
+              </div>
+              <figcaption className="mt-3.5 text-[0.66rem] uppercase tracking-[0.2em] text-[#EEE7DB]/75">
+                Au lancement de son premier livre, devant une salle comble &middot; 2018
+              </figcaption>
+            </figure>
+            <figure className="min-w-0">
+              <Quotes size={40} weight="fill" className="mb-6 text-[#BA7B39]" />
+              <blockquote className="v2-serif font-light leading-[1.32] text-[#EEE7DB] text-[clamp(1.45rem,2.5vw,2.25rem)]">
+                {premier.quote}
+              </blockquote>
+              <figcaption className="mt-8 text-[0.72rem] uppercase tracking-[0.22em] text-[#BA7B39]">{premier.by}</figcaption>
+            </figure>
+          </div>
+          {autres.length > 0 && (
+            <div className="grid gap-x-[clamp(2rem,4vw,4rem)] gap-y-10 border-t border-[#EEE7DB]/15 px-[clamp(1.5rem,4vw,3.75rem)] py-[clamp(2rem,4vw,3rem)] md:grid-cols-2">
+              {autres.map((t, i) => (
+                <figure key={`${t.by}-${i}`} className="min-w-0">
+                  <blockquote className="v2-serif font-light leading-[1.45] text-[#EEE7DB] text-[clamp(1.1rem,1.6vw,1.35rem)]">{t.quote}</blockquote>
+                  <figcaption className="mt-5 text-[0.66rem] uppercase tracking-[0.2em] text-[#BA7B39]">{t.by}</figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
+        </CarteVerte>
       </div>
 
-      <p data-reveal className="mt-14 text-[0.95rem] text-[#3a2f23]">
+      <p data-reveal className="mt-10 text-[1rem] text-[#1c1712]">
         Vous avez assisté à une conférence de Krystine ?{' '}
         <Link to="/conferenciere/temoignage" className="border-b border-[#1c1712] pb-0.5 hover:text-[#7d6330] hover:border-[#9c7a44]">
           Laissez-nous un mot
@@ -723,12 +714,30 @@ const EventsSection: React.FC = () => {
 /* ════════════════════════ Page ════════════════════════ */
 
 export default function KrystineV2() {
-  // Arrivée par /conferenciere#reserver (bouton « Inviter Krystine » de /medias) : descendre au formulaire.
+  // /krystine et /conferenciere partagent ce composant : sur /conferenciere,
+  // la conférence passe avant la bio (9 octobre 2026).
+  const { pathname, hash } = useLocation();
+  const { lang } = useApp();
+  const estConference = pathname.startsWith('/conferenciere');
+
+  // Arrivée avec une ancre (/conferenciere#conferences depuis le bouton
+  // « Découvrir » de l'accueil, #reserver depuis /medias, etc.) : descendre à
+  // la section. Second passage pour corriger si une image ou un bloc chargé
+  // plus haut a déplacé la cible entre-temps.
   useEffect(() => {
-    if (window.location.hash !== '#reserver') return;
-    const t = window.setTimeout(() => document.getElementById('reserver')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
-    return () => window.clearTimeout(t);
-  }, []);
+    const id = decodeURIComponent((hash || '').replace(/^#/, ''));
+    if (!id) return;
+    const aller = (behavior: ScrollBehavior) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const ecart = el.getBoundingClientRect().top - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+      if (behavior === 'auto' && Math.abs(ecart) < 24) return;
+      el.scrollIntoView({ behavior, block: 'start' });
+    };
+    const t1 = window.setTimeout(() => aller('smooth'), 600);
+    const t2 = window.setTimeout(() => aller('auto'), 2000);
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+  }, [hash, pathname]);
   const root = useRef<HTMLDivElement>(null);
   const film = useRef<FilmHeroRef>(null);
 
@@ -860,6 +869,63 @@ export default function KrystineV2() {
     };
   }, []);
 
+  // Son histoire : en tête sur /krystine, plus bas sur /conferenciere.
+  const histoire = (
+    <section
+      id="histoire"
+      className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,13vh,9rem)] bg-[#efe6d7] scroll-mt-24"
+    >
+      <Kicker className="mb-10">Son histoire</Kicker>
+      <div
+        data-beat-grid
+        className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-14 lg:grid-cols-[1.15fr_0.85fr] items-end"
+      >
+        <div>
+          <p
+            data-statement
+            className="v2-serif font-light leading-[1.18] text-[#1c1712] text-[clamp(1.9rem,4.2vw,3.4rem)] max-w-[20ch]"
+          >
+            Près de 40 ans à relier ce que nous avons appris à séparer.
+          </p>
+          <p className="mt-8 max-w-[28ch] v2-serif font-light text-[clamp(1.25rem,2vw,1.6rem)] leading-[1.3] text-[#7d6330]">
+            « Qu’est-ce qui nourrit et soutient réellement la vie&nbsp;? »
+          </p>
+          <div className="mt-12 grid grid-cols-3 gap-6 max-w-xl border-t border-[#1c1712]/20 pt-8">
+            {[
+              ['40', 'ans de pratique'],
+              ['03', 'tomes de la trilogie'],
+              ['Scènes', 'USA, Canada & Europe'],
+            ].map(([n, l]) => (
+              <div data-beat key={l}>
+                <p className="v2-serif text-[clamp(1.8rem,3.6vw,3rem)] font-light leading-none text-[#7d6330]">{n}</p>
+                <p className="mt-3 text-[0.74rem] uppercase tracking-[0.16em] text-[#1c1712] leading-relaxed">{l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="relative">
+          <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
+          <div
+            data-beat-img-clip
+            className="relative aspect-[4/5] w-full overflow-hidden"
+            style={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+          >
+            <img
+              data-beat-img
+              src="/conferences/mont-tremblant-2024-krystine.webp"
+              alt="Krystine St-Laurent en conférence devant une salle pleine, Mont-Tremblant, juin 2024"
+              loading="lazy"
+              className="absolute inset-0 h-[120%] w-full object-cover object-[64%_center] will-change-transform"
+            />
+          </div>
+          <p data-beat className="mt-4 text-[0.66rem] uppercase tracking-[0.2em] text-[#1c1712]/80">
+            Du système de santé conventionnel à la scène
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <div
       ref={root}
@@ -885,263 +951,131 @@ export default function KrystineV2() {
 
       {/* Menu unifié du site = NavBar global (affiché par App.tsx) */}
 
-      {/* ─────────── HERO · couverture ─────────── */}
+      {/* ─────────── HERO · le nom, puis le film en grand (refonte du 9 octobre 2026) ─────────── */}
       <section
         data-hero
-        className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,13vh,9.5rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col"
+        className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(3rem,7vh,5rem)]"
       >
-
-        {/* grille couverture */}
-        <div className="flex-1 grid items-stretch gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] mt-[clamp(2rem,5vh,4rem)]">
-          {/* MASTHEAD */}
-          <div className="order-1 lg:row-start-1 lg:col-start-1 self-start">
-            <p
-              data-fade
-              className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-7"
-            >
+        <div className="grid items-end gap-x-[clamp(2rem,4vw,4.5rem)] gap-y-7 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
+          <div className="min-w-0">
+            <p data-fade className="mb-5 text-[0.75rem] uppercase tracking-[0.3em] text-[#7d6330]">
               Conférencière &middot; Autrice best-seller
             </p>
-            <h1 className="v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3.2rem,9.5vw,9.5rem)]">
-              <span data-line className="block overflow-hidden">
-                <span className="block">Krystine</span>
-              </span>
-              <span data-line className="block overflow-hidden">
-                <span className="block font-normal text-[#3a2f23]">St-Laurent</span>
+            <h1 className="v2-serif font-light leading-[0.92] text-[#1c1712] text-[clamp(3rem,6.6vw,6.4rem)]">
+              <span data-line className="block overflow-hidden pb-[0.06em]">
+                <span className="block">Krystine <span className="whitespace-nowrap">St-Laurent</span></span>
               </span>
             </h1>
           </div>
-
-          {/* FILM DE DÉMONSTRATION (remplace le portrait, 8 octobre 2026) */}
-          <div className="order-2 lg:row-start-1 lg:row-span-2 lg:col-start-2 relative self-start lg:pt-[3.1rem]">
-            <div className="relative w-full">
-              <FilmHero ref={film} />
-              <p data-fade className="mt-[clamp(2rem,6vh,3.5rem)] max-w-[24ch] v2-serif font-light text-[clamp(1.35rem,2.2vw,1.9rem)] leading-[1.25] text-[#1c1712] max-sm:mt-8">
-                « Qu’est-ce qui nourrit et soutient réellement la vie&nbsp;? »
-              </p>
-            </div>
-          </div>
-
-          {/* BAS-GAUCHE · cover-lines + tagline + CTA */}
-          <div className="order-3 lg:row-start-2 lg:col-start-1 self-end">
-            <ul data-fade className="flex flex-wrap gap-x-7 gap-y-2 mb-7">
-              {COVERLINES.map((c) => (
-                <li
-                  key={c}
-                  className="flex items-center gap-2.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712]/70"
-                >
-                  <span className="h-1 w-1 rounded-full bg-[#9c7a44]" />
-                  {c}
-                </li>
-              ))}
-            </ul>
-
-            <p
-              data-fade
-              className="v2-serif text-[clamp(1.35rem,2.4vw,1.95rem)] font-light leading-[1.32] text-[#3a2f23] max-w-[34ch]"
-            >
+          <div className="min-w-0 lg:pb-3">
+            <p data-fade className="v2-serif font-light text-[clamp(1.3rem,2vw,1.7rem)] leading-[1.3] text-[#1c1712] max-w-[30ch]">
               Comment choisir dans un monde qui pense de plus en plus à notre place&nbsp;?
             </p>
-            <div data-fade className="mt-6 max-w-[40rem] space-y-4 text-[0.98rem] leading-[1.8] text-[#3a2f23]">
-              <p>
-                Nous n&rsquo;avons jamais eu accès à autant d&rsquo;informations, de conseils, d&rsquo;experts, de méthodes et maintenant
-                d&rsquo;intelligence artificielle. Pourtant, plus les réponses se multiplient, plus il peut devenir difficile de savoir
-                lesquelles croire, lesquelles suivre et ce qui nous convient réellement.
-              </p>
-              <p>
-                Sur scène, Krystine St-Laurent explore ce que cette abondance de réponses fait à notre jugement, à notre confiance et à
-                notre capacité de choisir, et comment retrouver des repères sans remettre notre autorité à une nouvelle méthode, un
-                nouvel expert ou une nouvelle technologie.
-              </p>
-            </div>
-
-            <div data-fade className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
-              <a
-                href="#reserver"
-                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44]"
-              >
-                Inviter Krystine
-                <ArrowUpRight size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-              <button
-                type="button"
-                onClick={() => {
-                  document.getElementById('film')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  film.current?.jouer();
-                }}
-                className="group inline-flex items-center gap-2.5 bg-[#1c1712] px-5 py-3 text-[0.72rem] uppercase tracking-[0.2em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#3a2f23]"
-              >
-                <Play size={13} weight="fill" />
-                Voir Krystine sur scène
-              </button>
-              <a
-                href="#conferences"
-                className="v2-serif text-lg text-[#1c1712]/70 hover:text-[#7d6330] transition-colors duration-300"
-              >
-                Découvrir la conférence
-              </a>
-            </div>
-            <p data-fade className="mt-6 text-[0.6rem] uppercase tracking-[0.24em] text-[#1c1712]/55">
-              Conférences en français, en anglais ou dans les deux
-            </p>
           </div>
         </div>
 
-        {/* pied de hero · indice de scroll */}
-        <div
-          data-fade
-          className="flex items-end justify-between border-b border-[#1c1712]/15 pb-3.5 mt-[clamp(1.5rem,4vh,3rem)] text-[0.6rem] uppercase tracking-[0.28em] text-[#1c1712]/55"
-        >
-          <span className="flex items-center gap-2 v2-cue">
-            <ArrowDown size={13} weight="regular" />
-            Faire défiler
-          </span>
+        {/* Le film de démonstration, en grand, embarqué : lecture au clic avec le son. */}
+        <div className="mt-[clamp(2rem,5vh,3.5rem)]">
+          <FilmHero ref={film} />
+        </div>
+
+        <div data-fade className="mt-[clamp(2rem,5vh,3rem)] flex flex-wrap items-center gap-x-9 gap-y-5">
+          <BoutonNoir href="#reserver">Inviter Krystine</BoutonNoir>
+          <LienSouligne href="#conferences">Découvrir la conférence</LienSouligne>
+          <p className="w-full text-[0.8rem] uppercase tracking-[0.18em] text-[#1c1712]/80 sm:w-auto">
+            En français, en anglais ou dans les deux
+          </p>
         </div>
       </section>
 
-      {/* ─────────── PREMIER TEMPS DE SCROLL · son histoire ─────────── */}
-      <section
-        id="histoire"
-        className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,16vh,12rem)] scroll-mt-24"
-      >
-        <p className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-12">
-          Chapitre 01 &middot; Son histoire
-        </p>
+      <BandePreuve lang={lang} />
 
-        <div
-          data-beat-grid
-          className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-14 lg:grid-cols-[1.15fr_0.85fr] items-end"
-        >
-          {/* statement révélé ligne par ligne */}
-          <div>
-            <p
-              data-statement
-              className="v2-serif font-light leading-[1.18] text-[#1c1712] text-[clamp(1.9rem,4.4vw,3.6rem)] max-w-[20ch]"
-            >
-              Près de 40 ans à relier ce que nous avons appris à séparer.
-            </p>
+      {!estConference && histoire}
 
-            {/* chiffres */}
-            <div className="mt-14 grid grid-cols-3 gap-6 max-w-xl border-t border-[#1c1712]/15 pt-9">
-              {[
-                ['40', 'ans de pratique'],
-                ['03', 'tomes de la trilogie'],
-                ['Scènes', 'USA, Canada & Europe'],
-              ].map(([n, l]) => (
-                <div data-beat key={l}>
-                  <p className="v2-serif text-[clamp(2rem,4vw,3.2rem)] font-light leading-none text-[#7d6330]">
-                    {n}
-                  </p>
-                  <p className="mt-3 text-[0.66rem] uppercase tracking-[0.18em] text-[#1c1712]/60 leading-relaxed">
-                    {l}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* image inset avec parallaxe + clip reveal */}
-          <div className="relative">
-            <div
-              data-beat-img-clip
-              className="relative aspect-[4/5] w-full overflow-hidden"
-              style={{ clipPath: 'inset(0% 0% 0% 0%)' }}
-            >
-              <img
-                data-beat-img
-                src="/conferences/mont-tremblant-2024-krystine.webp"
-                alt="Krystine St-Laurent en conférence devant une salle pleine, Mont-Tremblant, juin 2024"
-                className="absolute inset-0 h-[120%] w-full object-cover object-[64%_center] will-change-transform"
-              />
-            </div>
-            <p
-              data-beat
-              className="mt-4 v2-serif text-[#1c1712]/55 text-sm"
-            >
-              Du système de santé conventionnel à la scène
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <MediasBande />
-
-      {/* ─────────── CHAPITRE 02 · UNE CONFÉRENCE, PLUSIEURS PORTES ─────────── */}
+      {/* ─────────── LA CONFÉRENCE · une conférence, plusieurs portes ─────────── */}
       <section
         id="conferences"
-        className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7] scroll-mt-24"
+        className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,13vh,9rem)] bg-[#f4efe6] scroll-mt-24"
       >
-        <div data-reveal className="max-w-[900px] mb-14">
-          <Kicker className="mb-5">Chapitre 02 · La conférence</Kicker>
-          <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,4.2vw,3.4rem)]">
-            Une conférence, plusieurs portes.
-          </h2>
+        {/* La grande conversation, commune à tout le site (Krystine, 9 oct. 2026) :
+            la conférence en est une porte, les entrevues des médias en sont d'autres. */}
+        <div data-reveal className="mb-[clamp(3.5rem,8vh,6rem)] border-b border-[#1c1712]/15 pb-[clamp(2.5rem,6vh,4rem)]">
+          <Kicker className="mb-5">La grande conversation</Kicker>
+          <p className="v2-serif font-light leading-[1.08] text-[#1c1712] text-[clamp(1.9rem,3.6vw,3.2rem)]">
+            <span className="block">Plus d’information que jamais.</span>
+            <span className="block">Pourquoi autant de confusion&nbsp;?</span>
+          </p>
+        </div>
+        <div className="grid items-start gap-x-[clamp(2rem,5vw,5rem)] gap-y-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <article data-reveal className="min-w-0">
+            <Kicker className="mb-5">La conférence</Kicker>
+            <h2 className="v2-serif font-light leading-[1.04] text-[#1c1712] text-[clamp(2.05rem,4.4vw,4rem)]">
+              <span className="block">Plus de réponses.</span>
+              <span className="block">Moins de confiance&nbsp;?</span>
+            </h2>
+            <p className="mt-6 v2-serif font-light text-[clamp(1.2rem,1.9vw,1.55rem)] leading-[1.4] text-[#1c1712] max-w-[40ch]">{ONE_TALK.sousTitre}</p>
+            <Filet className="mt-8" />
+            <p className="mt-8 max-w-[60ch] text-[1.05rem] leading-[1.8] text-[#1c1712]">{ONE_TALK.texte}</p>
+            <p className="mt-7 max-w-[58ch] border-l-2 border-[#9c7a44] pl-5 v2-serif text-[1.2rem] leading-[1.6] text-[#1c1712]">{ONE_TALK.promesse}</p>
+          </article>
+          <figure data-reveal className="relative min-w-0 lg:mt-3">
+            <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
+            <img
+              src="/conferences/krystine-scene-haut.webp"
+              alt="Krystine St-Laurent sur scène, micro à la main"
+              loading="lazy"
+              width={1254}
+              height={1254}
+              className="relative block aspect-[4/5] w-full object-cover object-[45%_30%]"
+            />
+            <span className="absolute left-0 top-0 bg-[#1c1712] px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.24em] text-[#f4efe6]">Sur scène</span>
+          </figure>
         </div>
 
-        {/* Le One Talk */}
-        <article data-reveal className="max-w-[900px] border-t border-[#9c7a44]/50 pt-10">
-          <h3 className="v2-serif text-[clamp(1.8rem,3.2vw,2.6rem)] font-light leading-[1.1] text-[#1c1712]">{ONE_TALK.title}</h3>
-          <p className="mt-5 v2-serif text-[clamp(1.1rem,1.8vw,1.35rem)] leading-snug text-[#3a2f23]">{ONE_TALK.sousTitre}</p>
-          <p className="mt-6 max-w-[62ch] text-[0.98rem] leading-[1.85] text-[#3a2f23]">{ONE_TALK.texte}</p>
-          <p className="mt-6 max-w-[62ch] border-l-2 border-[#9c7a44] pl-5 v2-serif text-[1.08rem] leading-[1.7] text-[#1c1712]">{ONE_TALK.promesse}</p>
-        </article>
-
         {/* Les portes : des contextes pour la même conférence, pas d'autres conférences */}
-        <div data-reveal className="mt-[clamp(3.5rem,8vh,5.5rem)]">
-          <p className="mb-8 text-[0.62rem] uppercase tracking-[0.24em] text-[#7d6330]">Portes de programmation</p>
-          <ol className="grid gap-x-[clamp(2rem,5vw,5rem)] md:grid-cols-2">
+        <div data-reveal className="mt-[clamp(4rem,10vh,6.5rem)]">
+          <Kicker className="mb-4">Portes de programmation</Kicker>
+          <h3 className="v2-serif font-light leading-[1.08] text-[#1c1712] text-[clamp(1.7rem,3vw,2.6rem)]">Une conférence, plusieurs portes.</h3>
+          <ol className="mt-10 grid gap-x-[clamp(1.25rem,2.5vw,2.25rem)] gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {PORTES.map((porte, i) => (
-              <li key={porte.titre} className="flex gap-5 border-t border-[#1c1712]/15 py-6">
-                <span className="v2-serif w-8 shrink-0 text-[1.05rem] font-light tabular-nums text-[#7d6330]">{String(i + 1).padStart(2, '0')}</span>
-                <div className="min-w-0">
-                  <h4 className="text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712]">{porte.titre}</h4>
-                  <p className="mt-2 v2-serif text-[1.02rem] leading-[1.6] text-[#3a2f23]">{porte.ligne}</p>
-                </div>
+              <li key={porte.titre} className="min-w-0 border-t border-[#9c7a44]/60 pt-5">
+                <span className="v2-serif text-[1.15rem] font-light tabular-nums text-[#7d6330]">{String(i + 1).padStart(2, '0')}</span>
+                <h4 className="mt-2 v2-serif text-[1.35rem] font-normal leading-[1.2] text-[#1c1712]">{porte.titre}</h4>
+                <p className="mt-3 text-[0.98rem] leading-[1.7] text-[#1c1712]">{porte.ligne}</p>
               </li>
             ))}
           </ol>
+          <BoutonNoir href="#reserver" className="mt-12">Inviter Krystine</BoutonNoir>
         </div>
-      </section>
-
-      {/* ─────────── LA SALLE · vraie photo (lancement du premier livre, 2018) ─────────── */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(4rem,10vh,7rem)] bg-[#f4efe6]">
-        <figure data-reveal className="mx-auto max-w-[1400px]">
-          <div className="border border-[#9c7a44]/45 p-2">
-            <img
-              src="/conferences/lancement-2018.webp"
-              alt="Krystine St-Laurent sur scène devant une salle comble, au lancement de son premier livre en 2018"
-              loading="lazy"
-              className="block aspect-[16/9] w-full object-cover"
-            />
-          </div>
-          <figcaption className="mt-4 text-[0.62rem] uppercase tracking-[0.22em] text-[#7d6330]">
-            Au lancement de son premier livre, devant une salle comble &middot; 2018
-          </figcaption>
-        </figure>
       </section>
 
       <TemoignagesSection />
 
-      {/* ─────────── CHAPITRE 03 · COMMENT ÇA SE PASSE ─────────── */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
-        <div data-reveal className="max-w-[760px] mb-16">
-          <Kicker className="mb-5">Chapitre 03 · Comment ça se passe</Kicker>
-          <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">
-            De la demande à la scène
-          </h2>
+      {/* ─────────── DE LA DEMANDE À LA SCÈNE · compact ─────────── */}
+      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(4rem,10vh,6.5rem)] bg-[#f4efe6]">
+        <div data-reveal className="mb-10 flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+          <div>
+            <Kicker className="mb-4">Comment cela se passe</Kicker>
+            <h2 className="v2-serif font-light leading-[1.04] text-[#1c1712] text-[clamp(1.9rem,3.6vw,3rem)]">De la demande à la scène</h2>
+          </div>
+          <a href="#reserver" className="border-b border-[#1c1712] pb-0.5 text-[0.95rem] text-[#1c1712] hover:text-[#7d6330] hover:border-[#9c7a44]">
+            Photos et biographies pour la presse, sur demande
+          </a>
         </div>
-
-        <div data-reveal className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-12">
+        <ol data-reveal className="grid gap-x-[clamp(1.25rem,2.5vw,2.25rem)] gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS_STEPS.map((step) => (
-            <div key={step.n} className="border-t-2 border-[#9c7a44] pt-6">
-              <span className="v2-serif text-[2.6rem] font-light leading-none text-[#7d6330] tabular-nums">{step.n}</span>
-              <h3 className="mt-5 v2-serif text-[1.3rem] font-light leading-snug text-[#1c1712]">{step.title}</h3>
-              <p className="mt-3 text-[0.92rem] leading-[1.8] text-[#3a2f23]">{step.body}</p>
-            </div>
+            <li key={step.n} className="min-w-0 border-t-2 border-[#9c7a44] pt-5">
+              <div className="flex items-baseline gap-3">
+                <span className="v2-serif text-[1.5rem] font-light leading-none text-[#7d6330] tabular-nums">{step.n}</span>
+                <h3 className="v2-serif text-[1.3rem] font-normal leading-snug text-[#1c1712]">{step.title}</h3>
+              </div>
+              <p className="mt-3 text-[0.97rem] leading-[1.7] text-[#1c1712]">{step.body}</p>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
-      {/* ─────────── CHAPITRE 04 · RÉSERVER (back-end préservé) ─────────── */}
+      {/* ─────────── RÉSERVER (back-end préservé) ─────────── */}
       <BookingSection />
 
       {/* ─────────── FAQ ─────────── */}
@@ -1150,8 +1084,10 @@ export default function KrystineV2() {
       {/* ─────────── AGENDA LIVE (back-end préservé) ─────────── */}
       <EventsSection />
 
+      {estConference && histoire}
+
       {/* ─────────── INFOLETTRE (back-end préservé) ─────────── */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#efe6d7]">
+      <section className={`relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] ${estConference ? 'bg-[#f4efe6]' : 'bg-[#efe6d7]'}`}>
         <div data-reveal className="max-w-[720px] mx-auto text-center">
           <Kicker className="mb-5">Une correspondance</Kicker>
           <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,3.8rem)]">

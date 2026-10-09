@@ -9,6 +9,7 @@ import { subscribeLiveListeners, subscribeListenTotals, type PresenceRow } from 
 import { Card } from '../primitives';
 import { PALIERS, STATUTS, type CommunauteStats } from '../../../lib/paliers';
 import CommandesStripeCard from './dashboard/CommandesStripeCard';
+import VentesDeuxMaisonsCard from './dashboard/VentesDeuxMaisonsCard';
 import RapportDuJourCard from './dashboard/RapportDuJourCard';
 import BilanDuMatinCard from './dashboard/BilanDuMatinCard';
 import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
@@ -127,6 +128,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
 
       {/* La priorité n° 1 depuis le 28 sept. 2026 : 3 000 nouvelles personnes avant le 15 décembre */}
       <CibleNouvellesPersonnesCard />
+
+      {/* Les ventes des deux maisons, côte à côte (Krystine, 9 oct. 2026) */}
+      <VentesDeuxMaisonsCard />
 
       {/* Le rapport du jour, en tête, juste à côté des ventes Stripe */}
       <BilanDuMatinCard />

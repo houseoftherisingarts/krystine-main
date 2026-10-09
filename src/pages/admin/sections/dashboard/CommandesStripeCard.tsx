@@ -55,7 +55,7 @@ const CommandesStripeCard: React.FC = () => {
   return (
     <Card className="p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-3 mb-5">
-        <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Ventes Stripe · Revenus et taxes</h3>
+        <h3 className="text-sm font-bold uppercase tracking-widest text-[#293027]/60 dark:text-white/60">Ventes Krystine St-Laurent (Stripe) · Revenus et taxes</h3>
         <GhostButton onClick={exporter}><i className="fa-solid fa-file-csv" /> Exporter CSV</GhostButton>
       </div>
 

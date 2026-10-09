@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import DemandeEntrevue from '../../components/v2/DemandeEntrevue';
 import { useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,6 +11,7 @@ import {
   Coins, Lock, Star, Play,
 } from '@phosphor-icons/react';
 import { BoutonNoir } from '../../components/v2/Magazine';
+import { BandePreuve } from '../../components/v2/BandePreuve';
 import { useApp } from '../../contexts/AppContext';
 import { useGamification } from '../../contexts/GamificationContext';
 import { CONTENT } from '../../content';
@@ -57,6 +59,7 @@ const Kicker: React.FC<{ children: React.ReactNode; className?: string }> = ({ c
 
 // La porte unique : le formulaire de réservation de /conferenciere (id="reserver").
 const RESERVER = '/conferenciere#reserver';
+const ENTREVUE = '#entrevue';
 
 // Bio approuvée, mot pour mot (src/content/presse.ts, carte « portrait »).
 const BIO_FR = "Près de 40 ans d'expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.";
@@ -69,44 +72,7 @@ const SUJETS: { q: string; public: string }[] = [
   { q: 'Le corps sait-il quelque chose que nous n’écoutons plus\u00a0?', public: 'Pour un public qui sent que quelque chose ne va pas, sans toujours savoir le nommer.' },
 ];
 
-// La bande « Vue et entendue à » de /conferenciere (KrystineV2.tsx, MEDIAS),
-// précédée de l'éditeur (kit de presse, carte « livres »). Aucun chiffre ajouté.
-const LOGO_DIMS: Record<string, [number, number]> = {'/medias/logos/98-5.png': [213, 160], '/medias/logos/bien.png': [87, 160], '/medias/logos/coup-de-pouce.png': [302, 160], '/medias/logos/editions-de-l-homme.png': [635, 160], '/medias/logos/matv.png': [475, 160], '/medias/logos/tva.png': [502, 160], '/medias/logos/videotron.png': [816, 160]};
-
-const PREUVES: { nom: string; logo?: string; note?: string; grand?: boolean }[] = [
-  { nom: 'Éditions de l’Homme', logo: '/medias/logos/editions-de-l-homme.png', note: 'Best-sellers', grand: true },
-  { nom: 'Santé la vie', note: 'Série télé · 3 saisons' },
-  { nom: 'MAtv', logo: '/medias/logos/matv.png' },
-  { nom: 'Vidéotron', logo: '/medias/logos/videotron.png' },
-  { nom: 'TVA', logo: '/medias/logos/tva.png', note: 'Salut Bonjour' },
-  { nom: 'Bien', logo: '/medias/logos/bien.png', grand: true, note: 'Émission' },
-  { nom: '98,5 FM', logo: '/medias/logos/98-5.png', note: 'FM' },
-  { nom: 'Coup de Pouce', logo: '/medias/logos/coup-de-pouce.png' },
-  { nom: 'Mieux-Être', note: 'Magazine' },
-];
-
-const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
-  // Bandeau épais qui traverse l'écran (Krystine, 9 oct. 2026) : noms en gras, encre foncée, défilement lent.
-  const rangee = (cache: boolean) => (
-    <ul aria-hidden={cache || undefined} className="flex shrink-0 items-center gap-x-[clamp(2.5rem,5vw,4.5rem)] pr-[clamp(2.5rem,5vw,4.5rem)]">
-      {PREUVES.map(({ nom, logo, note, grand }) => (
-        <li key={nom} className="flex shrink-0 items-center gap-3">
-          {logo
-            ? <img src={logo} alt={nom} width={Math.round((grand ? 56 : 32) * (LOGO_DIMS[logo]?.[0] ?? 4) / (LOGO_DIMS[logo]?.[1] ?? 1))} height={grand ? 56 : 32} style={{ width: Math.round((grand ? 56 : 32) * (LOGO_DIMS[logo]?.[0] ?? 4) / (LOGO_DIMS[logo]?.[1] ?? 1)), height: grand ? 56 : 32, maxWidth: 'none', flex: '0 0 auto' }} />
-            : <span className="v2-serif text-[clamp(1.25rem,2.1vw,1.75rem)] font-medium leading-none text-[#1c1712]">{nom}</span>}
-          {note && <span className="text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-[#4a3d2e]">{note}</span>}
-        </li>
-      ))}
-    </ul>
-  );
-  return (
-    <section aria-label={lang === 'FR' ? 'Vue et entendue à' : 'As seen on'} className="relative w-full overflow-hidden bg-[#efe6d7] border-y-2 border-[#9c7a44]/40 py-[clamp(2.25rem,5vh,3.5rem)]">
-      <style>{`@keyframes ksl-defile{from{transform:translateX(0)}to{transform:translateX(-50%)}}.ksl-defile{animation:ksl-defile 48s linear infinite}.ksl-defile:hover{animation-play-state:paused}@media (prefers-reduced-motion:reduce){.ksl-defile{animation:none;flex-wrap:wrap}}`}</style>
-      <p className="px-[clamp(1.5rem,5vw,5.5rem)] mb-6 text-[0.85rem] font-semibold uppercase tracking-[0.26em] text-[#1c1712]">{lang === 'FR' ? 'Vue et entendue à' : 'As seen on'}</p>
-      <div className="ksl-defile flex w-max">{rangee(false)}{rangee(true)}</div>
-    </section>
-  );
-};
+// La bande « Vue et entendue à » vit dans src/components/v2/BandePreuve.tsx, partagée avec /conferenciere.
 
 /** Une vidéo embarquée : affiche, lecture au clic avec le son. */
 const BIEN = { src: '/medias/bien-2021.mp4', poster: '/medias/bien-2021.jpg', label: 'Krystine St-Laurent présente Féminité & Ayurveda à Nathalie Simard, émission Bien, lors du lancement de Féminité & Ayurveda', bouton: ['Regarder l’extrait de l’émission Bien, avec le son', 'Watch the Bien segment, with sound'] as [string, string], etiquette: 'Émission Bien', legende: 'Émission Bien · lors du lancement de Féminité & Ayurveda' };
@@ -303,7 +269,7 @@ export default function MediasV2() {
               {lang === 'FR' ? BIO_FR : BIO_EN}
             </p>
             <div data-fade className="mt-8">
-              <BoutonNoir href={RESERVER}>{lang === 'FR' ? 'Inviter Krystine' : 'Invite Krystine'}</BoutonNoir>
+              <BoutonNoir href={ENTREVUE}>{lang === 'FR' ? 'Demander une entrevue' : 'Request an interview'}</BoutonNoir>
             </div>
           </div>
         </div>
@@ -333,7 +299,7 @@ export default function MediasV2() {
           ))}
         </ol>
         <div data-reveal className="mx-auto mt-[clamp(2.5rem,6vh,3.5rem)] max-w-[1320px]">
-          <BoutonNoir href={RESERVER}>{lang === 'FR' ? 'Inviter Krystine' : 'Invite Krystine'}</BoutonNoir>
+          <BoutonNoir href={ENTREVUE}>{lang === 'FR' ? 'Demander une entrevue' : 'Request an interview'}</BoutonNoir>
         </div>
       </section>
 
@@ -630,14 +596,13 @@ export default function MediasV2() {
 
       {/* ─────────── INVITER · la même porte qu'au seuil, en français et en anglais ─────────── */}
       <section id="inviter" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(5rem,12vh,9rem)] bg-[#efe6d7] border-t border-[#9c7a44]/25 scroll-mt-24">
-        <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-14 md:grid-cols-2">
-          <div data-reveal className="flex flex-col items-start">
+        <div className="grid gap-x-[clamp(2rem,5vw,5rem)] gap-y-14 md:grid-cols-[1.2fr_0.8fr]">
+          <div data-reveal id="entrevue" className="flex flex-col items-start scroll-mt-28">
             <Kicker className="mb-5">Pour une entrevue</Kicker>
-            <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,3.6vw,3rem)]">Inviter Krystine</h2>
+            <h2 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(2rem,3.6vw,3rem)]">Demander une entrevue</h2>
             <span className="mt-6 block h-px w-12 bg-[#9c7a44]" aria-hidden />
-            {/* Phrase reprise des étapes de /conferenciere (PROCESS_STEPS, étape 02). */}
-            <p className="mt-6 max-w-[40ch] text-base leading-[1.8] text-[#3a2f23]">L’équipe revient sous 48&nbsp;h ouvrables avec une proposition.</p>
-            <BoutonNoir href={RESERVER} className="mt-8">Inviter Krystine</BoutonNoir>
+            <p className="mt-6 mb-8 max-w-[46ch] text-base leading-[1.8] text-[#3a2f23]">L’équipe revient sous 48&nbsp;h ouvrables. Pour une conférence ou un événement, passez plutôt par <a href={RESERVER} className="underline decoration-[#9c7a44] underline-offset-4">Inviter Krystine</a>.</p>
+            <DemandeEntrevue />
           </div>
           {/* Pour les podcasts anglophones : la bio anglaise approuvée du kit de
               presse (src/content/presse.ts, carte « portrait », corpsEN). */}
@@ -647,7 +612,7 @@ export default function MediasV2() {
             <span className="mt-6 block h-px w-12 bg-[#9c7a44]" aria-hidden />
             <p className="mt-6 max-w-[46ch] text-base leading-[1.8] text-[#3a2f23]">{BIO_EN}</p>
             <p className="mt-4 text-[0.66rem] uppercase tracking-[0.22em] text-[#1c1712]/60">French, English or both</p>
-            <BoutonNoir href={RESERVER} className="mt-8">Invite Krystine</BoutonNoir>
+            <BoutonNoir href={ENTREVUE} className="mt-8">Request an interview</BoutonNoir>
           </div>
         </div>
       </section>
