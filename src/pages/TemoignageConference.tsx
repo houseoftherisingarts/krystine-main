@@ -105,7 +105,8 @@ const TemoignageConference: React.FC = () => {
                   </label>
                   <label className="block md:col-span-2">
                     <span className="mb-2 block text-[0.6rem] uppercase tracking-[0.2em] text-[#1c1712]/55">Votre courriel (jamais affiché)</span>
-                    <input type="email" value={courriel} onChange={(e) => setCourriel(e.target.value)} maxLength={200} placeholder="Pour vous remercier, si vous le souhaitez" className={CHAMP} autoComplete="email" />
+                    <input type="email" value={courriel} onChange={(e) => setCourriel(e.target.value)} maxLength={200} aria-describedby="aide-courriel" className={CHAMP} autoComplete="email" />
+                    <span id="aide-courriel" className="mt-2 block text-[0.82rem] leading-[1.6] text-[#3a2f23]/70">Laissez votre courriel pour recevoir nos 3 rituels du moment, en remerciement</span>
                   </label>
                 </div>
                 <label className="flex cursor-pointer items-start gap-3 text-[0.9rem] leading-[1.6] text-[#3a2f23]">

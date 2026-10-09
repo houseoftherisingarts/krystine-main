@@ -107,7 +107,7 @@ const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
 };
 
 /** Une vidéo embarquée : affiche, lecture au clic avec le son. */
-const BIEN = { src: '/medias/bien-2021.mp4', poster: '/medias/bien-2021.jpg', label: 'Krystine St-Laurent présente Féminité & Ayurveda à Nathalie Simard, émission Bien, 2 septembre 2021', bouton: ['Regarder l’extrait de l’émission Bien, avec le son', 'Watch the Bien segment, with sound'] as [string, string], etiquette: 'Émission Bien', legende: 'Émission Bien · 2 septembre 2021' };
+const BIEN = { src: '/medias/bien-2021.mp4', poster: '/medias/bien-2021.jpg', label: 'Krystine St-Laurent présente Féminité & Ayurveda à Nathalie Simard, émission Bien, lors du lancement de Féminité & Ayurveda', bouton: ['Regarder l’extrait de l’émission Bien, avec le son', 'Watch the Bien segment, with sound'] as [string, string], etiquette: 'Émission Bien', legende: 'Émission Bien · lors du lancement de Féminité & Ayurveda' };
 const MONTAGE_SLV = { src: '/medias/sante-la-vie-montage.mp4', poster: '/medias/sante-la-vie-montage.jpg', label: 'Santé la vie, trois saisons créées et animées par Krystine St-Laurent', bouton: ['Regarder Santé la vie, avec le son', 'Watch Santé la vie, with sound'] as [string, string], etiquette: 'Santé la vie', legende: 'Santé la vie · trois saisons, diffusée sur Vidéotron' };
 
 const VideoMedia: React.FC<{ lang: string; src: string; poster: string; label: string; bouton: [string, string]; etiquette: string; legende: string }> = ({ lang, src, poster, label, bouton, etiquette, legende }) => {

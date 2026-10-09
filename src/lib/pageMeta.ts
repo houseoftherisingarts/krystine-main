@@ -29,6 +29,8 @@ const ROUTES: Record<string, PageMeta> = {
   '/medias': {
     title: `Podcasts, médias et livres · ${SITE}`,
     description: 'Le podcast Au-delà des tendances, la trilogie Nature & Ayurveda, les passages télé et les entrevues de Krystine St-Laurent.',
+    image: '/medias/partage.jpg',
+    imageAlt: 'Krystine St-Laurent dans les médias : livres, podcast, télé, radio et presse, conférences',
   },
   '/5elements': {
     title: `5 éléments · Extrait de livre · ${SITE}`,

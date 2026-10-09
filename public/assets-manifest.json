@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-09T16:54:09.382Z",
+  "generatedAt": "2026-10-09T17:04:27.085Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -328,7 +328,7 @@
       "name": "trois-rituels-du-moment.pdf",
       "folder": "boutique",
       "kind": "document",
-      "size": 918786
+      "size": 12676498
     },
     {
       "path": "/boutique/vata-inspirata-100.jpg",
@@ -1729,6 +1729,13 @@
       "folder": "medias",
       "kind": "video",
       "size": 52629991
+    },
+    {
+      "path": "/medias/partage.jpg",
+      "name": "partage.jpg",
+      "folder": "medias",
+      "kind": "image",
+      "size": 117460
     },
     {
       "path": "/medias/sante-la-vie-montage.jpg",
