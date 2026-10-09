@@ -988,7 +988,9 @@ export interface BookingRequest {
 
 export async function addBookingRequest(data: Omit<BookingRequest, 'id' | 'status' | 'createdAt'>) {
   if (!db) return console.warn('[Firestore] Not configured');
-  const payload = { source: 'conferenciere', ...data, status: 'new' as BookingStatus, createdAt: serverTimestamp() };
+  // Un champ facultatif laissé vide (téléphone, etc.) arrive « undefined » : Firestore le refuse, on le retire.
+  const propre = Object.fromEntries(Object.entries(data).filter(([, v]) => v !== undefined));
+  const payload = { source: 'conferenciere', ...propre, status: 'new' as BookingStatus, createdAt: serverTimestamp() };
   const ref = await addDoc(collection(db, 'bookingRequests'), payload);
   trackObjectif('Demande de conférence', 'petit');
   return ref;
