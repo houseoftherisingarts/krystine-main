@@ -7939,5 +7939,20 @@
       "src/components/layout/Footer.tsx",
       "src/lib/pageMeta.ts"
     ]
+  },
+  {
+    "quand": "2026-10-09T23:55:55.977Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f4ab211f",
+    "message": "Vidéo du quiz refaite sans « vous » (« Pourquoi certaines journées dispersent, enflamment… ou alourdissent ? », « Comprendre ce qui domine aujourd'hui… », carte de fin « Le quiz · Ce qui domine en ce moment »), sur /quiz et l'accueil",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/quiz/quiz-dosha-revisee-poster.jpg",
+      "public/quiz/quiz-dosha-revisee.mp4"
+    ]
   }
 ]
