@@ -552,34 +552,37 @@ export default function MediasV2() {
         </div>
 
         {/* L'émission Bien (2021), descendue sous Santé la vie quand le montage a pris le haut de page. */}
-        <div data-reveal className="mx-auto mb-14 max-w-[820px]">
+        <div data-reveal className="mx-auto max-w-[960px]">
           <Kicker className="mb-5">{lang === 'FR' ? 'Aussi à la télé' : 'Also on TV'}</Kicker>
           <VideoMedia lang={lang} {...BIEN} />
+          <p className="mt-8 mb-8 v2-serif text-[clamp(1.15rem,1.8vw,1.45rem)] font-light leading-[1.5] text-[#1c1712]">
+            {lang === 'FR' ? 'Pour découvrir ce dont parle Krystine dans l’extrait de l’émission, les rituels avec huiles et plantes :' : 'To discover what Krystine talks about in the segment, rituals with oils and plants:'}
+          </p>
         </div>
 
-        <div data-reveal className="mx-auto max-w-[1100px] border border-[#1c1712]/12">
+        <div data-reveal className="mx-auto max-w-[960px]">
           {/* Rituels essentiels · à la place du coffret, pas encore disponible (Krystine, 9 oct. 2026) */}
-          <div className="grid items-center gap-x-[clamp(1.75rem,4vw,3.5rem)] p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee] md:grid-cols-2">
-            <a href="/rituels-essentiels" className="block overflow-hidden border border-[#9c7a44]/35 mb-7 md:mb-0" aria-label="Rituels essentiels inspirés de l'Ayurveda">
+          <div className="grid items-center gap-x-[clamp(1.75rem,4vw,3.5rem)] p-[clamp(1.75rem,3vw,2.75rem)] bg-[#28352F] md:grid-cols-2">
+            <a href="/rituels-essentiels" className="block overflow-hidden border border-[#BA7B39]/50 mb-7 md:mb-0" aria-label="Rituels essentiels inspirés de l'Ayurveda">
               <img src="/rituels-essentiels/carte-fondu.webp" alt="Rituels essentiels inspirés de l'Ayurveda : gestes simples à l'huile" loading="lazy" className="aspect-[16/10] w-full object-cover" />
             </a>
             <div className="flex flex-col">
-            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#7d6330] mb-4">
+            <span className="text-[0.6rem] uppercase tracking-[0.24em] text-[#BA7B39] mb-4">
               {lang === 'FR' ? 'Commencer, dès ce soir' : 'Start tonight'}
             </span>
-            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#1c1712]">
+            <h3 className="v2-serif text-[1.6rem] font-light leading-[1.12] text-[#EEE7DB]">
               {lang === 'FR' ? 'Rituels essentiels inspirés de l’Ayurveda' : 'Essential rituals inspired by Ayurveda'}
             </h3>
-            <p className="mt-4 text-base leading-[1.8] text-[#3a2f23] flex-1">
+            <p className="mt-4 text-base leading-[1.8] text-[#EEE7DB]/85 flex-1">
               {lang === 'FR'
                 ? 'Des pratiques courtes qui redonnent ancrage et direction : l’automassage, les soins du nez et de la bouche, les soins des mains et des pieds.'
                 : 'Short practices that bring back grounding and direction: self-massage, care for the nose and mouth, care for the hands and feet.'}
             </p>
-            <div className="mt-8 pt-6 border-t border-[#1c1712]/12 flex items-end justify-between gap-4">
-              <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#7d6330] tabular-nums">27&nbsp;$</span>
+            <div className="mt-8 pt-6 border-t border-[#EEE7DB]/20 flex items-end justify-between gap-4">
+              <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#BA7B39] tabular-nums">27&nbsp;$</span>
               <a
                 href="/rituels-essentiels"
-                className="inline-flex items-center gap-2.5 bg-[#1c1712] px-7 py-3.5 text-[0.7rem] uppercase tracking-[0.2em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#3a2f23]"
+                className="inline-flex items-center gap-2.5 whitespace-nowrap bg-[#EEE7DB] px-5 py-3.5 sm:px-7 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] transition-colors duration-300 hover:bg-[#f4efe6]"
               >
                 {lang === 'FR' ? 'Commencer ce soir' : 'Start tonight'}
                 <ArrowRight size={14} weight="regular" />
