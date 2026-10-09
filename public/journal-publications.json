@@ -7468,5 +7468,19 @@
       "public/assets-manifest.json",
       "public/medias/sante-la-vie-montage.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:37:07.285Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3d1fa9f2",
+    "message": "Médias (/medias) : affiche du haut, tuile « Radio, presse » (98,5 FM, TVA, Coup de Pouce, Mieux-Être) et ligne « Vue et entendue à »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/medias/sante-la-vie-montage.jpg"
+    ]
   }
 ]
