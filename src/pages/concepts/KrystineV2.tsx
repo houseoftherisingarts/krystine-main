@@ -597,7 +597,7 @@ const TemoignagesSection: React.FC = () => {
               <div className="overflow-hidden border border-[#BA7B39]/45 p-1.5">
                 <img
                   src="/conferences/lancement-2018.webp"
-                  alt="Krystine St-Laurent sur scène devant une salle comble, au lancement de son premier livre en 2018"
+                  alt="Krystine St-Laurent sur scène devant une salle comble, au lancement de son premier livre"
                   loading="lazy"
                   width={2200}
                   height={1237}
@@ -605,7 +605,7 @@ const TemoignagesSection: React.FC = () => {
                 />
               </div>
               <figcaption className="mt-3.5 text-[0.66rem] uppercase tracking-[0.2em] text-[#EEE7DB]/75">
-                Au lancement de son premier livre, devant une salle comble &middot; 2018
+                Au lancement de son premier livre, devant une salle comble
               </figcaption>
             </figure>
             <figure className="min-w-0">
@@ -917,7 +917,7 @@ export default function KrystineV2() {
             <img
               data-beat-img
               src="/conferences/mont-tremblant-2024-krystine.webp"
-              alt="Krystine St-Laurent en conférence devant une salle pleine, Mont-Tremblant, juin 2024"
+              alt="Krystine St-Laurent en conférence devant une salle pleine, à Mont-Tremblant"
               loading="lazy"
               className="absolute inset-0 h-[120%] w-full object-cover object-[64%_center] will-change-transform"
             />
