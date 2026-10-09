@@ -1332,7 +1332,7 @@ const QuizLoeuvre: React.FC = () => {
       `}</style>
 
       {/* ─────────── HERO · une de magazine ─────────── */}
-      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)] min-h-screen flex flex-col">
+      <section className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(2rem,5vh,4rem)] flex flex-col">
         {suiteOk && (
           <p role="status" className="border-y border-[#9c7a44]/40 py-3 text-center text-[0.9rem] text-[#1c1712]">
             {lang === 'FR' ? 'C’est noté : la suite de votre lecture arrive par courriel.' : 'Noted: the rest of your reading is on its way by email.'}
@@ -1345,23 +1345,14 @@ const QuizLoeuvre: React.FC = () => {
         )}
         {/* La ligne de tête « N° 05 · Québec » est retirée de la page du quiz (Krystine, 2 oct. 2026 : elle parle aussi à l'Europe). */}
 
-        {/* La vidéo du quiz en bannière, sans le logo d'ouverture (Krystine, 1er oct. 2026) */}
-        <motion.div {...heroFade(0.2)} className="mt-6">
-          <Planche
-            video="/quiz/quiz-dosha-revisee.mp4"
-            poster="/quiz/quiz-dosha-revisee-poster.jpg"
-            ratio="aspect-[16/9] sm:aspect-[21/9] lg:aspect-[8/3]"
-            legende="Vata (Vent et Espace) · Pitta (Feu et Eau) · Kapha (Eau et Terre)"
-          />
-        </motion.div>
 
-        <div className="flex-1 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[1.05fr_0.95fr] mt-[clamp(2rem,5vh,4rem)]">
+        <div className="flex-1 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[0.9fr_1.1fr] mt-[clamp(0.5rem,2vh,1.5rem)]">
           {/* Masthead + promesse */}
           <div>
             <motion.div {...heroFade(0.1)}>
               <Kicker className="mb-7">{lang === 'FR' ? 'Connaître votre nature' : 'Know your nature'}</Kicker>
             </motion.div>
-            <h1 className="v2-serif font-light leading-[0.92] text-[#1c1712] text-[clamp(3.2rem,10vw,9rem)]">
+            <h1 className="v2-serif font-light leading-[0.92] text-[#1c1712] text-[clamp(2.9rem,6.4vw,6.2rem)]">
               <span className="block overflow-hidden">
                 <motion.span
                   className="block will-change-transform"
@@ -1374,7 +1365,7 @@ const QuizLoeuvre: React.FC = () => {
               </span>
             </h1>
             <motion.div {...heroFade(0.4)} className="mt-7 max-w-[34ch]">
-              <p className="v2-serif font-light text-[clamp(1.35rem,2.6vw,2rem)] leading-[1.3] text-[#1c1712]">
+              <p className="v2-serif font-light text-[clamp(1.15rem,1.8vw,1.5rem)] leading-[1.4] text-[#1c1712]">
                 {lang === 'FR'
                   ? 'Voyez ce qui domine, ce qui l’accentue et la direction qui mérite votre attention.'
                   : 'See what dominates, what amplifies it and the direction that deserves your attention.'}
@@ -1384,6 +1375,17 @@ const QuizLoeuvre: React.FC = () => {
                   ? 'Par Krystine St-Laurent, autrice de Nature & Ayurveda et de Féminité & Ayurveda (Éditions de l’Homme)'
                   : 'By Krystine St-Laurent, author of Nature & Ayurveda and Féminité & Ayurveda (Éditions de l’Homme)'}
               </p>
+              {/* À quoi cela sert de le savoir, dans les mots du livre (Krystine, 9 oct. 2026) :
+                  Nature & Ayurveda, Éditions de l'Homme, 2018, chapitre « Observer », p. 108-109. Citation exacte. */}
+              {lang === 'FR' && (
+                <div className="mt-7 max-w-[52ch] rounded-[15px] bg-[#efe6d7] px-5 py-5 sm:px-6">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#7d6330]">À quoi cela sert de le savoir&nbsp;?</p>
+                  <blockquote className="mt-3 v2-serif text-[1.02rem] leading-[1.65] text-[#1c1712]">
+                    « Comprendre quelle est sa signature doshique, ou son dosha dominant, permet de mieux comprendre ses besoins et de faire des choix conscients au quotidien en personnalisant les rituels bien-être. C’est une façon de se reconnecter avec sa propre nature, et avec la nature et ses cycles. »
+                  </blockquote>
+                  <p className="mt-3 text-[0.7rem] uppercase tracking-[0.16em] text-[#3a2f23]/80">Krystine St-Laurent · Nature &amp; Ayurveda, p. 108-109</p>
+                </div>
+              )}
             </motion.div>
             <motion.div {...heroFade(0.55)} className="mt-11 flex flex-wrap items-center gap-x-9 gap-y-4">
               <a
@@ -1401,29 +1403,15 @@ const QuizLoeuvre: React.FC = () => {
           </div>
 
           {/* Panneau encadré : les trois natures (système multi-couleur) */}
-          <motion.div {...heroFade(0.35)} className="relative hidden lg:block self-center">
-            <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
-            <div className="relative bg-[#faf6ee] px-9 py-4">
-              {ay.doshas.map((d: any, i: number) => {
-                const key = ALL_DOSHAS[i];
-                return (
-                  <div key={d.name} className={`flex items-center gap-6 py-6 ${i > 0 ? 'border-t border-[#1c1712]/10' : ''}`}>
-                    <DoshaPicto d={key} size={56} className="shrink-0" />
-                    <div className="min-w-0">
-                      <p className="v2-serif font-light text-[1.35rem] text-[#1c1712]">
-                        {lang === 'FR' ? 'Dominance ' : 'Dominance of '}{lang === 'FR' ? DOMINANCE_FR[key] : DOMINANCE_EN[key]}
-                      </p>
-                      <p className="mt-1 text-[0.78rem] text-[#3a2f23]/80">
-                        {NOM_AYURVEDA[key]} ({(lang === 'FR' ? ELEMENTS : ELEMENTS_EN)[key]})
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <span className="absolute -top-2 -left-2 bg-[#1c1712] text-[#f4efe6] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em]">
-              {lang === 'FR' ? 'Les trois dominances' : 'The three dominances'}
-            </span>
+          {/* La vidéo du quiz, à droite et en taille moyenne (Krystine, 9 oct. 2026 : « l'écran est gros ») ;
+              elle montre déjà les trois dominances, la carte qui les répétait est retirée. */}
+          <motion.div {...heroFade(0.3)} className="min-w-0">
+            <Planche
+              video="/quiz/quiz-dosha-revisee.mp4"
+              poster="/quiz/quiz-dosha-revisee-poster.jpg"
+              ratio="aspect-[16/9]"
+              legende="Vata (Vent et Espace) · Pitta (Feu et Eau) · Kapha (Eau et Terre)"
+            />
           </motion.div>
         </div>
 
