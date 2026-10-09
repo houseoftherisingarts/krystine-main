@@ -598,9 +598,9 @@ const MediasBande: React.FC = () => (
           </li>
         ))}
       </ul>
-      <Link to="/presse" className="shrink-0 self-start border-b border-[#1c1712] pb-0.5 text-[0.9rem] text-[#1c1712] hover:text-[#7d6330] hover:border-[#9c7a44] lg:self-center">
-        Kit de presse : photos, biographies, faits
-      </Link>
+      <a href="#reserver" className="shrink-0 self-start border-b border-[#1c1712] pb-0.5 text-[0.9rem] text-[#1c1712] hover:text-[#7d6330] hover:border-[#9c7a44] lg:self-center">
+        Photos et biographies pour la presse, sur demande
+      </a>
     </div>
   </section>
 );

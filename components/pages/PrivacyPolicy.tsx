@@ -9,33 +9,33 @@ interface PrivacyPolicyProps {
 
 const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
   return (
-    <div className="min-h-screen bg-[#EEE7DB] dark:bg-[#151d19] text-[#293027] dark:text-[#EEE7DB] selection:bg-[#BA7B39] selection:text-white transition-colors duration-700 font-sans">
+    <div className="min-h-screen bg-[#f4efe6] text-[#1c1712] selection:bg-[#9c7a44] selection:text-white transition-colors duration-700 font-sans">
       
       <div className="max-w-4xl mx-auto px-6 py-24 relative z-10">
         <a 
           href="/" 
-          className="inline-flex items-center gap-2 text-[#8B4A2F] dark:text-[#e0b060] font-bold tracking-[0.2em] uppercase text-xs mb-12 hover:gap-4 transition-all group"
+          className="inline-flex items-center gap-2 text-[#1c1712] border-b border-[#1c1712] pb-0.5 tracking-[0.2em] uppercase text-[0.7rem] mb-12 hover:gap-4 transition-all group"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           {lang === 'fr' ? "Retour à l'accueil" : "Back to home"}
         </a>
 
-        <h1 className="font-serif text-4xl md:text-6xl mb-12 text-[#28352F] dark:text-[#EEE7DB] tracking-tight">
+        <h1 className="font-['Fraunces',Georgia,serif] font-light text-4xl md:text-6xl mb-12 text-[#1c1712] tracking-tight">
           {lang === 'fr' ? "Politique de confidentialité" : "Privacy Policy"}
         </h1>
 
-        <div className="max-w-none space-y-12 text-[17px] leading-[1.75] text-[#293027]/85 dark:text-[#EEE7DB]/85 [&_a]:text-[#8B4A2F] dark:[&_a]:text-[#e0b060] [&_a]:underline [&_strong]:text-[#293027] dark:[&_strong]:text-[#EEE7DB]">
+        <div className="max-w-none space-y-12 text-[17px] leading-[1.75] text-[#1c1712]/85 [&_a]:text-[#1c1712] [&_a]:underline [&_a]:decoration-[#9c7a44] [&_strong]:text-[#1c1712]">
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">1. Introduction et portée</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">1. Introduction et portée</h2>
             <p>
-              Bienvenue sur le site de l'Expérience Origine, opéré par Krystine St-Laurent. Nous accordons une importance capitale à la protection de vos renseignements personnels. Cette politique détaille comment nous collectons, utilisons et protégeons vos données, en conformité avec la Loi 25 (Québec), la Loi canadienne anti-pourriel (LCAP) et le Règlement général sur la protection des données (RGPD).
+              Bienvenue sur le site de Krystine St-Laurent. Nous accordons une importance capitale à la protection de vos renseignements personnels. Cette politique détaille comment nous collectons, utilisons et protégeons vos données, en conformité avec la Loi 25 (Québec), la Loi canadienne anti-pourriel (LCAP) et le Règlement général sur la protection des données (RGPD).
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">2. Renseignements personnels collectés</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">2. Renseignements personnels collectés</h2>
             <p>Nous collectons uniquement les données nécessaires à la fourniture de nos services :</p>
-            <ul className="list-disc pl-6 space-y-2 marker:text-[#BA7B39]">
+            <ul className="list-disc pl-6 space-y-2 marker:text-[#9c7a44]">
               <li><strong>Identité :</strong> Nom et prénom (formulaires d'inscription, quiz dosha, demandes de conférence).</li>
               <li><strong>Contact :</strong> Adresse courriel.</li>
               <li><strong>Résultats de quiz :</strong> Réponses au Dosha Quiz et dominance calculée (Vata, Pitta, Kapha), lorsque vous choisissez de recevoir vos résultats.</li>
@@ -44,9 +44,9 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">3. Utilisation des données</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">3. Utilisation des données</h2>
             <p>Vos renseignements sont utilisés pour :</p>
-            <ul className="list-disc pl-6 space-y-2 marker:text-[#BA7B39]">
+            <ul className="list-disc pl-6 space-y-2 marker:text-[#9c7a44]">
               <li>L'envoi de notre infolettre (avec votre consentement explicite).</li>
               <li>La gestion de vos demandes au service client et de vos demandes de conférence.</li>
               <li>La transmission de vos résultats de Dosha Quiz lorsque vous les sollicitez.</li>
@@ -55,18 +55,18 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">4. Personnalisation selon votre navigation</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">4. Personnalisation selon votre navigation</h2>
             <p>
               Lorsque vous êtes connectée à votre compte et que vous avez accepté le bandeau de consentement, nous comptons les pages que vous ouvrez sur le site, sans jamais retenir l'heure exacte de chaque visite ni le détail minute par minute de votre parcours. Ce compte sert uniquement à vous proposer une offre ou un contenu qui vous ressemble davantage, et à laisser Krystine voir, de façon globale, ce que sa communauté explore vraiment. Il ne quitte jamais ce site, il n'est jamais vendu ni partagé avec un tiers, et une visiteuse qui n'a pas de compte n'est jamais comptée de cette façon. Vous pouvez éteindre cette personnalisation à tout moment depuis vos préférences de compte, sans perdre votre compte ni vos autres réglages, et en demander l'effacement complet par le même bouton. Nous conservons ces données vingt-quatre mois après votre dernière visite, puis elles s'effacent d'elles-mêmes.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">5. Témoins (cookies) et outils tiers</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">5. Témoins (cookies) et outils tiers</h2>
             <p>
               Conformément à la Loi 25, aucun témoin non essentiel n'est déposé avant que vous n'ayez donné votre consentement explicite via le bandeau prévu à cet effet.
             </p>
-            <ul className="list-disc pl-6 space-y-2 marker:text-[#BA7B39]">
+            <ul className="list-disc pl-6 space-y-2 marker:text-[#9c7a44]">
               <li><strong>Firebase (Google LLC)</strong> : Authentification, base de données (Firestore) et, après consentement, Firebase Analytics. Les données peuvent être traitées hors du Québec.</li>
               <li><strong>Meta Pixel (Meta Platforms, Inc.)</strong> : Mesure d'audience, chargé uniquement après votre consentement explicite.</li>
               <li><strong>Google Fonts &amp; Font Awesome (CDN)</strong> : Chargement de polices et d'icônes. Votre adresse IP peut être traitée par ces fournisseurs.</li>
@@ -78,7 +78,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">6. Partage des données</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">6. Partage des données</h2>
             <p><strong>Nous ne vendons JAMAIS vos renseignements personnels.</strong></p>
             <p>
               Vos données peuvent être partagées uniquement avec les partenaires techniques mentionnés à la section 5, strictement pour l'exécution des services. Ces partenaires sont tenus par contrat de respecter la confidentialité de vos données.
@@ -86,23 +86,23 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">7. Communication hors Québec</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">7. Communication hors Québec</h2>
             <p>
               Certains partenaires (Google LLC, Meta Platforms Inc.) peuvent traiter des renseignements à l'extérieur du Québec. Nous avons procédé à une évaluation des facteurs relatifs à la vie privée (EFVP) et nous assurons par contrat que ces partenaires offrent un niveau de protection équivalent à celui exigé par la Loi 25.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">8. Stockage et sécurité</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">8. Stockage et sécurité</h2>
             <p>
               Vos données sont stockées sur des serveurs sécurisés. Nous mettons en œuvre des mesures de sécurité physiques, techniques et administratives rigoureuses pour prévenir tout accès non autorisé, perte ou vol de vos renseignements. Nous conservons vos données uniquement pour la durée nécessaire à la finalité pour laquelle elles ont été recueillies.
             </p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">9. Vos droits</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">9. Vos droits</h2>
             <p>Conformément à la Loi 25 et aux lois applicables, vous disposez des droits suivants :</p>
-            <ul className="list-disc pl-6 space-y-2 marker:text-[#BA7B39]">
+            <ul className="list-disc pl-6 space-y-2 marker:text-[#9c7a44]">
               <li><strong>Droit d'accès et de rectification :</strong> Consulter ou corriger vos données.</li>
               <li><strong>Droit à l'effacement :</strong> Demander la suppression de vos renseignements personnels.</li>
               <li><strong>Droit à la désindexation et à la portabilité :</strong> Demander que vos renseignements ne soient plus associés à un lien hypertexte ou vous être remis dans un format structuré.</li>
@@ -112,7 +112,7 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-serif text-2xl md:text-3xl text-[#28352F] dark:text-[#e0b060]">10. Responsable de la protection des renseignements personnels (PRP)</h2>
+            <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">10. Responsable de la protection des renseignements personnels (PRP)</h2>
             <p>Pour toute question ou pour exercer vos droits, veuillez contacter notre Responsable de la protection des renseignements personnels :</p>
             <div className="bg-white dark:bg-white/5 p-8 rounded-2xl border border-[#BA7B39]/30 mt-6">
               <p className="font-bold text-[#293027] dark:text-[#EEE7DB]">Nom : Alex T. St-Laurent</p>

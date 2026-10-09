@@ -66,8 +66,9 @@ const NavBar: React.FC = () => {
 
         {/* Wordmark — Cormorant editorial wordmark, with logomark fallback */}
         <Link
-          to="/?splash=1"
-          title="Retour à l'écran d'accueil"
+          to="/accueil/"
+          reloadDocument
+          title="Retour à l'accueil"
           className="flex items-center gap-3 flex-shrink-0 group min-h-[44px]"
         >
           {/* Le mot-symbole de l'accueil, repris tel quel : deux lignes serif

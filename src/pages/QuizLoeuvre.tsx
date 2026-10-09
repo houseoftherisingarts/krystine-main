@@ -1347,7 +1347,7 @@ const QuizLoeuvre: React.FC = () => {
             video="/quiz/quiz-dosha-revisee.mp4"
             poster="/quiz/quiz-dosha-revisee-poster.jpg"
             ratio="aspect-[16/9] sm:aspect-[21/9] lg:aspect-[8/3]"
-            etiquette="Vata (Vent et Espace) · Pitta (Feu et Eau) · Kapha (Eau et Terre)"
+            legende="Vata (Vent et Espace) · Pitta (Feu et Eau) · Kapha (Eau et Terre)"
           />
         </motion.div>
 
