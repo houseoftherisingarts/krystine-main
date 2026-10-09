@@ -39,7 +39,7 @@ export const BandePreuve: React.FC<{ lang: string }> = ({ lang }) => {
   return (
     <section aria-label={lang === 'FR' ? 'Vue et entendue à' : 'As seen on'} className="relative w-full overflow-hidden bg-[#1b2622] border-y border-[#9c7a44]/45 py-[clamp(2.25rem,5vh,3.5rem)]">
       <style>{`@keyframes ksl-defile{from{transform:translateX(0)}to{transform:translateX(-50%)}}.ksl-defile{animation:ksl-defile 48s linear infinite}.ksl-defile:hover{animation-play-state:paused}@media (prefers-reduced-motion:reduce){.ksl-defile{animation:none;flex-wrap:wrap}}`}</style>
-      <p className="px-[clamp(1.5rem,5vw,5.5rem)] mb-6 text-[0.85rem] font-semibold uppercase tracking-[0.26em] text-[#c9a96a]">{lang === 'FR' ? 'Vue et entendue à' : 'As seen on'}</p>
+      <p className="mb-6 flex items-center justify-center gap-4 px-[clamp(1.5rem,5vw,5.5rem)] text-center text-[0.85rem] font-semibold uppercase tracking-[0.26em] text-[#c9a96a] before:h-px before:w-12 before:bg-[#c9a96a]/55 after:h-px after:w-12 after:bg-[#c9a96a]/55">{lang === 'FR' ? 'Vue et entendue à' : 'As seen on'}</p>
       <div className="ksl-defile flex w-max">{rangee(false)}{rangee(true)}</div>
     </section>
   );

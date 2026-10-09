@@ -226,7 +226,7 @@ const NavBar: React.FC = () => {
             transition={{ duration: 0.3 }}
             className="xl:hidden overflow-hidden border-t border-brass/12"
           >
-            <div className="bg-cream/97 dark:bg-espressoDeep/98 backdrop-blur-xl px-6 py-4 flex flex-col">
+            <div className="bg-[#f4efe6] dark:bg-[#1b2622] shadow-[0_18px_40px_-20px_rgba(28,23,18,0.45)] px-6 py-4 flex flex-col">
               {NAV.map((item, i) => {
                 const resolved = resolveHref(item.href);
                 const cls = `block py-3.5 min-h-[44px] text-sm font-sans font-semibold uppercase tracking-[0.15em] border-b border-ink/5 dark:border-ctext/5 transition-colors ${

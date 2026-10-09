@@ -84,6 +84,8 @@ const VideoMedia: React.FC<{ lang: string; src: string; poster: string; label: s
   const lancer = () => {
     const v = ref.current;
     if (!v) return;
+    // Une seule vidéo à la fois sur la page (tour des boutons, 9 oct. 2026).
+    document.querySelectorAll('video').forEach((o) => { if (o !== v && !o.muted) o.pause(); });
     v.muted = false;
     v.play().catch(() => {});
     setJoue(true);
