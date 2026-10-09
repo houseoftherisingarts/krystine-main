@@ -7566,5 +7566,19 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-09T16:54:17.460Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e41f0c63",
+    "message": "Conférencière (/conferenciere) : le formulaire « Inviter Krystine » plantait quand le téléphone était laissé vide (erreur addDoc); corrigé, les champs facultatifs vides sont maintenant ignorés",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/firebase/firestore.ts"
+    ]
   }
 ]
