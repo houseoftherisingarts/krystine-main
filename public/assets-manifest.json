@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T14:39:21.742Z",
+  "generatedAt": "2026-10-09T12:20:11.759Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -149,6 +149,13 @@
       "size": 35616
     },
     {
+      "path": "/accueil/assets/portes/formations-photo.webp",
+      "name": "formations-photo.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 94500
+    },
+    {
       "path": "/accueil/assets/portes/formations.jpg",
       "name": "formations.jpg",
       "folder": "accueil/assets/portes",
@@ -163,6 +170,13 @@
       "size": 26660
     },
     {
+      "path": "/accueil/assets/portes/inspirata-photo.webp",
+      "name": "inspirata-photo.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 65692
+    },
+    {
       "path": "/accueil/assets/portes/inspirata.png",
       "name": "inspirata.png",
       "folder": "accueil/assets/portes",
@@ -175,6 +189,13 @@
       "folder": "accueil/assets/portes",
       "kind": "image",
       "size": 58840
+    },
+    {
+      "path": "/accueil/assets/portes/livres-photo.webp",
+      "name": "livres-photo.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 50684
     },
     {
       "path": "/accueil/assets/portes/livres.png",
@@ -205,6 +226,13 @@
       "size": 112600
     },
     {
+      "path": "/accueil/assets/portes/podcast-photo.webp",
+      "name": "podcast-photo.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 166560
+    },
+    {
       "path": "/accueil/assets/portes/podcast.png",
       "name": "podcast.png",
       "folder": "accueil/assets/portes",
@@ -217,6 +245,13 @@
       "folder": "accueil/assets/portes",
       "kind": "image",
       "size": 33036
+    },
+    {
+      "path": "/accueil/assets/portes/retraites-photo.webp",
+      "name": "retraites-photo.webp",
+      "folder": "accueil/assets/portes",
+      "kind": "image",
+      "size": 111486
     },
     {
       "path": "/accueil/assets/portes/retraites.png",
@@ -287,6 +322,13 @@
       "folder": "boutique",
       "kind": "document",
       "size": 863337
+    },
+    {
+      "path": "/boutique/trois-rituels-du-moment.pdf",
+      "name": "trois-rituels-du-moment.pdf",
+      "folder": "boutique",
+      "kind": "document",
+      "size": 918786
     },
     {
       "path": "/boutique/vata-inspirata-100.jpg",
@@ -1673,6 +1715,20 @@
       "folder": "livres",
       "kind": "image",
       "size": 101016
+    },
+    {
+      "path": "/medias/bien-2021.jpg",
+      "name": "bien-2021.jpg",
+      "folder": "medias",
+      "kind": "image",
+      "size": 156288
+    },
+    {
+      "path": "/medias/bien-2021.mp4",
+      "name": "bien-2021.mp4",
+      "folder": "medias",
+      "kind": "video",
+      "size": 52629991
     },
     {
       "path": "/origine/logo-origine.webp",

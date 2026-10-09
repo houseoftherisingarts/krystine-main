@@ -3,14 +3,14 @@ import { addNewsletterSubscriber } from '../../firebase/firestore';
 import { trackLead } from '../../lib/track';
 
 /**
- * « Recevoir le rituel d'automassage en PDF » (Krystine, 8 oct. 2026 : « on
+ * « Les 3 rituels du moment » en PDF (d'abord « Recevoir le rituel d'automassage en PDF ») (Krystine, 8 oct. 2026 : « on
  * collecte les courriels »). Le formulaire s'ouvre sur place, sans fenêtre.
  * L'inscription passe par la porte unique de l'infolettre (inscrireInfolettre :
  * pot de miel, cadence par adresse IP), avec l'étiquette
- * « boutique-rituel-automassage »; le courriel qui porte le lien du PDF part
+ * « boutique-3-rituels-du-moment »; le courriel qui porte le lien du PDF part
  * de functions/src/newsletter/welcome.ts (CONFIRMATIONS_LISTES).
  */
-const SOURCE = 'boutique-rituel-automassage';
+const SOURCE = 'boutique-3-rituels-du-moment';
 
 const RituelPdf: React.FC = () => {
   const id = useId();
@@ -47,9 +47,9 @@ const RituelPdf: React.FC = () => {
 
   return (
     <div className="mt-6 border-t border-[#9c7a44]/30 pt-5">
-      <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">Le rituel à garder</p>
+      <p className="text-[0.58rem] uppercase tracking-[0.24em] text-[#7d6330]">Les 3 rituels du moment</p>
       <p className="mt-1.5 text-[1rem] leading-[1.6] text-[#3a2f23]">
-        En une page : la fréquence selon ce qui est présent et le temps qu’il faut, à garder près de votre huile.
+        L’eau digestive du matin, l’automassage du ventre au réveil, le massage des oreilles et la respiration de l’abeille : trois rituels tirés des livres de Krystine St-Laurent, en PDF.
       </p>
 
       {etat === 'fait' ? (
@@ -64,7 +64,7 @@ const RituelPdf: React.FC = () => {
           aria-controls={`${id}-form`}
           className="mt-4 inline-flex min-h-[46px] items-center justify-center bg-[#1c1712] px-6 text-[0.68rem] uppercase tracking-[0.16em] text-[#f4efe6] transition-[background-color,transform] duration-200 ease-out active:scale-[0.97] hover:bg-[#9c7a44]"
         >
-          Recevoir le rituel d’automassage en PDF
+          Recevoir les 3 rituels du moment
         </button>
       ) : (
         <form id={`${id}-form`} onSubmit={envoyer} className="mt-4 space-y-3.5" noValidate>
@@ -82,7 +82,7 @@ const RituelPdf: React.FC = () => {
           <input type="text" name="site" tabIndex={-1} autoComplete="off" aria-hidden value={pot} onChange={e => setPot(e.target.value)} className="absolute -left-[9999px] h-0 w-0 opacity-0" />
           <label className="flex min-h-[44px] cursor-pointer items-start gap-3 text-[0.95rem] leading-[1.55] text-[#3a2f23]">
             <input type="checkbox" required checked={accord} onChange={e => setAccord(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-[#1c1712]" />
-            <span>Recevoir ce PDF et les lettres de Krystine St-Laurent. Désabonnement en un clic, en tout temps.</span>
+            <span>Recevoir ce PDF et les lettres de Krystine St-Laurent.<span className="mt-1 block text-[0.8em] opacity-70">Désabonnement en un clic, en tout temps.</span></span>
           </label>
           {etat === 'erreur' && <p role="alert" className="text-[0.95rem] text-[#8a2f22]">{erreur}</p>}
           <button

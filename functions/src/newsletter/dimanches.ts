@@ -6,10 +6,17 @@ import type { LiveEvent, Mail, Step } from './live';
 // (1er novembre), ANCRER (8 novembre), à 9 h, heure du Québec. Chaque
 // dimanche est un document `liveEvents` ordinaire (serie: 'dimanches-origine')
 // et passe par la même mécanique que le podcast en direct : confirmation,
-// rappels, rediffusion. Seuls les mots changent, ici. Règle d'acquisition :
-// ces courriels parlent du rendez-vous du jour, jamais d'un programme payant.
+// rappels, rediffusion. Seuls les mots changent, ici. Décisions du 8 octobre :
+// la signature « Les Dimanches d'Origine » ouvre l'objet de chaque courriel;
+// 75 à 90 minutes avec une méditation d'environ 15 minutes en clôture;
+// aucune pièce jointe (la carte en PDF est retirée, Krystine : jamais la
+// matière d'EXPÉRIENCE ORIGINE dans les Dimanches); rediffusion
+// disponible jusqu'au 20 novembre; seuls la veille et l'heure d'avant
+// rappellent le direct (le rappel de trois jours ne part pas, voir live.ts).
 
 export const SERIE_DIMANCHES = 'dimanches-origine';
+export const SIGNATURE = 'Les Dimanches d’Origine';
+const JUSQUA = '20 novembre';
 
 /** La page qui ouvre le partage du lien personnel de l'inscrite. */
 export const lienInviter = (id: string) => `${PUBLIC_BASE_URL}/dimanches?inviter=${encodeURIComponent(id)}`;
@@ -40,27 +47,30 @@ const premier = (jour: string) => jour.replace(/(^|\s)1 (?=\S)/, '$11er ');
 export function buildMailDimanche(step: Step | 'confirm', ev: LiveEvent, ctx: Contexte): Mail {
   const c = { ...ctx, jour: premier(ctx.jour), serie: ctx.serie.map(d => ({ ...d, jour: premier(d.jour) })) };
   const invite = c.inviteUrl ? { label: 'Inviter une amie', url: c.inviteUrl } : undefined;
+  const mot = motDe(ev);
   switch (step) {
     case 'confirm':
       return {
-        subject: 'Votre place est réservée pour les trois dimanches en direct',
+        subject: `${SIGNATURE} : votre place est réservée`,
         preheader: 'Trois matins en direct, à 9 h, heure du Québec. Le lien viendra à vous.',
         paragraphs: [
           c.salut,
           `Votre place est réservée pour les trois matins en direct avec Krystine St-Laurent, à ${c.heure}, heure du Québec : ${enumererSerie(c.serie)}.`,
-          'Vous n\'avez rien à préparer. Le lien du direct vous arrivera par courriel avant chaque dimanche. D\'ici là, vous pouvez inscrire le prochain rendez-vous à votre agenda.',
+          'Chaque matin dure de 75 à 90 minutes : l\'accueil, l\'enseignement, une expérience à vivre ensemble, vos questions, puis une méditation d\'environ quinze minutes.',
+          `La veille de chaque dimanche, nous vous enverrons le lien du direct, puis un rappel une heure avant. Si vous ne pouvez pas être là, la rediffusion restera disponible jusqu'au ${JUSQUA}.`,
         ],
         cta: c.agenda,
         invite,
         closing: 'Au plaisir de vous retrouver dimanche!',
       };
     case 'd3':
+      // Ne part pas d'elle-même pour la série (live.ts); gardé pour un envoi manuel depuis l'admin.
       return {
-        subject: `Dans trois jours, le direct ${motDe(ev)}`,
+        subject: `${SIGNATURE} : dans trois jours, ${mot}`,
         preheader: `${c.jour} à ${c.heure}, heure du Québec. Le lien est prêt.`,
         paragraphs: [
           c.salut,
-          `Dans trois jours, ${c.jour} à ${c.heure}, heure du Québec, nous nous retrouvons en direct pour ${motDe(ev)}.`,
+          `Dans trois jours, ${c.jour} à ${c.heure}, heure du Québec, nous nous retrouvons en direct pour ${mot}.`,
           'Le lien est déjà prêt. Gardez-le près de vous, et si le rendez-vous manque encore à votre agenda, voici de quoi l\'y inscrire.',
         ],
         cta: c.direct,
@@ -70,12 +80,12 @@ export function buildMailDimanche(step: Step | 'confirm', ev: LiveEvent, ctx: Co
       };
     case 'veille':
       return {
-        subject: `C'est demain, à ${c.heure}`,
-        preheader: `Le direct ${motDe(ev)}, demain matin.`,
+        subject: `${SIGNATURE} : c'est demain, à ${c.heure}`,
+        preheader: `Le direct ${mot}, demain matin. Voici le lien.`,
         paragraphs: [
           c.salut,
-          `C'est demain! ${c.jour.charAt(0).toUpperCase() + c.jour.slice(1)}, à ${c.heure}, heure du Québec, nous ouvrons le direct pour ${motDe(ev)}.`,
-          'Voici le lien, à garder sous la main pour demain matin.',
+          `C'est demain! ${c.jour.charAt(0).toUpperCase() + c.jour.slice(1)}, à ${c.heure}, heure du Québec, nous ouvrons le direct pour ${mot}.`,
+          'Voici le lien, à garder sous la main pour demain matin. Prévoyez de quoi noter.',
         ],
         cta: c.direct,
         invite,
@@ -83,7 +93,7 @@ export function buildMailDimanche(step: Step | 'confirm', ev: LiveEvent, ctx: Co
       };
     case 'h1':
       return {
-        subject: 'Nous commençons dans une heure',
+        subject: `${SIGNATURE} : nous commençons dans une heure`,
         preheader: `Le direct s'ouvre à ${c.heure}. Installez-vous.`,
         paragraphs: [
           c.salut,
@@ -94,11 +104,11 @@ export function buildMailDimanche(step: Step | 'confirm', ev: LiveEvent, ctx: Co
       };
     case 'replay':
       return {
-        subject: `La rediffusion du direct ${motDe(ev)} est en ligne`,
-        preheader: 'Elle vous attend, au rythme qui est le vôtre.',
+        subject: `${SIGNATURE} : la rediffusion de ${mot} est en ligne`,
+        preheader: `Disponible jusqu'au ${JUSQUA}, au rythme qui est le vôtre.`,
         paragraphs: [
           c.salut,
-          `Vous n'avez pas pu être des nôtres ${c.jour}? La rediffusion est maintenant en ligne. Elle vous attend à votre rythme, pour l'écouter en entier ou pour revenir sur un passage qui vous a parlé.`,
+          `Vous n'avez pas pu être des nôtres ${c.jour}? La rediffusion est maintenant en ligne, et elle le restera jusqu'au ${JUSQUA}. Elle vous attend à votre rythme, pour l'écouter en entier ou pour revenir sur un passage qui vous a parlé.`,
         ],
         cta: { label: 'Regarder la rediffusion', url: ev.replayUrl || c.direct.url },
         invite,

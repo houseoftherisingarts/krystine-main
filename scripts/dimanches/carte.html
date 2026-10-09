@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Carte des dix couples de qualités</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* La carte offerte des Dimanches d'Origine (8 octobre 2026). Source des
+     contenus : affiche [2] « Tableau visuel des 10 couples de qualités » et
+     outil [4] « Les portes d'observation » du RÉSUMÉ COMPLET d'Expérience
+     Origine (coffre, 20_formations/Expérience Origine/). Régénérer avec
+     node scripts/dimanches/faire-carte.mjs */
+  @page { size: Letter; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, Arial, sans-serif; color: #1c1712; background: #f4efe6; }
+  .page { width: 8.5in; height: 11in; padding: 0.62in 0.7in 0.55in; display: flex; flex-direction: column; page-break-after: always; position: relative; }
+  .page:last-child { page-break-after: auto; }
+  .cadre { position: absolute; inset: 0.32in; border: 1px solid rgba(156,122,68,.45); pointer-events: none; }
+  .serif { font-family: Fraunces, Georgia, serif; font-weight: 300; }
+  .accroche { font-size: 10.5pt; letter-spacing: .2em; text-transform: uppercase; color: #7d6330; }
+  h1 { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 34pt; line-height: 1.02; margin-top: 10pt; }
+  .sous { font-size: 12pt; line-height: 1.55; color: #2e261d; margin-top: 10pt; max-width: 5.6in; }
+  .filet { width: 44pt; height: 1px; background: #BA7B39; margin-top: 14pt; }
+  .couples { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22pt; margin-top: 16pt; border-top: 1px solid rgba(28,23,18,.18); }
+  .couple { display: grid; grid-template-columns: 20pt 1fr 1fr; align-items: baseline; gap: 6pt; padding: 7pt 0; border-bottom: 1px solid rgba(28,23,18,.18); }
+  .n { font-size: 10.5pt; color: #BA7B39; }
+  .q { font-family: Fraunces, Georgia, serif; font-size: 14pt; line-height: 1.1; }
+  .v { display: block; font-family: Inter, Arial, sans-serif; font-size: 10.5pt; color: #4a3d2e; margin-top: 2pt; }
+  .bille { margin-top: 14pt; background: #efe6d7; border-radius: 10pt; padding: 16pt 18pt; }
+  .bille h2 { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 18pt; }
+  .bille p { font-size: 11pt; line-height: 1.6; color: #2e261d; margin-top: 7pt; }
+  .ligne { position: relative; height: 26pt; margin: 12pt 8pt 2pt; }
+  .ligne .trait { position: absolute; left: 0; right: 0; top: 12pt; height: 1.5pt; background: #1c1712; opacity: .55; }
+  .ligne .pole { position: absolute; top: 0; font-size: 10.5pt; letter-spacing: .14em; text-transform: uppercase; color: #7d6330; }
+  .ligne .milieu { position: absolute; left: 50%; top: 8pt; width: 1px; height: 10pt; background: #1c1712; opacity: .45; }
+  .ligne .point { position: absolute; left: 28%; top: 6.5pt; width: 12pt; height: 12pt; border-radius: 50%; background: #BA7B39; }
+  .regles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10pt; margin-top: 10pt; }
+  .regles div { font-size: 10.5pt; line-height: 1.45; color: #2e261d; border-top: 1px solid rgba(186,123,57,.6); padding-top: 6pt; }
+  .pied { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; font-size: 10pt; color: #7d6330; letter-spacing: .08em; padding-top: 12pt; }
+  .piliers { margin-top: 22pt; display: grid; gap: 14pt; }
+  .pilier { display: grid; grid-template-columns: 2.1in 1fr; gap: 16pt; padding: 16pt 0; border-top: 1px solid rgba(28,23,18,.18); }
+  .pilier:last-child { border-bottom: 1px solid rgba(28,23,18,.18); }
+  .pilier .mot { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 27pt; letter-spacing: .04em; line-height: 1; }
+  .pilier .rang { font-size: 10.5pt; letter-spacing: .2em; color: #7d6330; text-transform: uppercase; margin-bottom: 6pt; }
+  .pilier .t { font-family: Fraunces, Georgia, serif; font-size: 16pt; line-height: 1.2; }
+  .pilier p { font-size: 11.5pt; line-height: 1.6; color: #2e261d; margin-top: 5pt; }
+  .dates { margin-top: 22pt; background: #28352F; color: #EEE7DB; border-radius: 12pt; padding: 18pt 22pt; }
+  .dates .accroche { color: #d9a05b; }
+  .dates p { font-size: 11.5pt; line-height: 1.6; margin-top: 6pt; }
+  .citation { margin-top: 22pt; text-align: center; }
+  .citation p { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 16pt; line-height: 1.35; }
+  .citation span { display: block; margin-top: 6pt; font-size: 10pt; letter-spacing: .2em; text-transform: uppercase; color: #7d6330; }
+</style>
+</head>
+<body>
+
+<section class="page">
+  <div class="cadre"></div>
+  <p class="accroche">Les Dimanches d’Origine · carte offerte</p>
+  <h1>Les dix couples de qualités</h1>
+  <p class="sous">Une cartographie pour se lire. L’Ayurveda décrit tout ce qui vit avec dix couples de qualités : le corps, les pensées, les saisons, l’assiette. Lorsqu’une qualité s’accumule, son opposé ramène vers le milieu.</p>
+  <div class="filet"></div>
+
+  <div class="couples">
+    <div class="couple"><span class="n">01</span><span class="q">Lourd<span class="v">alourdit, ralentit</span></span><span class="q">Léger<span class="v">allège, remet en mouvement</span></span></div>
+    <div class="couple"><span class="n">06</span><span class="q">Lent<span class="v">construit</span></span><span class="q">Vif<span class="v">traverse</span></span></div>
+    <div class="couple"><span class="n">02</span><span class="q">Chaud<span class="v">chauffe, active</span></span><span class="q">Froid<span class="v">refroidit, apaise</span></span></div>
+    <div class="couple"><span class="n">07</span><span class="q">Clair<span class="v">guide</span></span><span class="q">Trouble<span class="v">embrouille</span></span></div>
+    <div class="couple"><span class="n">03</span><span class="q">Onctueux<span class="v">nourrit, relie</span></span><span class="q">Sec<span class="v">assèche, fragmente</span></span></div>
+    <div class="couple"><span class="n">08</span><span class="q">Mou<span class="v">accueille</span></span><span class="q">Dur<span class="v">résiste</span></span></div>
+    <div class="couple"><span class="n">04</span><span class="q">Stable<span class="v">stabilise, ancre</span></span><span class="q">Mobile<span class="v">mobilise, agite</span></span></div>
+    <div class="couple"><span class="n">09</span><span class="q">Dense<span class="v">consolide</span></span><span class="q">Liquide<span class="v">circule</span></span></div>
+    <div class="couple"><span class="n">05</span><span class="q">Rugueux<span class="v">accroche, irrite</span></span><span class="q">Lisse<span class="v">adoucit, polit</span></span></div>
+    <div class="couple"><span class="n">10</span><span class="q">Tangible<span class="v">se voit</span></span><span class="q">Subtil<span class="v">se perçoit</span></span></div>
+  </div>
+
+  <div class="bille">
+    <p class="accroche">À faire chez vous</p>
+    <h2>L’exercice de la bille</h2>
+    <p>Choisissez une seule porte d’observation, par exemple le sommeil au réveil. Imaginez une bille posée sur une ligne entre deux pôles : lourd d’un côté, léger de l’autre. Où se trouve-t-elle ce matin? Regardez de nouveau à midi, puis le soir.</p>
+    <div class="ligne"><span class="pole" style="left:0">Lourd</span><span class="pole" style="right:0">Léger</span><span class="trait"></span><span class="milieu"></span><span class="point"></span></div>
+    <div class="regles">
+      <div>Une porte par jour, parfois deux, jamais les dix.</div>
+      <div>La bille montre une tendance, jamais un verdict.</div>
+      <div>Lorsqu’elle penche, choisissez l’opposé de ce qui s’accumule pour revenir au milieu.</div>
+    </div>
+  </div>
+
+  <div class="pied"><span>krystinestlaurent.ca</span><span>Krystine St-Laurent</span></div>
+</section>
+
+<section class="page">
+  <div class="cadre"></div>
+  <p class="accroche">Et ensuite</p>
+  <h1>EXPÉRIENCE ORIGINE 2</h1>
+  <p class="sous">Douze semaines pour faire de cette grammaire un repère de tous les jours, en trois mouvements.</p>
+  <div class="filet"></div>
+
+  <div class="piliers">
+    <div class="pilier"><div><p class="rang">Pilier I</p><p class="mot">LIRE</p></div><div><p class="t">Ce que le corps essaie de dire</p><p>Apprendre à voir ce qui circule en soi, avant de vouloir changer quoi que ce soit.</p></div></div>
+    <div class="pilier"><div><p class="rang">Pilier II</p><p class="mot">TRIER</p></div><div><p class="t">Ce qui vous appartient vraiment</p><p>Retrouver ses propres repères, trier ce qui nourrit, ce qui encombre.</p></div></div>
+    <div class="pilier"><div><p class="rang">Pilier III</p><p class="mot">ANCRER</p></div><div><p class="t">Le retour au point d’origine</p><p>Installer les gestes, les rythmes et les choix qui soutiennent dans la durée.</p></div></div>
+  </div>
+
+  <div class="dates">
+    <p class="accroche">Les dates</p>
+    <p>Les inscriptions ouvrent le 1er novembre 2026. Le départ a lieu le 10 janvier 2027. Libre à chacune d’y aller ou non.</p>
+  </div>
+
+  <div class="citation">
+    <p>« Le corps porte le même langage que la nature, il ne demande qu’à être écouté. »</p>
+    <span>Krystine St-Laurent</span>
+  </div>
+
+  <div class="pied"><span>krystinestlaurent.ca</span><span>Les Dimanches d’Origine</span></div>
+</section>
+
+</body>
+</html>

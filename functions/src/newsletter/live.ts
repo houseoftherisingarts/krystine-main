@@ -93,7 +93,7 @@ export function calendarUrl(ev: LiveEvent): string {
   const q = new URLSearchParams({
     title: ev.title,
     start: start.toISOString(),
-    dur: String(H / 60000),
+    dur: String(ev.serie === SERIE_DIMANCHES ? 90 : H / 60000),
     url: lienDirect(ev),
   });
   return `${PUBLIC_BASE_URL}/podcast/agenda.html?${q.toString()}`;
@@ -237,7 +237,7 @@ export function renderLiveHtml(m: Mail, opts: { unsubscribeUrl: string; postalAd
         <!-- Bandeau noir chaud + or (visuel Saison 2) : le rendez-vous -->
         <tr><td style="background:${CHARTE.night};padding:30px 40px 28px;${ev?.serie ? 'border-radius:15px 15px 0 0;' : ''}">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">&#9679;&nbsp; ${ev?.serie === SERIE_DIMANCHES ? 'En direct &middot; Trois dimanches avec Krystine' : 'En direct sur YouTube'}</td></tr>
+            <tr><td style="padding:0 0 18px;font-family:${CHARTE.sans};font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:${CHARTE.gold};font-weight:600;">&#9679;&nbsp; ${ev?.serie === SERIE_DIMANCHES ? 'En direct &middot; Les Dimanches d&rsquo;Origine' : 'En direct sur YouTube'}</td></tr>
             <tr><td style="padding:0 0 20px;font-family:${CHARTE.serif};font-size:34px;line-height:1.08;color:${CHARTE.cream};font-weight:500;">${esc(m.subject)}</td></tr>
             <tr><td style="padding:0 0 22px;"><div style="height:1px;width:64px;background:${CHARTE.gold};"></div></td></tr>
             ${start ? `<tr><td><table role="presentation" cellpadding="0" cellspacing="0"><tr>${cell('Date', jour.charAt(0).toUpperCase() + jour.slice(1))}${cell('Heure', `${heureQc} · Québec`, `${heureFr} · France`)}</tr></table></td></tr>` : ''}
@@ -354,6 +354,8 @@ export const sendLiveReminders = onSchedule(
 
         const due: Step[] = [];
         for (const [step, defaut] of PRE_STEPS) {
+          // Les Dimanches d'Origine : la veille et l'heure d'avant seulement (Krystine, 8 oct. 2026).
+          if (step === 'd3' && ev.serie === SERIE_DIMANCHES) continue;
           const regle = ev.offsets?.[step as 'd3' | 'veille' | 'h1'];
           const before = typeof regle === 'number' && regle > 0 ? regle * H : defaut;
           const at = start - before;

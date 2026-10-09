@@ -449,6 +449,35 @@ export default function MediasV2() {
           </div>
         </div>
 
+        {/* Sur le plateau de Bien · vidéo embarquée (lecture au clic, son au clic) */}
+        <div data-reveal className="mb-14 grid items-center gap-x-[clamp(2rem,5vw,5rem)] gap-y-10 lg:grid-cols-[auto_1fr]">
+          <div className="lg:order-2">
+            <Kicker className="mb-5">À la télé</Kicker>
+            <h3 className="v2-serif font-light leading-[1.05] text-[#1c1712] text-[clamp(1.9rem,3.4vw,2.7rem)] max-w-[16ch]">
+              Sur le plateau
+            </h3>
+            <span className="mt-6 block h-px w-12 bg-[#9c7a44]" aria-hidden />
+            <p className="mt-6 text-[0.72rem] uppercase tracking-[0.2em] text-[#7d6330]">Émission Bien &middot; 2 septembre 2021</p>
+          </div>
+          <figure className="relative mx-auto w-full max-w-[720px] lg:order-1 lg:mx-0 lg:w-[min(720px,55vw)]">
+            <span className="pointer-events-none absolute -inset-2 border border-[#9c7a44]/35" aria-hidden />
+            <div className="relative aspect-video w-full overflow-hidden bg-[#1c1712]">
+              <video
+                src="/medias/bien-2021.mp4"
+                poster="/medias/bien-2021.jpg"
+                controls
+                playsInline
+                preload="metadata"
+                aria-label="Krystine St-Laurent présente Féminité & Ayurveda à Nathalie Simard, émission Bien, 2 septembre 2021"
+                className="h-full w-full object-cover"
+              />
+              <span className="pointer-events-none absolute left-0 top-0 bg-[#1c1712] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em] text-[#f4efe6]">
+                Émission Bien
+              </span>
+            </div>
+          </figure>
+        </div>
+
         <div data-reveal className="grid md:grid-cols-2 gap-px bg-[#1c1712]/12 border border-[#1c1712]/12">
           {/* Regarder les épisodes · espace client, en niskas */}
           <div className="flex flex-col p-[clamp(1.75rem,3vw,2.75rem)] bg-[#faf6ee]">

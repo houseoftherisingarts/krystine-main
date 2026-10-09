@@ -893,7 +893,7 @@ export default function KrystineV2() {
               data-fade
               className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] mb-7"
             >
-              Conférencière &middot; Keynote speaker &middot; Autrice best-seller
+              Conférencière &middot; Autrice best-seller
             </p>
             <h1 className="v2-serif font-light leading-[0.9] text-[#1c1712] text-[clamp(3.2rem,9.5vw,9.5rem)]">
               <span data-line className="block overflow-hidden">

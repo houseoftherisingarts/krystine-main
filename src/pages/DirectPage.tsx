@@ -19,6 +19,9 @@ import ChatDirect from '../components/direct/ChatDirect';
 // participation, les cœurs qui montent, le pourboire et les points qui
 // tombent dans l'espace client.
 
+// Le pourboire est éteint : Krystine ne veut pas tendre le chapeau pendant ses directs (8 oct. 2026).
+const AFFICHER_POURBOIRE = false;
+
 const idYouTube = (url?: string): string | null => {
   if (!url) return null;
   const m = url.match(/(?:v=|youtu\.be\/|\/live\/|\/embed\/)([\w-]{11})/);
@@ -207,8 +210,8 @@ const DirectPage: React.FC = () => {
             </span>}
           </div>
 
-          {/* Le pourboire */}
-          <div className="mt-5 rounded-[24px] border border-white/12 bg-white/[0.04] p-5 backdrop-blur-md">
+          {/* Le pourboire : retiré à la demande de Krystine (8 oct. 2026), remettre AFFICHER_POURBOIRE à true pour le rallumer. */}
+          {AFFICHER_POURBOIRE && <div className="mt-5 rounded-[24px] border border-white/12 bg-white/[0.04] p-5 backdrop-blur-md">
             <p className="text-[10px] uppercase tracking-[0.25em] text-[#BA7B39]">Soutenir le direct</p>
             <p className="mt-1.5 font-serif text-xl text-[#EEE7DB]">Glisser un pourboire dans le chapeau</p>
             <p className="mt-1.5 max-w-[60ch] text-[13px] leading-relaxed text-[#EEE7DB]/60">
@@ -229,7 +232,8 @@ const DirectPage: React.FC = () => {
                 {pourboires.length > 6 ? ' et aux autres.' : '.'}
               </p>
             )}
-          </div>
+          </div>}
+          {note && !AFFICHER_POURBOIRE && <p className="mt-3 text-[13px] text-[#E8A85C]">{note}</p>}
         </section>
 
         {/* Le clavardage */}

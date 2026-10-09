@@ -88,20 +88,21 @@ export const CONFIRMATIONS_LISTES: Record<string, ContenuConfirmation> = {
       'Les portes ouvriront bientôt. Vous recevrez l\'invitation avant toute annonce publique, et vous n\'avez rien d\'autre à faire d\'ici là.',
     ],
   },
-  // Le rituel d'automassage en PDF, demandé depuis /boutique (8 oct. 2026).
+  // Les 3 rituels du moment en PDF, demandés depuis /boutique (8 oct. 2026).
   // Texte à faire approuver par Krystine avant la mise en ligne.
-  'boutique-rituel-automassage': {
-    sujet: 'Votre rituel d\'automassage',
+  'boutique-3-rituels-du-moment': {
+    sujet: 'Vos 3 rituels du moment',
     surtitre: 'INSPIRATA AYURVEDA',
-    titre: 'Votre rituel d\'automassage',
-    apercu: 'Le PDF vous attend : la fréquence selon ce qui est présent, et le temps qu\'il faut.',
+    titre: 'Vos 3 rituels du moment',
+    apercu: 'L\'eau digestive, l\'automassage du ventre et la respiration de l\'abeille, en PDF.',
     corps: [
-      'Voici le rituel d\'automassage que vous avez demandé sur la boutique.',
-      'Vous y trouverez, en une page, la fréquence selon ce qui est présent en ce moment, Vata (Vent et Espace), Pitta (Feu et Eau) ou Kapha (Eau et Terre), et le temps qu\'il faut, tirés de Nature & Ayurveda.',
+      'Voici les 3 rituels du moment que vous avez demandés sur la boutique.',
+      'L\'eau digestive du matin, l\'automassage du ventre au réveil, le massage des oreilles et la respiration de l\'abeille : trois rituels cités mot pour mot de Nature & Ayurveda et de Féminité & Ayurveda.',
     ],
-    lien: { libelle: 'Télécharger le rituel en PDF', url: `${PUBLIC_BASE_URL}/boutique/rituel-automassage.pdf` },
+    lien: { libelle: 'Télécharger les 3 rituels en PDF', url: `${PUBLIC_BASE_URL}/boutique/trois-rituels-du-moment.pdf` },
     signature: ['Notre équipe est là pour vous,', 'L\'équipe'],
   },
+
 };
 
 /** Le courriel propre à une liste portée par ces étiquettes, s'il y en a un. */

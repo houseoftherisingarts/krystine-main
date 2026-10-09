@@ -169,6 +169,16 @@ async function verifComplete(): Promise<Verif | null> {
   };
 }
 
+/** La veille de nuit des occasions de conférences (~/.iris/veille-conferences, sur l'ordinateur de Krystine, vers 2 h; consigne d'Eric Edmeades du 8 oct. 2026). */
+interface Occasion { nom: string; type: string; lieu: string; date: string; dateLimite: string; langue: string; sujet: string; lien: string }
+async function veilleConferences(): Promise<{ nouvelles: Occasion[]; total: number } | null> {
+  const d = await getFirestore().doc('sante/veilleConferences').get();
+  if (!d.exists) return null;
+  const le = (d.get('le') as Timestamp | undefined)?.toDate();
+  if (!le || Date.now() - le.getTime() > 12 * 3600 * 1000) return null;
+  return { nouvelles: (d.get('nouvelles') || []) as Occasion[], total: Number(d.get('total')) || 0 };
+}
+
 /** « À optimiser aujourd'hui » : au plus 5 points classés par impact, lus dans vh_jours (VexelHotjar) et la vérification complète. Une donnée absente ne produit aucune ligne. */
 const coupe = (t: string, max: number) => { const x = t.replace(/\s+/g, ' ').trim(); return x.length > max ? `${x.slice(0, max)}…` : x; };
 const fois = (k: number) => (k > 1 ? `${k} fois` : '1 fois');
@@ -278,9 +288,10 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     sur(async () => (await db.collection('bugs').where('statut', '==', 'nouveau').count().get()).data().count),
     sur(async () => (await db.collection('quizTentatives').where('statut', '==', 'a-rattraper').count().get()).data().count),
   ]);
-  const [verif, comm] = await Promise.all([
+  const [verif, comm, conferences] = await Promise.all([
     sur(verifComplete),
     sur(() => commentaires(new Date(Date.now() - 24 * 3600 * 1000))),
+    sur(veilleConferences),
   ]);
   const optimiser = await sur(() => aOptimiser(sept, verif));
 
@@ -318,6 +329,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     commentaires: comm,
     aOptimiser: optimiser?.points ?? null,
     clicsFrustration: optimiser?.clics ?? null,
+    conferences,
   };
 }
 
@@ -396,6 +408,13 @@ export function texteBilan(b: Bilan): string {
     '',
     ...(b.clicsFrustration ? ['5. Clics de frustration (rage et sans effet)', ...(b.clicsFrustration.length ? b.clicsFrustration.map((l) => `• ${l}`) : ['Aucun clic de frustration hier ni dans les 7 derniers jours.']), ''] : []),
     ...(b.aOptimiser ? ['6. À optimiser aujourd’hui', ...(b.aOptimiser.length ? b.aOptimiser.map((l) => `• ${l}`) : ['Rien de précis à corriger dans les comportements d’hier.']), ''] : []),
+    '7. Occasions de conférences (veille de la nuit)',
+    ...(!b.conferences
+      ? ['La veille de 2 h n’a pas tourné cette nuit (l’ordinateur était sans doute éteint).']
+      : b.conferences.nouvelles.length === 0
+        ? [`Rien de nouveau cette nuit (${n(b.conferences.total)} occasions suivies au total).`]
+        : b.conferences.nouvelles.map((o) => `• ${o.nom} (${[o.type, o.lieu, o.langue].filter(Boolean).join(', ')}) · date : ${o.date || 'non indiquée'} · date limite : ${o.dateLimite || 'non indiquée'} · ${o.sujet} · ${o.lien}`)),
+    '',
     'Le même bilan est dans l’admin, au tableau de bord.',
     '',
     'L’équipe',
