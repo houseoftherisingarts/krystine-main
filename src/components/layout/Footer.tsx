@@ -71,8 +71,8 @@ const Footer: React.FC = () => {
             <div className="h-px w-12 bg-brass/50 mb-5" />
             <p className="text-sm text-ctextSoft/80 leading-relaxed max-w-[34ch]">
               {lang === 'FR'
-                ? 'Sagesse ayurvédique pour une vie consciente.'
-                : 'Ayurvedic wisdom for conscious living.'}
+                ? 'Relier ce que nous avons appris à séparer.'
+                : 'Reconnecting what we have learned to separate.'}
             </p>
           </div>
 

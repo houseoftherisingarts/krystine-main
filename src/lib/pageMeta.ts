@@ -124,7 +124,7 @@ const ALIAS: Record<string, string> = {
 };
 
 const DEFAULT_META: PageMeta = {
-  title: `${SITE} · Sagesse ayurvédique pour une vie consciente`,
+  title: `${SITE} · Relier ce que nous avons appris à séparer`,
   description: 'Infirmière de formation, auteure et conférencière, Krystine St-Laurent tisse des ponts entre la santé moderne, l’herboristerie et l’Ayurveda.',
 };
 
