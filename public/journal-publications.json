@@ -7662,5 +7662,21 @@
       "public/medias/partage.jpg",
       "public/medias/sante-la-vie-montage.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-09T20:49:27.726Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d6090e94",
+    "message": "Accueil : nouveau chemin (médias, puis qui est Krystine, les portes, le film, les repères, EXPÉRIENCE ORIGINE, la saison, le tome 3 et la Trilogie), schéma « Comment tout se relie » retiré, bandeau sombre « Vue et entendue à » avec logos ivoire, photo du micro pour le Podcast, photo de l'huile dans la paume pour la saison, haut de page raccourci (bouton du quiz plus haut); Médias : logos Éditions de l'Homme agrandi, « Émission » sous Bien, logos qui ne se chevauchent plus",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/assets/saison-huile.webp",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
