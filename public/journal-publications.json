@@ -7954,5 +7954,20 @@
       "public/quiz/quiz-dosha-revisee-poster.jpg",
       "public/quiz/quiz-dosha-revisee.mp4"
     ]
+  },
+  {
+    "quand": "2026-10-10T00:26:55.756Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "db7a4c92",
+    "message": "Médias (/medias) : la vidéo de Santé la vie s'ouvre sur l'affiche « Santé la vie, toutes les nuances » (logo, trois saisons, nouvelle image de la saison 1) au lieu de l'affiche « Dans les médias »",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "_shot-tmp 4.mjs",
+      "public/assets-manifest.json",
+      "public/medias/sante-la-vie-montage.jpg"
+    ]
   }
 ]
