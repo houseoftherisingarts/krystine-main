@@ -59,3 +59,4 @@ export { relancerPaiements } from './relancePaiement';
 export { demanderAvisStock, avisStockRetours } from './shopify/avisStock';
 export { demanderKitPresse, deciderDemandePresse, verifierAccesPresse } from './presse';
 export { merciTemoignageConference } from './merciTemoignage';
+export { genererPortrait } from './portraitEquipe';
