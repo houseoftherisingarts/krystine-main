@@ -7969,5 +7969,25 @@
       "public/assets-manifest.json",
       "public/medias/sante-la-vie-montage.jpg"
     ]
+  },
+  {
+    "quand": "2026-10-10T15:20:15.908Z",
+    "qui": "alextstlaurent",
+    "machine": "Les-MacBook-Pro-2",
+    "commit": "a14cd7cb",
+    "message": "Formations Vata, Kapha et Pitta : chaque cours reçoit sa chanson (leçon audio « La chanson de … » avec le bouton Télécharger, fichier « Krystine St-Laurent · … .mp3 »); la Médiathèque de l'admin écoute les fichiers audio et range les trois chansons sous Musique",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/chansons-doshas.mjs",
+      "scripts/qa/chansons-shots.mjs",
+      "src/components/cours/DocumentsLecon.tsx",
+      "src/components/edit/MediathequePicker.tsx",
+      "src/lib/mediaSeed.ts",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/admin/sections/MediaSection.tsx"
+    ]
   }
 ]
