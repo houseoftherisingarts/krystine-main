@@ -66,5 +66,6 @@ export const MEDIA_CATEGORIES: Array<{ id: string; label: string; icon: string }
   { id: 'products', label: 'Produits',     icon: 'fa-basket-shopping' },
   { id: 'chakras',  label: 'Chakras',      icon: 'fa-sun' },
   { id: 'public',   label: 'Statiques',    icon: 'fa-folder' },
+  { id: 'musique',  label: 'Musique',      icon: 'fa-music' },
   { id: 'upload',   label: 'Téléversés',   icon: 'fa-cloud-arrow-up' },
 ];

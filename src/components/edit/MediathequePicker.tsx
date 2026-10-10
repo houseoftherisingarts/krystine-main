@@ -22,7 +22,8 @@ const MediathequePicker: React.FC<Props> = ({ open, onClose, onSelect }) => {
   const refresh = () => {
     setLoading(true);
     getMediaLibrary()
-      .then(setItems)
+      // Un sélecteur d'images : les chansons de la médiathèque n'y ont pas leur place.
+      .then(all => setItems(all.filter(i => !i.contentType || i.contentType.startsWith('image/'))))
       .catch(e => setError(e?.message || 'Load failed'))
       .finally(() => setLoading(false));
   };

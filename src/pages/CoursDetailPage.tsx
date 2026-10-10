@@ -1045,16 +1045,18 @@ const CoursDetailPage: React.FC = () => {
                       cle: d.chemin,
                       nom: nomDocumentLisible(d.nom, courante.titre, courante.docs!.length),
                       pdf: /\.pdf$/i.test(d.nom),
+                      fichier: /\.pdf$/i.test(d.nom) ? undefined : d.nom,
                       obtenirUrl: () => urlDeDocumentLecon(id, courante.id, i),
                     }));
-                    return (
-                      <div className={docs.length ? 'mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start xl:grid-cols-[minmax(0,1fr)_290px]' : ''}>
-                        {docs.length > 0 && (
+                    // Une leçon dont les documents ne sont pas des PDF (une chanson à
+                    // télécharger) garde toute sa largeur : le bouton passe sous le lecteur.
+                    const aCote = docs.some(d => d.pdf);
+                    const panneau = (className: string) => (
                           <DocumentsLecon
                             documents={docs}
                             lang={lang}
                             palette={PALETTE_COURS}
-                            className="lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1"
+                            className={className}
                             onVoir={async d => {
                               try {
                                 const url = await d.obtenirUrl();
@@ -1064,7 +1066,10 @@ const CoursDetailPage: React.FC = () => {
                               catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
                             }}
                           />
-                        )}
+                    );
+                    return (
+                      <div className={aCote ? 'mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start xl:grid-cols-[minmax(0,1fr)_290px]' : ''}>
+                        {aCote && panneau('lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1')}
                         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
                         <div className="mt-5">
                           {chargeLecon ? (
@@ -1108,6 +1113,7 @@ const CoursDetailPage: React.FC = () => {
                             )
                           ) : null}
                         </div>
+                        {!aCote && docs.length > 0 && panneau('mt-5')}
                         <p className="mt-3 text-[12px] text-[#38403a]/55 dark:text-white/50">
                           {lang === 'FR' ? 'Un problème technique ? Écrivez-nous à ' : 'A technical issue? Write to us at '}
                           <a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2 hover:text-[#8B4A2F]">teamksl@inspiratanature.com</a>

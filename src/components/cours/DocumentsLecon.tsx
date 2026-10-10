@@ -13,6 +13,8 @@ export interface DocLecon {
   cle: string;
   nom: string;
   pdf: boolean;
+  /** Le nom du fichier téléchargé quand il diffère du nom affiché (une chanson : « Krystine St-Laurent · Vata.mp3 »). */
+  fichier?: string;
   obtenirUrl: () => Promise<string>;
 }
 
@@ -30,7 +32,7 @@ export const PALETTE_ORIGINE: Palette = { encre: '#1c2420', doux: '#3c4a42', acc
 export const PALETTE_COURS: Palette = { encre: '#293027', doux: '#8B4A2F', accent: '#BA7B39', surAccent: '#293027', fond: '#EEE7DB', bord: 'rgba(186,123,57,0.3)' };
 
 /** Le nom de fichier proposé au téléchargement : le nom lisible, avec son extension. */
-const nomDeFichier = (d: DocLecon) => (/\.[a-z0-9]{2,4}$/i.test(d.nom) ? d.nom : `${d.nom}${d.pdf ? '.pdf' : ''}`);
+const nomDeFichier = (d: DocLecon) => d.fichier || (/\.[a-z0-9]{2,4}$/i.test(d.nom) ? d.nom : `${d.nom}${d.pdf ? '.pdf' : ''}`);
 
 /** La première page d'un PDF, dessinée seulement quand elle devient visible. */
 export const PremierePage: React.FC<{ doc: DocLecon; className?: string; icone?: string; naturel?: boolean }> = ({ doc, className = '', icone = 'fa-file-lines', naturel }) => {
@@ -98,17 +100,22 @@ export const DocumentsLecon: React.FC<PanneauProps> = ({ documents, lang, palett
       <ul className="mt-3 space-y-5">
         {documents.map(d => (
           <li key={d.cle}>
-            <button type="button" onClick={() => onVoir(d)} aria-label={`${fr ? 'Voir' : 'View'} ${d.nom}`}
-              className="group block w-full overflow-hidden rounded-[12px] border shadow-[0_14px_30px_-22px_rgba(28,36,32,0.55)] transition-transform duration-500 hover:-translate-y-0.5" style={{ borderColor: palette.bord }}>
-              <PremierePage doc={d} naturel className="w-full" />
-            </button>
+            {/* Un fichier qui n'est pas un PDF (une chanson) n'a pas de page à montrer : son nom et le bouton Télécharger suffisent. */}
+            {d.pdf && (
+              <button type="button" onClick={() => onVoir(d)} aria-label={`${fr ? 'Voir' : 'View'} ${d.nom}`}
+                className="group block w-full overflow-hidden rounded-[12px] border shadow-[0_14px_30px_-22px_rgba(28,36,32,0.55)] transition-transform duration-500 hover:-translate-y-0.5" style={{ borderColor: palette.bord }}>
+                <PremierePage doc={d} naturel className="w-full" />
+              </button>
+            )}
             <div className="min-w-0">
-            <p className="mt-3 text-[14px] leading-snug" style={{ color: palette.encre }}>{d.nom}</p>
+            <p className={`${d.pdf ? 'mt-3' : ''} text-[14px] leading-snug`} style={{ color: palette.encre }}>{d.nom}</p>
             <div className="mt-3 grid gap-2">
+              {d.pdf && (
               <button type="button" onClick={() => onVoir(d)}
                 className="inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] transition-[filter] hover:brightness-110" style={{ background: palette.accent, color: palette.surAccent }}>
                 <i className="fa-solid fa-eye" />{fr ? 'Voir' : 'View'}
               </button>
+              )}
               <button type="button" onClick={() => { void telecharger(d); }} disabled={occupe === d.cle}
                 className="inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-[#1c2420]/5 disabled:opacity-60" style={{ borderColor: `${palette.accent}99`, color: palette.encre }}>
                 <i className={`fa-solid ${occupe === d.cle ? 'fa-circle-notch fa-spin' : 'fa-download'}`} />

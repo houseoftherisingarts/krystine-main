@@ -198,9 +198,16 @@ const MediaSection: React.FC = () => {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map(m => (
-            <Card key={m.id} className="overflow-hidden">
+            <Card key={m.id} className={`overflow-hidden ${m.contentType?.startsWith('audio/') ? 'col-span-2' : ''}`}>
               <div className="relative">
-                <div className="aspect-square bg-cover bg-center bg-[#EEE7DB] dark:bg-white/5" style={{ backgroundImage: `url(${m.url})` }} />
+                {m.contentType?.startsWith('audio/') ? (
+                  <div className="h-44 flex flex-col items-center justify-center gap-4 bg-[#EEE7DB] dark:bg-white/5 px-4">
+                    <i className="fa-solid fa-music text-3xl text-[#8B4A2F]" />
+                    <audio controls preload="metadata" src={m.url} className="w-full" />
+                  </div>
+                ) : (
+                  <div className="aspect-square bg-cover bg-center bg-[#EEE7DB] dark:bg-white/5" style={{ backgroundImage: `url(${m.url})` }} />
+                )}
                 {m.source === 'linked' && (
                   <span className="absolute top-2 right-2 text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full bg-black/40 text-white backdrop-blur">
                     <i className="fa-solid fa-link text-[8px] mr-1" /> Lié
@@ -208,11 +215,11 @@ const MediaSection: React.FC = () => {
                 )}
               </div>
               <div className="p-3 space-y-2">
-                <p className="text-xs text-[#293027]/80 dark:text-white/80 truncate font-medium" title={m.name}>{m.name}</p>
+                <p className="text-xs text-[#293027]/80 dark:text-white/80 line-clamp-2 break-words font-medium" title={m.name}>{m.name}</p>
                 {m.category && (
                   <p className="text-[10px] uppercase tracking-widest text-[#293027]/40 dark:text-white/40">{m.category}</p>
                 )}
-                <div className="flex gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   <GhostButton onClick={() => downloadImage(m.url, m.name)} className="flex-1" title="Télécharger">
                     <i className="fa-solid fa-download" />
                   </GhostButton>
