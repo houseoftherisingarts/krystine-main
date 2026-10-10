@@ -33,7 +33,7 @@ export function construirePrompt(data: unknown): string {
   const d = (data && typeof data === 'object' ? data : {}) as { apparence?: unknown; precisions?: unknown };
   const apparence = propre(d.apparence);
   const precisions = propre(d.precisions);
-  if (!apparence && !precisions) throw new HttpsError('invalid-argument', 'La description de la personne manque.');
+  if (!apparence && !precisions) throw new HttpsError('invalid-argument', 'Il manque la description de la personne, sans laquelle le portrait ne peut pas se faire.');
   return [
     STYLE_MAISON,
     apparence && `The person: ${apparence.replace(/\.$/, '')}.`,
@@ -55,12 +55,12 @@ async function predire(prompt: string, jeton: string): Promise<string> {
     const corps = (await r.json().catch(() => null)) as { status?: string; output?: unknown; error?: unknown } | null;
     if (!r.ok || !corps) {
       console.error(`genererPortrait : Replicate a répondu ${r.status}`, corps?.error ?? '');
-      throw new HttpsError('unavailable', 'Le studio photo ne répond pas. Réessaie dans un instant.');
+      throw new HttpsError('unavailable', 'Le studio photo ne répond pas en ce moment, alors réessaie dans un instant.');
     }
     const url = Array.isArray(corps.output) ? corps.output[0] : corps.output;
     if (corps.status !== 'succeeded' || typeof url !== 'string') {
       console.error('genererPortrait : prédiction sans image', corps.status, corps.error ?? '');
-      throw new HttpsError('unavailable', "Le portrait n'a pas pu être fait. Réessaie dans un instant.");
+      throw new HttpsError('unavailable', "Le portrait n'a pas pu se faire cette fois-ci, alors réessaie dans un instant.");
     }
     return url;
   }
@@ -72,7 +72,7 @@ async function compter(): Promise<void> {
   const ref = getFirestore().doc(`portraitsEquipe/${jour}`);
   await getFirestore().runTransaction(async (t) => {
     const n = Number((await t.get(ref)).data()?.n || 0);
-    if (n >= PLAFOND_JOUR) throw new HttpsError('resource-exhausted', `Le plafond de ${PLAFOND_JOUR} portraits par jour est atteint. Réessaie demain.`);
+    if (n >= PLAFOND_JOUR) throw new HttpsError('resource-exhausted', `Le plafond de ${PLAFOND_JOUR} portraits par jour est atteint, et le studio photo rouvre demain.`);
     t.set(ref, { n: FieldValue.increment(1), maj: FieldValue.serverTimestamp() }, { merge: true });
   });
 }
@@ -80,18 +80,18 @@ async function compter(): Promise<void> {
 export const genererPortrait = onCall(
   { region: 'us-central1', secrets: [REPLICATE_API_TOKEN], timeoutSeconds: 120, memory: '256MiB' },
   async (req): Promise<{ image: string; type: 'image/jpeg' }> => {
-    if (!req.auth) throw new HttpsError('unauthenticated', 'Connexion requise.');
+    if (!req.auth) throw new HttpsError('unauthenticated', "Le studio photo demande d'abord une connexion au compte d'Iris.");
     const email = String(req.auth.token.email || '').toLowerCase();
-    if (email !== COMPTE_IRIS && !ADMIN_EMAILS.includes(email)) throw new HttpsError('permission-denied', 'Réservé au compte Iris.');
+    if (email !== COMPTE_IRIS && !ADMIN_EMAILS.includes(email)) throw new HttpsError('permission-denied', "Le studio photo est réservé au compte d'Iris et aux administratrices du site.");
     const prompt = construirePrompt(req.data);
     const jeton = REPLICATE_API_TOKEN.value();
-    if (!jeton) throw new HttpsError('failed-precondition', "Le studio photo n'est pas configuré.");
+    if (!jeton) throw new HttpsError('failed-precondition', "Le studio photo n'est pas encore configuré sur le site, alors aucun portrait ne peut se faire pour l'instant.");
     await compter();
     const url = await predire(prompt, jeton);
     const image = await fetch(url);
-    if (!image.ok) throw new HttpsError('unavailable', "Le portrait n'a pas pu être récupéré. Réessaie dans un instant.");
+    if (!image.ok) throw new HttpsError('unavailable', "Le portrait est fait, mais il n'a pas pu être récupéré, alors réessaie dans un instant.");
     const octets = Buffer.from(await image.arrayBuffer());
-    if (octets.length > 8 * 1024 * 1024) throw new HttpsError('internal', 'Le portrait reçu est trop lourd.');
+    if (octets.length > 8 * 1024 * 1024) throw new HttpsError('internal', 'Le portrait reçu est trop lourd pour être rangé dans le programme.');
     return { image: octets.toString('base64'), type: 'image/jpeg' };
   },
 );
