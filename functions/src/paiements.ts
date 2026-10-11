@@ -946,6 +946,15 @@ export const obtenirLecon = onCall(
         throw new HttpsError('permission-denied', 'Cette semaine n\'est pas encore ouverte. Elle s\'ouvrira à son tour, une semaine à la fois.');
       }
     }
+    // Une adresse « à télécharger » (11 oct. 2026) : le fichier arrive avec
+    // Content-Disposition: attachment, si bien qu'un simple lien le télécharge
+    // d'un toucher, sans le charger d'abord en mémoire. Sur iPad, l'ancien
+    // chemin (fetch puis lien blob) perdait le geste de la cliente sur les
+    // gros PDF (38 à 50 Mo) et le bouton ne faisait rien.
+    const nomVoulu = String(req.data?.nom || '').replace(/[\\/\r\n"]/g, ' ').trim().slice(0, 150);
+    const enPieceJointe = (chemin: string) => req.data?.telecharger === true
+      ? { responseDisposition: `attachment; filename*=UTF-8''${encodeURIComponent(nomVoulu || chemin.split('/').pop() || 'document')}` }
+      : {};
     // Un document déposé sous la leçon : même barrière, autre chemin.
     const docIndex = req.data?.docIndex;
     if (typeof docIndex === 'number') {
@@ -953,7 +962,7 @@ export const obtenirLecon = onCall(
       const d = docs[docIndex];
       if (!d?.chemin) throw new HttpsError('not-found', 'Document introuvable.');
       const [urlDoc] = await getStorage().bucket().file(d.chemin).getSignedUrl({
-        action: 'read', expires: Date.now() + 60 * 60 * 1000,
+        action: 'read', expires: Date.now() + 60 * 60 * 1000, ...enPieceJointe(d.chemin),
       });
       return { url: urlDoc };
     }
@@ -963,6 +972,7 @@ export const obtenirLecon = onCall(
     const [url] = await getStorage().bucket().file(chemin).getSignedUrl({
       action: 'read',
       expires: Date.now() + 2 * 60 * 60 * 1000,
+      ...enPieceJointe(chemin),
     });
     return { url };
   },

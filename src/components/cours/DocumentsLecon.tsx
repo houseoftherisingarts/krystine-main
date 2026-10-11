@@ -15,7 +15,8 @@ export interface DocLecon {
   pdf: boolean;
   /** Le nom du fichier téléchargé quand il diffère du nom affiché (une chanson : « Krystine St-Laurent · Vata.mp3 »). */
   fichier?: string;
-  obtenirUrl: () => Promise<string>;
+  /** `telecharger` : l'adresse qui télécharge (pièce jointe) au lieu d'afficher. */
+  obtenirUrl: (telecharger?: { nom: string }) => Promise<string>;
 }
 
 export interface Palette {
@@ -86,7 +87,7 @@ export const DocumentsLecon: React.FC<PanneauProps> = ({ documents, lang, palett
 
   const telecharger = async (d: DocLecon) => {
     setOccupe(d.cle); setErreur(null);
-    try { await telechargerFichier(await d.obtenirUrl(), nomDeFichier(d)); }
+    try { telechargerFichier(await d.obtenirUrl({ nom: nomDeFichier(d) })); }
     catch { setErreur(fr ? 'Le document n’a pas pu se charger. Réessayez dans un instant.' : 'The document could not load. Try again in a moment.'); }
     finally { setOccupe(null); }
   };
@@ -132,7 +133,7 @@ export const DocumentsLecon: React.FC<PanneauProps> = ({ documents, lang, palett
 };
 
 interface FenetreProps {
-  doc: { nom: string; url: string } | null;
+  doc: { nom: string; url: string; telecharger?: (nom: string) => Promise<string> } | null;
   lang: 'FR' | 'EN';
   onFermer: () => void;
 }
@@ -169,7 +170,7 @@ export const FenetreDocument: React.FC<FenetreProps> = ({ doc, lang, onFermer })
         <div className="flex w-full max-w-4xl flex-col overflow-hidden bg-[#f4efe6] md:rounded-[15px]" onClick={e => e.stopPropagation()}>
           <div className="flex items-center gap-3 border-b px-4 py-3 md:px-5" style={{ borderColor: 'rgba(60,74,66,0.18)' }}>
             <p className="min-w-0 flex-1 truncate text-sm text-[#1c2420]"><i className="fa-solid fa-file-lines mr-2 text-[#3c4a42]" />{doc.nom}</p>
-            <button type="button" disabled={occupe} onClick={async () => { setOccupe(true); await telechargerFichier(doc.url, nom); setOccupe(false); }}
+            <button type="button" disabled={occupe} onClick={async () => { setOccupe(true); try { telechargerFichier(doc.telecharger ? await doc.telecharger(nom) : doc.url); } catch { window.open(doc.url, '_blank', 'noopener'); } finally { setOccupe(false); } }}
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#BA7B39] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#1c2420] hover:brightness-110 disabled:opacity-60">
               <i className={`fa-solid ${occupe ? 'fa-circle-notch fa-spin' : 'fa-download'}`} />
               <span className="hidden sm:inline">{fr ? 'Télécharger la version imprimable' : 'Download the printable version'}</span>

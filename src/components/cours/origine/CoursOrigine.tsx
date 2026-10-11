@@ -41,12 +41,12 @@ interface Props {
 
 const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, terminees, url, chargement, erreur, isAdmin, lang, verrouillee, reprise, nomParticipante, onDiplome, onOuvrir, onTerminee, onSuivante, onRafraichir, modales }) => {
   const fr = lang === 'FR';
-  const [apercu, setApercu] = useState<{ nom: string; url: string } | null>(null);
+  const [apercu, setApercu] = useState<{ nom: string; url: string; telecharger?: (nom: string) => Promise<string> } | null>(null);
   const nbTerminees = lecons.filter(l => terminees[l.id]).length;
   // Jamais un arrêt sur image de la vidéo (les vignettes Wistia venues de Kajabi sont ignorées) :
   // l'image déposée par Krystine, sinon le vrai visuel d'Origine, sinon la vignette composée.
   const vignettePropre = (l: Lecon) => vignetteDeLecon(l) || visuelDOrigine(id, l, lecons);
-  const versDoc = (d: DocAffiche): DocLecon => ({ cle: d.chemin, nom: d.nom, pdf: d.pdf, obtenirUrl: () => urlDeDocumentLecon(id, d.source, d.index) });
+  const versDoc = (d: DocAffiche): DocLecon => ({ cle: d.chemin, nom: d.nom, pdf: d.pdf, obtenirUrl: t => urlDeDocumentLecon(id, d.source, d.index, t) });
   // Dans la liste, une leçon-document montre la première page de son PDF (Krystine, 8 oct. 2026).
   const visuelDeLigne = (l: Lecon) => {
     const propre = vignetteDeLecon(l);
@@ -91,7 +91,7 @@ const CoursOrigine: React.FC<Props> = ({ id, formation, lecons, courante, termin
   // « Voir » : le PDF s'ouvre en grand dans la page (fenêtre par-dessus, via Portail).
   const voirDocument = async (d: DocLecon) => {
     const u = await d.obtenirUrl();
-    if (d.pdf) setApercu({ nom: d.nom, url: u });
+    if (d.pdf) setApercu({ nom: d.nom, url: u, telecharger: nom => d.obtenirUrl({ nom }) });
     else window.open(u, '_blank', 'noopener');
   };
   const ouvrirDocument = (d: DocAffiche) => voirDocument(versDoc(d));

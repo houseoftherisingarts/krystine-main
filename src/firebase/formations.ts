@@ -322,10 +322,10 @@ export async function preparerPaiementIntegre(formationId: string, versements = 
   return (res.data as { clientSecret: string }).clientSecret;
 }
 
-export async function urlDeLecon(formationId: string, leconId: string): Promise<string> {
+export async function urlDeLecon(formationId: string, leconId: string, telecharger?: { nom: string }): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'obtenirLecon');
-  const res = await call({ formationId, leconId });
+  const res = await call({ formationId, leconId, ...(telecharger ? { telecharger: true, nom: telecharger.nom } : {}) });
   return (res.data as { url: string }).url;
 }
 
@@ -408,10 +408,10 @@ export async function retirerDocumentLecon(formationId: string, leconId: string,
 }
 
 /** URL signée d'un document d'une leçon (même barrière d'achat que la leçon). */
-export async function urlDeDocumentLecon(formationId: string, leconId: string, docIndex: number): Promise<string> {
+export async function urlDeDocumentLecon(formationId: string, leconId: string, docIndex: number, telecharger?: { nom: string }): Promise<string> {
   if (!app) throw new Error('[Formations] Firebase not configured');
   const call = httpsCallable(getFunctions(app, 'us-central1'), 'obtenirLecon');
-  const res = await call({ formationId, leconId, docIndex });
+  const res = await call({ formationId, leconId, docIndex, ...(telecharger ? { telecharger: true, nom: telecharger.nom } : {}) });
   return (res.data as { url: string }).url;
 }
 

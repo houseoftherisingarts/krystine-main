@@ -157,7 +157,7 @@ const CoursDetailPage: React.FC = () => {
   const [progressionLue, setProgressionLue] = useState(false);
   const [courante, setCourante] = useState<Lecon | null>(null);
   // L'aperçu d'un PDF de la leçon, ouvert dans un volet à droite.
-  const [apercuPdf, setApercu] = useState<{ nom: string; url: string } | null>(null);
+  const [apercuPdf, setApercu] = useState<{ nom: string; url: string; telecharger?: (nom: string) => Promise<string> } | null>(null);
   // Les cadeaux de Krystine se réclament dans la messagerie ou la cloche
   // seulement (Alex, 6 septembre 2026) : la fiche garde son bouton d'achat.
   const [urlCourante, setUrlCourante] = useState('');
@@ -1046,7 +1046,7 @@ const CoursDetailPage: React.FC = () => {
                       nom: nomDocumentLisible(d.nom, courante.titre, courante.docs!.length),
                       pdf: /\.pdf$/i.test(d.nom),
                       fichier: /\.pdf$/i.test(d.nom) ? undefined : d.nom,
-                      obtenirUrl: () => urlDeDocumentLecon(id, courante.id, i),
+                      obtenirUrl: (t?: { nom: string }) => urlDeDocumentLecon(id, courante.id, i, t),
                     }));
                     // Une leçon dont les documents ne sont pas des PDF (une chanson à
                     // télécharger) garde toute sa largeur : le bouton passe sous le lecteur.
@@ -1060,7 +1060,7 @@ const CoursDetailPage: React.FC = () => {
                             onVoir={async d => {
                               try {
                                 const url = await d.obtenirUrl();
-                                if (d.pdf) setApercu({ nom: d.nom, url });
+                                if (d.pdf) setApercu({ nom: d.nom, url, telecharger: nom => d.obtenirUrl({ nom }) });
                                 else window.open(url, '_blank', 'noopener');
                               }
                               catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
@@ -1204,11 +1204,11 @@ const CoursDetailPage: React.FC = () => {
               // Les leçons PDF de la semaine, puis les documents joints aux autres
               // leçons (le journal de bord vit sous une leçon audio, 5 oct. 2026).
               const semaine = lecons.filter(l => !verrouillee(l) && rangDeModule(l.moduleNom) === rang);
-              const docs: Array<{ cle: string; titre: string; image: string; url: () => Promise<string> }> = [];
+              const docs: Array<{ cle: string; titre: string; image: string; url: (t?: { nom: string }) => Promise<string> }> = [];
               semaine.forEach(l => {
-                if (l.type === 'pdf') docs.push({ cle: l.id, titre: l.titre, image: `/vata/documents/${l.id}.jpg`, url: () => urlDeLecon(id, l.id) });
+                if (l.type === 'pdf') docs.push({ cle: l.id, titre: l.titre, image: `/vata/documents/${l.id}.jpg`, url: t => urlDeLecon(id, l.id, t) });
                 else (l.docs || []).forEach((d, i) => {
-                  if (/\.pdf$/i.test(d.nom)) docs.push({ cle: `${l.id}-${i}`, titre: nomDocumentLisible(d.nom, l.titre, l.docs!.length), image: `/vata/documents/${l.id}-${i}.jpg`, url: () => urlDeDocumentLecon(id, l.id, i) });
+                  if (/\.pdf$/i.test(d.nom)) docs.push({ cle: `${l.id}-${i}`, titre: nomDocumentLisible(d.nom, l.titre, l.docs!.length), image: `/vata/documents/${l.id}-${i}.jpg`, url: t => urlDeDocumentLecon(id, l.id, i, t) });
                 });
               });
               const c = programme!.chapitres[rang];
@@ -1225,7 +1225,7 @@ const CoursDetailPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={async () => {
-                            try { setApercu({ nom: l.titre, url: await l.url() }); }
+                            try { setApercu({ nom: l.titre, url: await l.url(), telecharger: nom => l.url({ nom }) }); }
                             catch { setErreur(lang === 'FR' ? 'Document indisponible pour le moment.' : 'Document unavailable right now.'); }
                           }}
                           className="group block w-full text-left"

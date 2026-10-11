@@ -88,22 +88,12 @@ export async function toutesLesPages(url: string, largeur: number, surPage: (n: 
 }
 
 /**
- * Télécharge le fichier sous son vrai nom. Si le navigateur refuse (adresse
- * d'un autre domaine sans permission), le fichier s'ouvre simplement.
+ * Télécharge un fichier dont l'adresse signée porte déjà
+ * « Content-Disposition: attachment » (obtenirLecon avec telecharger: true) :
+ * le navigateur l'enregistre sans quitter la page. Plus de fetch en mémoire
+ * ni de lien blob : sur iPad, ce détour perdait le geste sur les gros PDF et
+ * le bouton ne faisait rien (signalé par une cliente, 11 oct. 2026).
  */
-export async function telechargerFichier(url: string, nom: string): Promise<void> {
-  try {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error(String(r.status));
-    const lien = URL.createObjectURL(await r.blob());
-    const a = document.createElement('a');
-    a.href = lien;
-    a.download = nom;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(lien), 30_000);
-  } catch {
-    window.open(url, '_blank', 'noopener');
-  }
+export function telechargerFichier(url: string): void {
+  window.location.assign(url);
 }
