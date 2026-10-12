@@ -8060,5 +8060,22 @@
       "src/lib/dimanches.ts",
       "src/pages/DimanchesPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-12T21:26:44.144Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e23050dd",
+    "message": "Dimanches (/dimanches) : la page est maintenant visible (validée par Krystine le 12 octobre), dans le plan du site pour Google; l'ancienne adresse /dimanches-origine (lien Instagram) y mène; le bouton « Un commentaire? » ne cache plus le bouton d'inscription",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "public/assets-manifest.json",
+      "public/sitemap.xml",
+      "src/components/layout/AidePepin.tsx",
+      "src/pages/DimanchesPage.tsx"
+    ]
   }
 ]
