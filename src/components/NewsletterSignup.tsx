@@ -78,7 +78,13 @@ const NewsletterSignup: React.FC<Props> = ({
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    // Le rappel du navigateur ne s'affiche pas sur tous les téléphones : un
+    // clic sans courriel restait sans effet (clics de frustration, 12 oct.).
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError(lang === 'FR' ? 'Inscrivez votre adresse courriel pour recevoir les lettres.' : 'Enter your email address to receive the letters.');
+      setStatus('error');
+      return;
+    }
     reset();
     setStatus('sending');
     try {
@@ -253,7 +259,7 @@ const NewsletterSignup: React.FC<Props> = ({
         </>
       )}
 
-      <form onSubmit={handleEmailSubmit} className={askFirstName ? 'grid gap-4 sm:grid-cols-2' : 'flex flex-col md:flex-row gap-4 items-center'}>
+      <form noValidate onSubmit={handleEmailSubmit} className={askFirstName ? 'grid gap-4 sm:grid-cols-2' : 'flex flex-col md:flex-row gap-4 items-center'}>
         <input
           type="text"
           name="site"

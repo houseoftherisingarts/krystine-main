@@ -68,7 +68,7 @@ const VentesDeuxMaisonsCard: React.FC = () => {
   }, []);
 
   const { inspirata, ksl, depuis } = useMemo(() => {
-    const valides = shopify.filter(o => !o.cancelledAt && o.financialStatus !== 'voided' && o.financialStatus !== 'refunded');
+    const valides = shopify.filter(o => !o.cancelledAt && o.financialStatus !== 'voided' && o.financialStatus !== 'refunded' && (o.totalPrice || 0) > 1);
     const dates = valides.map(o => o.createdAt?.toDate()).filter(Boolean) as Date[];
     const plusAncienne = dates.length ? new Date(Math.min(...dates.map(d => d.getTime()))) : null;
     return {

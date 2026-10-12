@@ -88,14 +88,58 @@ async function journees(jours: string[]): Promise<Journee> {
   return r;
 }
 
-/** Les ventes de formations Stripe (achatsFormations/{uid}/formations/{id}, avec sessionId). */
+/** Le chemin d'une vente, en mots (champs via et viaLettre posés par la caisse). */
+function provenance(via: string, lettre: string): string {
+  const serie: Record<string, string> = { 'suite-vent': 'Vent', 'suite-feu': 'Feu', 'suite-terre': 'Terre' };
+  const noLettre = /^l(\d+)$/.exec(lettre)?.[1];
+  if (serie[via]) return `série de lettres ${serie[via]}${noLettre ? `, lettre ${noLettre}` : ''}`;
+  if (noLettre) return `lettre ${noLettre}`;
+  if (via === 'quiz') return 'après le quiz';
+  if (via) return via;
+  return 'chemin inconnu';
+}
+
+/** Une vente test (1 $ avant taxes) ne compte jamais dans les chiffres. */
+const estTest = (centsHT: number) => centsHT > 0 && centsHT <= 100;
+
+/**
+ * Les ventes Stripe du site, comme les compte l'admin : formations
+ * (achatsFormations, avec sessionId),
+ * paquets de niskas et pourboires. Montants taxes comprises, ventes test
+ * de 1 $ exclues (elles gonflaient le total, 12 oct. 2026).
+ */
 async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; titres: string[] }> {
-  const snap = await getFirestore().collectionGroup('formations').where('acheteLe', '>=', ts(de)).where('acheteLe', '<', ts(a)).get();
-  const vraies = snap.docs.filter((d) => d.ref.parent.parent?.parent.id === 'achatsFormations' && !!d.get('sessionId'));
+  const db = getFirestore();
+  // Les niskas et les pourboires ne font jamais tomber le compte des formations.
+  const ouVide = <T,>(p: Promise<T>) => p.catch(() => null);
+  const [parAchat, niskas, pourboires] = await Promise.all([
+    db.collectionGroup('formations').where('acheteLe', '>=', ts(de)).where('acheteLe', '<', ts(a)).get(),
+    ouVide(db.collection('pointsEvents').where('kind', '==', 'achat-niskas').get()),
+    ouVide(db.collection('pourboires').where('at', '>=', ts(de)).where('at', '<', ts(a)).get()),
+  ]);
+  const lignes: { montant: number; titre: string }[] = [];
+  const vus = new Set<string>();
+  for (const d of parAchat.docs) {
+    if (d.ref.parent.parent?.parent.id !== 'achatsFormations' || !d.get('sessionId') || vus.has(d.ref.path)) continue;
+    vus.add(d.ref.path);
+    const total = typeof d.get('total') === 'number' ? Number(d.get('total')) / 100 : Number(d.get('montant')) || 0;
+    const ht = typeof d.get('montantHT') === 'number' ? Number(d.get('montantHT')) : Math.round(total * 100);
+    if (estTest(ht)) continue;
+    const titre = String(d.get('titre') || d.ref.id);
+    lignes.push({ montant: total, titre: `${titre} (${provenance(String(d.get('via') || ''), String(d.get('viaLettre') || ''))})` });
+  }
+  for (const d of niskas?.docs || []) {
+    const quand = d.get('at')?.toDate?.() as Date | undefined;
+    if (!quand || quand < de || quand >= a) continue;
+    const montant = Number(d.get('meta.total')) / 100 || Number(d.get('meta.montant')) || 0;
+    if (estTest(Math.round(montant * 100))) continue;
+    lignes.push({ montant, titre: `${d.get('amount') || ''} niskas` });
+  }
+  for (const d of pourboires?.docs || []) lignes.push({ montant: Number(d.get('montant')) || 0, titre: 'pourboire du direct' });
   return {
-    n: vraies.length,
-    montant: vraies.reduce((s, d) => s + (Number(d.get('montant')) || 0), 0),
-    titres: vraies.map((d) => String(d.get('titre') || d.ref.id)),
+    n: lignes.length,
+    montant: Math.round(lignes.reduce((s, l) => s + l.montant, 0) * 100) / 100,
+    titres: lignes.map((l) => l.titre),
   };
 }
 
@@ -104,7 +148,9 @@ async function shopify(de: Date, a: Date, il30: Date): Promise<{ n: number; mont
   const col = getFirestore().collection('shopifyOrders');
   if ((await col.where('createdAt', '>=', ts(il30)).limit(1).get()).empty) return null;
   const snap = await col.where('createdAt', '>=', ts(de)).where('createdAt', '<', ts(a)).get();
-  return { n: snap.size, montant: snap.docs.reduce((s, d) => s + (Number(d.get('totalPrice')) || 0), 0) };
+  // Une commande annulée ou une commande test à 1 $ n'est pas une vente.
+  const vraies = snap.docs.filter((d) => !d.get('cancelledAt') && (Number(d.get('totalPrice')) || 0) > 1);
+  return { n: vraies.length, montant: Math.round(vraies.reduce((s, d) => s + (Number(d.get('totalPrice')) || 0), 0) * 100) / 100 };
 }
 
 /** Les commentaires de la pastille « Un commentaire ? Écrivez-nous » (collection bugs, functions/src/pepin.ts), dernières 24 h. */
@@ -321,7 +367,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     },
     septJours: {
       visites: j7?.sessions ?? null, quizCommences: j7?.quizCommence ?? null, quizFinis: j7?.quizFini ?? null, resultatsEnregistres: res7,
-      inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null,
+      inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null, titresVentes: ven7?.titres ?? [],
       shopify: shop7, visitesPub: j7?.pub ?? null, visitesInfolettre: j7?.infolettre ?? null, desabonnements: des7,
     },
     surveiller,
@@ -395,7 +441,8 @@ export function texteBilan(b: Bilan): string {
     `Visites : ${n(v.visites)} · 7 jours : ${n(s.visites)}`,
     `Quiz commencés : ${n(v.quizCommences)}, résultats vus : ${n(v.quizFinis)}, résultats enregistrés : ${n(v.resultatsEnregistres)} · 7 jours : ${n(s.quizCommences)} commencés, ${n(s.quizFinis)} vus, ${n(s.resultatsEnregistres)} enregistrés`,
     `Inscriptions à l’infolettre : ${n(v.inscriptions)}, dont ${n(v.vraimentNouvelles)} vraiment nouvelles${sources ? ` (${sources})` : ''} · 7 jours : ${n(s.inscriptions)}, dont ${n(s.vraimentNouvelles)} nouvelles`,
-    `Ventes de formations : ${n(v.ventes)} (${argent(v.montantVentes)})${v.titresVentes.length ? `, ${v.titresVentes.join(', ')}` : ''} · 7 jours : ${n(s.ventes)} (${argent(s.montantVentes)})`,
+    `Ventes du site (formations, niskas, pourboires, taxes comprises) : ${n(v.ventes)} (${argent(v.montantVentes)}) · 7 jours : ${n(s.ventes)} (${argent(s.montantVentes)})`,
+    ...((s.titresVentes || []).length ? (s.titresVentes || []).map((t: string) => `   • ${t}`) : []),
     ...(v.shopify || s.shopify ? [`Commandes de la boutique : ${n(v.shopify?.n)} (${argent(v.shopify?.montant)}) · 7 jours : ${n(s.shopify?.n)} (${argent(s.shopify?.montant)})`] : []),
     `Visites venues de la publicité : ${n(v.visitesPub)}${camp ? ` (${camp})` : ''} · 7 jours : ${n(s.visitesPub)}`,
     `Visites venues d’une infolettre : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,

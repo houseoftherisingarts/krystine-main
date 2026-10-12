@@ -932,7 +932,15 @@ const ProfileTab: React.FC = () => {
     try {
       // Le dossier porte l'uid de la membre : c'est ce que storage.rules
       // vérifie (members/{uid}). La photo est réduite avant de partir.
-      const { url } = await uploadImage(await reduireImage(file), `members/${user.uid}`);
+      const photo = await reduireImage(file);
+      // storage.rules n'accepte qu'une image de moins de 15 Mo : un format que
+      // le navigateur n'a pas su convertir était refusé sans explication
+      // (« User does not have permission », 4 fois la semaine du 5 oct.).
+      if (!photo.type.startsWith('image/') || photo.size >= 15 * 1024 * 1024) {
+        setErreurPhoto(lang === 'FR' ? 'Ce format de photo n’est pas reconnu. Essayez une photo JPG ou PNG.' : 'This photo format is not supported. Try a JPG or PNG photo.');
+        return;
+      }
+      const { url } = await uploadImage(photo, `members/${user.uid}`);
       await updateMember(user.uid, { photoURL: url });
     } catch {
       setErreurPhoto(lang === 'FR' ? 'La photo n’a pas pu être envoyée. Essayez une autre image, ou une plus petite.' : 'The photo could not be sent. Try another image, or a smaller one.');

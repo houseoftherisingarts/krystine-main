@@ -8,7 +8,7 @@ export async function uploadImage(file: File, folder = 'uploads'): Promise<{ url
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
   const path = `${folder}/${Date.now()}_${safeName}`;
   const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
+  await uploadBytes(storageRef, file, { contentType: file.type || undefined });
   const url = await getDownloadURL(storageRef);
   // Register in Firestore media library for reuse. Les dossiers personnels des
   // membres (photos de profil, bannières, mur, captures de bug) n'y entrent
@@ -52,9 +52,24 @@ export function uploadMediaMur(file: File, uid: string, onProgress?: (pct: numbe
  * renvoie un JPEG de la taille demandée; s'il ne sait pas, le fichier part
  * tel quel.
  */
+/** Décode une image : createImageBitmap d'abord, sinon une balise <img>
+ * (Safari y lit des HEIC que createImageBitmap refuse). */
+async function decoderImage(file: File): Promise<ImageBitmap | HTMLImageElement> {
+  try { return await createImageBitmap(file); } catch { /* on essaie <img> */ }
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    return img;
+  } finally {
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+}
+
 export async function reduireImage(file: File, maxCote = 1920, qualite = 0.86): Promise<File> {
   try {
-    const bitmap = await createImageBitmap(file);
+    const bitmap = await decoderImage(file);
     const ratio = Math.min(1, maxCote / Math.max(bitmap.width, bitmap.height));
     if (ratio === 1 && file.type === 'image/jpeg' && file.size < 2 * 1024 * 1024) return file;
     const c = document.createElement('canvas');

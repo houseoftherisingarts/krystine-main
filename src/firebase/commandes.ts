@@ -85,5 +85,8 @@ export async function getCommandesStripe(): Promise<CommandeStripe[]> {
     };
   });
 
-  return [...achats, ...niskas, ...pourboires].sort((a, b) => (b.date?.toMillis() || 0) - (a.date?.toMillis() || 0));
+  // Une vente test à 1 $ avant taxes (essais de la caisse) n'est pas une
+  // vente : elle gonflait le tableau et le bilan (12 oct. 2026).
+  const estTest = (c: CommandeStripe) => c.montantHT > 0 && c.montantHT <= 100;
+  return [...achats, ...niskas, ...pourboires].filter(c => !estTest(c)).sort((a, b) => (b.date?.toMillis() || 0) - (a.date?.toMillis() || 0));
 }
