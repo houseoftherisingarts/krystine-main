@@ -8029,5 +8029,21 @@
       "src/pages/admin/sections/DashboardSection.tsx",
       "src/pages/admin/sections/dashboard/EntonnoirVataCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-12T21:04:21.574Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "07edbd0f",
+    "message": "Podcast (/podcast) : le direct du mercredi 14 octobre est retiré du site (annonce et page des questions) et ses rappels automatiques sont coupés; la fiche reste dans l'admin",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/LiveSignup.tsx",
+      "src/firebase/firestore.ts",
+      "src/pages/podcast/QuestionLive.tsx"
+    ]
   }
 ]
