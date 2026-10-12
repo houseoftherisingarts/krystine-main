@@ -29,17 +29,17 @@ export interface Dimanche {
 export const DIMANCHES: Dimanche[] = [
   {
     id: 'dimanche-origine-lire', tag: 'dimanche-origine-lire', mot: 'LIRE', iso: '2026-10-25T13:00:00Z',
-    question: 'Que se passe-t-il en moi, en ce moment?',
+    question: 'Trop de réponses autour de nous.',
     vivrons: 'Un temps pour observer ce qui se passe en vous ce matin-là, et le nommer avec des mots simples, sans le juger.',
   },
   {
     id: 'dimanche-origine-trier', tag: 'dimanche-origine-trier', mot: 'TRIER', iso: '2026-11-01T14:00:00Z',
-    question: 'Qu’est-ce qui me nourrit, et qu’est-ce qui m’encombre?',
+    question: 'La même réponse ne convient pas à toutes.',
     vivrons: 'Un temps pour regarder ce qui vous soutient et ce qui vous pèse dans vos journées, et faire la différence entre les deux.',
   },
   {
     id: 'dimanche-origine-ancrer', tag: 'dimanche-origine-ancrer', mot: 'ANCRER', iso: '2026-11-08T14:00:00Z',
-    question: 'Comment garder ce qui me fait du bien?',
+    question: 'Reconnaître ce qui nous soutient vraiment.',
     vivrons: 'Un temps pour choisir un geste à garder, à la mesure d’une vraie journée, sans tout changer d’un coup.',
   },
 ];

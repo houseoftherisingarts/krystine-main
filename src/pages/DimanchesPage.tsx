@@ -61,7 +61,7 @@ const Inviter: React.FC<{ abonneId: string }> = ({ abonneId }) => {
     try {
       await navigator.share({
         title: SIGNATURE_SERIE,
-        text: 'Trois matins en direct avec Krystine St-Laurent, offerts sur inscription : lire ce que le corps exprime, trier ce qui nourrit, ancrer les gestes qui tiennent.',
+        text: 'Trois dimanches matin en direct avec Krystine St-Laurent pour prendre du recul parmi toutes les réponses qui nous entourent, et mieux reconnaître ce qui nous soutient vraiment.',
         url: lien,
       });
     } catch { /* partage fermé : rien à faire */ }
@@ -156,7 +156,7 @@ const DimanchesPage: React.FC = () => {
             <Accroche className="mb-5"><span data-fade className="inline-block">{SIGNATURE_SERIE}</span></Accroche>
             <TitreV2 lignes={['Ce que le corps', 'sait déjà']} className="max-w-none text-[clamp(2.7rem,6.2vw,6.4rem)]" />
             <SousTitreV2 className="mt-5 max-w-[34ch]">
-              Trois matins en direct avec <span className="whitespace-nowrap">Krystine St-Laurent</span> pour lire ce que le corps exprime, trier ce qui nourrit et repartir avec des gestes qui tiennent.
+              Trois dimanches matin pour prendre du recul parmi toutes les réponses qui nous entourent, et mieux reconnaître ce qui nous soutient vraiment.
             </SousTitreV2>
             <div data-fade className="mt-7 border-t border-[#1c1712]/15 pt-5">
               <p className="v2-serif text-[clamp(1.2rem,1.9vw,1.45rem)] leading-[1.35] text-[#1c1712]">
@@ -218,7 +218,7 @@ const DimanchesPage: React.FC = () => {
                   <p className="mt-3 text-[1rem] text-[#2e261d]">9&nbsp;h au Québec · {heureDe(d.iso, 'Europe/Paris')} en Europe</p>
                 </div>
                 <div className="grid gap-4">
-                  <p className="v2-serif text-[clamp(1.4rem,2.2vw,1.75rem)] font-light leading-[1.25]">« {d.question} »</p>
+                  <p className="v2-serif text-[clamp(1.4rem,2.2vw,1.75rem)] font-light leading-[1.25]">{d.question}</p>
                   <Corps>{d.vivrons}</Corps>
                 </div>
               </Reveal>
@@ -326,8 +326,9 @@ const DimanchesPage: React.FC = () => {
                       </label>
                     </div>
                     <label className="grid gap-2">
-                      <span className={etiquette}>Quelle question aimeriez-vous que nous abordions ? <span className="normal-case tracking-normal text-[#EEE7DB]/70">(facultatif)</span></span>
-                      <textarea rows={3} maxLength={1000} value={question} onChange={e => setQuestion(e.target.value)} className={`${champ} resize-none`} placeholder="Votre question" />
+                      <span className={etiquette}>En ce moment, qu’est-ce qui prend le plus de place pour vous ? <span className="normal-case tracking-normal text-[#EEE7DB]/70">(facultatif)</span></span>
+                      <textarea rows={3} maxLength={1000} value={question} onChange={e => setQuestion(e.target.value)} className={`${champ} resize-none`} placeholder="Dans vos mots" />
+                      <span className="text-[0.9rem] leading-[1.55] text-[#EEE7DB]/75">Vos mots nous aident à préparer chaque rencontre, et à nourrir la Lettre et le podcast. Nous les lisons tous.</span>
                     </label>
                     <button type="submit" disabled={envoi} className={`${BOUTON_CUIVRE} mt-1 w-full`}>{envoi ? 'Un instant…' : 'Réserver ma place'}</button>
                     {erreur && <p role="alert" className="text-[1rem] text-[#f0b9a0]">{erreur}</p>}
