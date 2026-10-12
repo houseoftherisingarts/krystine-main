@@ -58,7 +58,7 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
   useEffect(() => {
     getLiveEvents().then(all => {
       // Les Dimanches d'Origine ont leur propre page (/dimanches) : jamais ici.
-      const list = all.filter(e => !e.serie);
+      const list = all.filter(e => !e.serie && !e.retire);
       const now = Date.now();
       // Le prochain direct à venir, sinon le dernier passé s'il a une rediffusion.
       const upcoming = list.filter(e => e.startsAt.toMillis() + 3 * 3600e3 > now).sort((a, b) => a.startsAt.toMillis() - b.startsAt.toMillis())[0];

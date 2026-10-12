@@ -419,6 +419,7 @@ export interface LiveEvent {
   replayUrl?: string;
   replayAt?: Timestamp;              // l'envoi de la rediffusion ne part pas avant cette date
   envoisDesactives?: boolean;        // coupe tous les envois automatiques du direct
+  retire?: boolean;                  // retiré du site public (direct annulé), la fiche reste
   tag: string;
   serie?: string;                    // « dimanches-origine » : directs à part, hors du bloc du podcast
   reminders?: Partial<Record<'d3' | 'veille' | 'h1' | 'replay', Timestamp>>;

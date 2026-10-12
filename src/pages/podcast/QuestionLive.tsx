@@ -73,7 +73,7 @@ const QuestionLive: React.FC = () => {
   const [erreur, setErreur] = useState<string | null>(null);
   const reduce = useReducedMotion();
 
-  useEffect(() => { getLiveEvents().then(setEvents).catch(() => setEvents([])); }, []);
+  useEffect(() => { getLiveEvents().then(all => setEvents(all.filter(e => !e.retire))).catch(() => setEvents([])); }, []);
   const direct = useMemo(() => (events ? choisirDirect(events) : null), [events]);
 
   const envoyer = async (e: React.FormEvent) => {
