@@ -8045,5 +8045,20 @@
       "src/firebase/firestore.ts",
       "src/pages/podcast/QuestionLive.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-12T21:15:00.446Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b424925f",
+    "message": "Dimanches (/dimanches, toujours cachée) : promesse, sous-titres des trois matins et question du formulaire validés le 11 octobre (« En ce moment, qu'est-ce qui prend le plus de place pour vous? »), avec la phrase qui dit à quoi servent les réponses",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/lib/dimanches.ts",
+      "src/pages/DimanchesPage.tsx"
+    ]
   }
 ]
