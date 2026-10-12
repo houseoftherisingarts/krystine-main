@@ -11,7 +11,7 @@ import {
   fromAddr,
   unsubscribeUrl, unsubscribeOneClickUrl, assurerJeton } from './mail';
 import { renderEmailHtml, renderEmailText, newsletterAttachments, type NewsletterBlock, type Couverture, type Lang, type Bandeau, type EnteteTitre, type TailleLecture } from './renderer';
-import { ADMIN_EMAILS } from './send';
+import { ADMIN_EMAILS, suivreLesClics } from './send';
 import { champsRobot } from './robots';
 
 // ─── Les séquences : des courriels qui partent tout seuls, dans le temps ────
@@ -162,7 +162,9 @@ async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, des
     replyTo: REPLY_TO,
     to: dest.email,
     subject: lettre.subject,
-    html: renderEmailHtml(lettre.blocks, opts),
+    // Les clics comptés comme dans l'infolettre (/c, clic.ts), pour suivre le
+    // chemin quiz, lettres, page VATA, achat (12 oct. 2026). Pas sur un essai.
+    html: newsletterId ? suivreLesClics(renderEmailHtml(lettre.blocks, opts), newsletterId, ficheId) : renderEmailHtml(lettre.blocks, opts),
     text: renderEmailText(lettre.blocks, opts),
     headers: {
       'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,

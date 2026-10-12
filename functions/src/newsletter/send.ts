@@ -278,7 +278,7 @@ function estQuota(err: unknown): boolean {
 
 // Chaque lien de la lettre passe par /c sur le domaine de Krystine (clic.ts),
 // sauf le désabonnement et les adresses de courriel, pour compter les clics.
-function suivreLesClics(html: string, n: string, s: string): string {
+export function suivreLesClics(html: string, n: string, s: string): string {
   return html.replace(/href="(https?:\/\/[^"]+)"/g, (tout, brut: string) => {
     // {{s}} : l'identifiant de la fiche, pour les carrés de /mes-choix.
     const u = brut.replace(/&amp;/g, '&').replace(/\{\{s\}\}|%7B%7Bs%7D%7D/gi, s);

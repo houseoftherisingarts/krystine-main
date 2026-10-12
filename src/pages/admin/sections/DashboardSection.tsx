@@ -12,6 +12,7 @@ import CommandesStripeCard from './dashboard/CommandesStripeCard';
 import VentesDeuxMaisonsCard from './dashboard/VentesDeuxMaisonsCard';
 import RapportDuJourCard from './dashboard/RapportDuJourCard';
 import BilanDuMatinCard from './dashboard/BilanDuMatinCard';
+import EntonnoirVataCard from './dashboard/EntonnoirVataCard';
 import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
 import CibleNouvellesPersonnesCard from './dashboard/CibleNouvellesPersonnesCard';
 import CompteurCliquable from './dashboard/DetailCompteur';
@@ -134,6 +135,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
 
       {/* Le rapport du jour, en tête, juste à côté des ventes Stripe */}
       <BilanDuMatinCard />
+
+      {/* Le chemin du quiz jusqu'à l'achat de VATA Essentiel (Krystine, 12 oct. 2026) */}
+      <EntonnoirVataCard />
 
       <RapportDuJourCard />
 
