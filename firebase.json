@@ -15,6 +15,7 @@
       { "source": "/speaking/", "destination": "/conferenciere", "type": 301 },
       { "source": "/speaking/index.html", "destination": "/conferenciere", "type": 301 },
       { "source": "/rituels-vivants", "destination": "/rituels-essentiels", "type": 301 },
+      { "source": "/dimanches-origine", "destination": "/dimanches", "type": 301 },
       { "source": "/rituels-vivants/", "destination": "/rituels-essentiels", "type": 301 },
       {
         "source": "/",

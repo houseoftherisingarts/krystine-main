@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { addNewsletterSubscriber } from '../firebase/firestore';
@@ -91,15 +91,6 @@ const Inviter: React.FC<{ abonneId: string }> = ({ abonneId }) => {
 };
 
 const DimanchesPage: React.FC = () => {
-  // Adresse connue de l'équipe seulement tant que Krystine n'a pas dit « go » : hors de Google.
-  useEffect(() => {
-    let meta = document.querySelector('meta[name="robots"]');
-    const cree = !meta;
-    if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'robots'); document.head.appendChild(meta); }
-    const avant = meta.getAttribute('content');
-    meta.setAttribute('content', 'noindex, nofollow');
-    return () => { if (cree) meta?.remove(); else if (avant) meta?.setAttribute('content', avant); };
-  }, []);
   const root = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { search } = useLocation();
