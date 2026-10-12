@@ -7989,5 +7989,25 @@
       "src/pages/CoursDetailPage.tsx",
       "src/pages/admin/sections/MediaSection.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-12T19:53:48.891Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e63af824",
+    "message": "Ventes justes et photo de profil : le bilan du matin et le tableau des ventes de l'admin ne comptent plus les ventes test à 1 $, le bilan ajoute niskas et pourboires et donne la provenance de chaque vente (série de lettres, quiz); /compte convertit les photos HEIC et dit clairement quand un format n'est pas reconnu; les formulaires d'infolettre disent « Inscrivez votre adresse courriel » au lieu de rester muets",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json",
+      "src/components/NewsletterSignup.tsx",
+      "src/firebase/commandes.ts",
+      "src/firebase/storage.ts",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/admin/sections/dashboard/VentesDeuxMaisonsCard.tsx"
+    ]
   }
 ]
