@@ -8009,5 +8009,25 @@
       "src/pages/ClientPortal.tsx",
       "src/pages/admin/sections/dashboard/VentesDeuxMaisonsCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-12T20:30:32.340Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "6cf0f35d",
+    "message": "Admin, tableau de bord : nouvelle carte « Le chemin vers VATA Essentiel » (du quiz jusqu'à l'achat, par série Vent, Feu, Terre, calculée chaque matin à 6 h 20); les clics dans les lettres des séries du quiz sont maintenant comptés",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/entonnoirVata.ts",
+      "functions/src/index.ts",
+      "functions/src/newsletter/send.ts",
+      "functions/src/newsletter/sequences.ts",
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/DashboardSection.tsx",
+      "src/pages/admin/sections/dashboard/EntonnoirVataCard.tsx"
+    ]
   }
 ]
