@@ -110,29 +110,37 @@ async function etatAdresse(email: string, depuis: number): Promise<EtatAdresse> 
 // acheteuse sans fiche en reçoit une (source `achat-formation`, bienvenue
 // déjà marquée pour que le mot de bienvenue de l'infolettre ne parte pas
 // par-dessus la séquence).
-async function jetonPour(email: string, firstName?: string, lang?: string, uid?: string): Promise<string> {
+async function jetonPour(email: string, firstName?: string, lang?: string, uid?: string): Promise<{ jeton: string; ficheId: string }> {
   const db = getFirestore();
   const q = await db.collection('newsletter').where('email', '==', email).limit(1).get();
   if (!q.empty) {
     const d = q.docs[0];
-    return assurerJeton(d.ref, (d.data() as { unsubscribeToken?: string }).unsubscribeToken);
+    return { jeton: await assurerJeton(d.ref, (d.data() as { unsubscribeToken?: string }).unsubscribeToken), ficheId: d.id };
   }
   const jeton = await assurerJeton(null);
   // Une acheteuse sur un alias jetable reste une acheteuse : sa séquence
   // d'achat part quand même (elle a payé), mais sa fiche entre en quarantaine
   // pour l'infolettre générale, le temps que Krystine tranche.
-  await db.collection('newsletter').add({
+  const fiche = await db.collection('newsletter').add({
     email, firstName: firstName || '', uid: uid || null, lang: lang === 'en' ? 'en' : 'fr',
     status: 'active', source: 'achat-formation', tags: ['formations'],
     unsubscribeToken: jeton, welcomeSentAt: FieldValue.serverTimestamp(),
     createdAt: FieldValue.serverTimestamp(),
     ...champsRobot(email, ['formations']),
   });
-  return jeton;
+  return { jeton, ficheId: fiche.id };
 }
 
-async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, dest: { email: string; firstName?: string; lang?: string; uid?: string }): Promise<void> {
-  const jeton = await jetonPour(dest.email, dest.firstName, dest.lang, dest.uid);
+// Le compteur d'ouverture des lettres de séquence (11 oct. 2026) : la même
+// image d'un point que l'infolettre (ouverture.ts), propre à la lettre et à la
+// fiche. L'envoi est noté dans `envois`, comme send.ts le fait, pour que le
+// compteur sépare les robots des messageries des vraies lectures.
+const PIXEL = `https://us-central1-${process.env.GCLOUD_PROJECT || 'krystinestlaurent-87566'}.cloudfunctions.net/ouverture`;
+
+async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, dest: { email: string; firstName?: string; lang?: string; uid?: string }, newsletterId?: string): Promise<void> {
+  const { jeton, ficheId } = await jetonPour(dest.email, dest.firstName, dest.lang, dest.uid);
+  // Pas de compteur sur un envoi d'essai depuis l'admin.
+  const pixelUrl = newsletterId ? `${PIXEL}?n=${encodeURIComponent(newsletterId)}&s=${encodeURIComponent(ficheId)}` : undefined;
   const opts = {
     subject: lettre.subject,
     preheader: lettre.preheader,
@@ -147,6 +155,7 @@ async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, des
     bandeau: lettre.bandeau,
     fond: lettre.fond,
     tailleLecture: lettre.tailleLecture,
+    pixelUrl,
   };
   await transporter.sendMail({
     from: fromAddr(lettre.fromName || 'Krystine St-Laurent'),
@@ -161,6 +170,11 @@ async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, des
     },
     attachments: newsletterAttachments(opts),
   });
+  // La lettre est partie : une note ratée ici ne doit jamais la faire repartir.
+  if (newsletterId) {
+    try { await getFirestore().doc(`newsletters/${newsletterId}/envois/${ficheId}`).set({ email: dest.email, at: FieldValue.serverTimestamp() }); }
+    catch (err) { console.warn('[sequences] envoi non noté', newsletterId, ficheId, err); }
+  }
 }
 
 async function lireLettre(id: string): Promise<NewsletterDoc | null> {
@@ -218,7 +232,7 @@ async function traiterInscrit(transporter: Transporter, seqId: string, seq: Sequ
     const lettre = lettres.get(e.newsletterId);
     try {
       if (!lettre) throw new Error(`lettre ${e.newsletterId} introuvable ou vide`);
-      await envoyerEtape(transporter, lettre, pris);
+      await envoyerEtape(transporter, lettre, pris, e.newsletterId);
       derniere = Date.now();
       await ref.update({ [`erreurs.${e.cle}`]: FieldValue.delete() });
       await db.doc(`sequences/${seqId}`).update({ [`stats.${e.cle}`]: FieldValue.increment(1), dernierEnvoi: FieldValue.serverTimestamp() });
