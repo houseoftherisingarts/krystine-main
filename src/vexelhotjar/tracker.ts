@@ -420,8 +420,16 @@ function surFocus(ev: FocusEvent) {
 }
 
 function surSoumission(ev: Event) {
-  if (!pv || !(ev.target instanceof HTMLFormElement)) return;
-  const s = selecteur(ev.target);
+  if (!(ev.target instanceof HTMLFormElement)) return;
+  formulaireEnvoye(ev.target);
+}
+
+// Pour les formulaires dont le bouton est de type « button » (l'envoi passe par
+// un onClick, sans événement submit natif) : la page appelle ceci quand l'envoi
+// a réussi, pour que l'envoi compte et ne finisse pas en abandon.
+export function formulaireEnvoye(form: Element | null | undefined) {
+  if (!pv || !form) return;
+  const s = selecteur(form);
   // Un formulaire compte une seule fois par page vue, même si le bouton est
   // pressé dix fois; et un envoi sans champ touché avant (formulaire à bouton
   // seul) compte aussi comme un début, sinon les envois dépassent les débuts.

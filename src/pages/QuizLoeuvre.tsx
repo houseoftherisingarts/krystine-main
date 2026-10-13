@@ -16,6 +16,7 @@ import { points } from '../firebase/points';
 import { envoyerResultatQuiz, suiteQuiz, type EtatSuite } from '../firebase/quiz';
 import { RECAPTCHA_SITE_KEY, useRecaptcha } from '../lib/recaptcha';
 import { RITUALS } from '../lib/doshaRituals';
+import { formulaireEnvoye } from '../vexelhotjar/tracker';
 import { Planche } from '../components/v2/Magazine';
 import { Atmosphere } from '../components/motion/loeuvre';
 
@@ -784,6 +785,8 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
   const envoyerResultat = async (e: React.FormEvent, avecSuite = veutSuite) => {
     e.preventDefault();
     if (!teaser) return;
+    // Les boutons d'envoi sont de type « button » : pas d'événement submit natif, la mesure est prévenue à la main.
+    const formMesure = (e.currentTarget as Element | null)?.closest?.('form') ?? null;
     setErreurEnvoi(null);
     setEchecServeur(false);
     setChampFautif(null);
@@ -806,6 +809,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
         token: captcha.getToken(),
         site: pot,
       });
+      formulaireEnvoye(formMesure);
       if (avecSuite) {
         trackLead('quiz');
         const d1 = lireProfil(teaser.percentages).d1;
