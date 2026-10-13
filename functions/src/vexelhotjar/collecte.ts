@@ -141,6 +141,18 @@ export const vhCollecter = onRequest(
     const pays = texte(req.get('x-country-code') || req.get('cf-ipcountry') || '', 2).toUpperCase() || undefined;
     const recu = Date.now();
 
+    // Le choix fait sur la bannière des témoins, compté sans rien d'autre :
+    // ni adresse, ni sid gardé, ni page. Sert à connaître la part des
+    // visiteuses qui refusent, donc invisibles à la mesure (13 oct. 2026).
+    if (d.t === 'consent') {
+      const champ = d.choix === 'accepte' ? 'accepte' : d.choix === 'refuse' ? 'refuse' : '';
+      if (!champ) { res.status(400).send(''); return; }
+      await db.collection('vh_consentement').doc(`${site}_${jourDe(recu)}`)
+        .set({ jour: jourDe(recu), [champ]: FieldValue.increment(1) }, { merge: true });
+      res.status(204).send('');
+      return;
+    }
+
     try {
       if (d.t === 'replay') {
         await recevoirReplay(db, site, sid, d, recu);
