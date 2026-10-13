@@ -79,7 +79,10 @@ async function journees(jours: string[]): Promise<Journee> {
     }
     for (const c of Object.values((x.campagnes || {}) as Record<string, { n?: number; source?: string; campagne?: string }>)) {
       // Les liens des infolettres portent aussi des utm : ils se comptent à part, jamais comme de la publicité.
-      if (c.source === 'infolettre') { r.infolettre += c.n || 0; continue; }
+      // Les séries de lettres (suite-vent, accueil-vata...) et le courriel du résultat du quiz aussi :
+      // le 13 oct. 2026, elles gonflaient « visites venues de la publicité » (19 au lieu de 3).
+      const src = c.source || '';
+      if (src === 'infolettre' || /^(suite-|accueil-|courriel)/.test(src)) { r.infolettre += c.n || 0; continue; }
       r.pub += c.n || 0;
       const nom = [c.source, c.campagne].filter(Boolean).join(' · ') || 'sans nom';
       r.campagnes[nom] = (r.campagnes[nom] || 0) + (c.n || 0);
@@ -445,7 +448,7 @@ export function texteBilan(b: Bilan): string {
     ...((s.titresVentes || []).length ? (s.titresVentes || []).map((t: string) => `   • ${t}`) : []),
     ...(v.shopify || s.shopify ? [`Commandes de la boutique : ${n(v.shopify?.n)} (${argent(v.shopify?.montant)}) · 7 jours : ${n(s.shopify?.n)} (${argent(s.shopify?.montant)})`] : []),
     `Visites venues de la publicité : ${n(v.visitesPub)}${camp ? ` (${camp})` : ''} · 7 jours : ${n(s.visitesPub)}`,
-    `Visites venues d’une infolettre : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,
+    `Visites venues d’un courriel (infolettre ou série de lettres) : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,
     `Désabonnements : ${n(v.desabonnements)} · 7 jours : ${n(s.desabonnements)}`,
     '',
     `3. Les commentaires des visiteuses (dernières 24 h)`,
