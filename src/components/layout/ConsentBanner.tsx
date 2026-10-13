@@ -38,11 +38,25 @@ function loadMetaPixel() {
 // Le choix seul part au compteur anonyme du bilan du matin (accepte ou
 // refuse, rien d'autre), pour connaître la part des visiteuses que la mesure
 // ne voit pas. Aucun témoin, aucune adresse gardée (13 oct. 2026).
+// L'affichage se compte une seule fois par onglet (drapeau « 1 » en
+// sessionStorage, qui ne désigne personne et s'efface à la fermeture), pour
+// connaître celles qui ne choisissent pas sans compter chaque page vue.
+const CLE_AFFICHEE = 'inspirata.banniere.comptee';
+function signalerAffichage() {
+  try {
+    if (sessionStorage.getItem(CLE_AFFICHEE)) return;
+    sessionStorage.setItem(CLE_AFFICHEE, '1');
+  } catch { return; }
+  envoyerCompte('affiche');
+}
 function signalerChoix(value: ConsentValue) {
+  envoyerCompte(value === 'accepted' ? 'accepte' : 'refuse');
+}
+function envoyerCompte(choix: 'affiche' | 'accepte' | 'refuse') {
   try {
     if (mesureExclue()) return;
     const sid = Math.random().toString(36).slice(2, 12) + Date.now().toString(36);
-    const corps = JSON.stringify({ v: 1, site: 'krystine', sid, t: 'consent', choix: value === 'accepted' ? 'accepte' : 'refuse' });
+    const corps = JSON.stringify({ v: 1, site: 'krystine', sid, t: 'consent', choix });
     const blob = new Blob([corps], { type: 'text/plain' });
     if (!(navigator.sendBeacon && navigator.sendBeacon('/api/vh', blob))) {
       fetch('/api/vh', { method: 'POST', body: blob, keepalive: true, credentials: 'omit' }).catch(() => {});
@@ -71,6 +85,10 @@ const ConsentBanner: React.FC = () => {
       enableAnalytics();
       activerVexelHotjar();
     }
+  }, [choice, authReady]);
+
+  useEffect(() => {
+    if (!choice && authReady) signalerAffichage();
   }, [choice, authReady]);
 
   const decide = (value: ConsentValue) => {

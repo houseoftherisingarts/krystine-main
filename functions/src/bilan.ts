@@ -63,13 +63,13 @@ async function inscriptions(de: Date, a: Date): Promise<Inscriptions> {
   return r;
 }
 
-interface Journee { sessions: number; nouveaux: number; quizCommence: number; quizFini: number; pub: number; infolettre: number; campagnes: Record<string, number>; accepte: number; refuse: number }
+interface Journee { sessions: number; nouveaux: number; quizCommence: number; quizFini: number; pub: number; infolettre: number; campagnes: Record<string, number>; affiche: number; accepte: number; refuse: number }
 async function journees(jours: string[]): Promise<Journee> {
   const db = getFirestore();
-  const r: Journee = { sessions: 0, nouveaux: 0, quizCommence: 0, quizFini: 0, pub: 0, infolettre: 0, campagnes: {}, accepte: 0, refuse: 0 };
+  const r: Journee = { sessions: 0, nouveaux: 0, quizCommence: 0, quizFini: 0, pub: 0, infolettre: 0, campagnes: {}, affiche: 0, accepte: 0, refuse: 0 };
   // Les choix faits sur la bannière des témoins (vh_consentement, compteur anonyme posé le 13 oct. 2026).
   const choix = await db.getAll(...jours.map((j) => db.doc(`vh_consentement/${SITE_VH}_${j}`)));
-  for (const d of choix) { r.accepte += Number(d.get('accepte')) || 0; r.refuse += Number(d.get('refuse')) || 0; }
+  for (const d of choix) { r.affiche += Number(d.get('affiche')) || 0; r.accepte += Number(d.get('accepte')) || 0; r.refuse += Number(d.get('refuse')) || 0; }
   const docs = await db.getAll(...jours.map((j) => db.doc(`vh_jours/${SITE_VH}_${j}`)));
   for (const d of docs) {
     if (!d.exists) continue;
@@ -361,6 +361,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     le: Timestamp.now(),
     jour: aujourdhui,
     veille: hier,
+    septDebut: sept[0],
     // Une page en panne, une ressource cassée ou un parcours bloqué compte comme une alerte; un titre trop long ou une page lente, non.
     verdict: alertes.length || (verif?.anomalies.some((a) => !/^(titre trop long|chargement lent)/.test(a.probleme)) ?? false) ? 'alerte' : 'ok',
     toutFonctionne: { alertes, pepinsHier: pepinsH, pepinsOuverts, quizARattraper: aRattraper, controles: filet?.controles.length ?? 0 },
@@ -369,12 +370,12 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
       quizCommences: jH?.quizCommence ?? null, quizFinis: jH?.quizFini ?? null, resultatsEnregistres: resH,
       inscriptions: insH?.total ?? null, vraimentNouvelles: insH?.nouvelles ?? null, dejaConnues: insH?.connues ?? null, parSource: insH?.parSource ?? {},
       ventes: venH?.n ?? null, montantVentes: venH?.montant ?? null, titresVentes: venH?.titres ?? [],
-      shopify: shopH, visitesPub: jH?.pub ?? null, visitesInfolettre: jH?.infolettre ?? null, accepte: jH?.accepte ?? null, refuse: jH?.refuse ?? null, campagnes: jH?.campagnes ?? {}, desabonnements: desH,
+      shopify: shopH, visitesPub: jH?.pub ?? null, visitesInfolettre: jH?.infolettre ?? null, affiche: jH?.affiche ?? null, accepte: jH?.accepte ?? null, refuse: jH?.refuse ?? null, campagnes: jH?.campagnes ?? {}, desabonnements: desH,
     },
     septJours: {
       visites: j7?.sessions ?? null, quizCommences: j7?.quizCommence ?? null, quizFinis: j7?.quizFini ?? null, resultatsEnregistres: res7,
       inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null, titresVentes: ven7?.titres ?? [],
-      shopify: shop7, visitesPub: j7?.pub ?? null, visitesInfolettre: j7?.infolettre ?? null, accepte: j7?.accepte ?? null, refuse: j7?.refuse ?? null, desabonnements: des7,
+      shopify: shop7, visitesPub: j7?.pub ?? null, visitesInfolettre: j7?.infolettre ?? null, affiche: j7?.affiche ?? null, accepte: j7?.accepte ?? null, refuse: j7?.refuse ?? null, desabonnements: des7,
     },
     surveiller,
     verifComplete: verif,
@@ -388,10 +389,13 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
 export type Bilan = Awaited<ReturnType<typeof calculerBilan>>;
 
 const n = (v: number | null | undefined) => (v == null ? '?' : v.toLocaleString('fr-CA'));
-/** La part des refus sur la bannière des témoins, en pourcentage avec le compte brut. */
-const refus = (a: number | null | undefined, r: number | null | undefined) => {
-  const t = (a || 0) + (r || 0);
-  return a == null || r == null || !t ? 'aucun choix compté' : `${Math.round((r / t) * 100)} % (${n(r)} sur ${n(t)})`;
+/** La bannière des témoins : sur les onglets où elle s'est affichée (le dénominateur), combien ont accepté, refusé ou rien choisi. */
+const banniere = (f: number | null | undefined, a: number | null | undefined, r: number | null | undefined) => {
+  if (f == null || a == null || r == null) return 'non mesurée';
+  if (!f) return 'aucun affichage compté';
+  const sans = Math.max(0, f - a - r);
+  const pc = (x: number) => `${Math.round((x / f) * 100)} %`;
+  return `sur ${n(f)} affichages, ${n(a)} acceptations (${pc(a)}), ${n(r)} refus (${pc(r)}), ${n(sans)} sans choix (${pc(sans)})`;
 };
 const argent = (v: number | null | undefined) => (v == null ? '?' : v.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' }));
 
@@ -458,7 +462,9 @@ export function texteBilan(b: Bilan): string {
     `Visites venues de la publicité : ${n(v.visitesPub)}${camp ? ` (${camp})` : ''} · 7 jours : ${n(s.visitesPub)}`,
     `Visites venues d’un courriel (infolettre ou série de lettres) : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,
     `Désabonnements : ${n(v.desabonnements)} · 7 jours : ${n(s.desabonnements)}`,
-    `Bannière des témoins, refus : ${refus(v.accepte, v.refuse)} · 7 jours : ${refus(s.accepte, s.refuse)} (celles qui refusent ne sont pas comptées dans les visites)`,
+    `Bannière des témoins, hier (${b.veille}) : ${banniere(v.affiche, v.accepte, v.refuse)}`,
+    `Bannière des témoins, 7 jours (du ${b.septDebut} au ${b.veille}) : ${banniere(s.affiche, s.accepte, s.refuse)}`,
+    `(Un affichage = un onglet où la bannière est apparue, pas une personne. Ces chiffres ne permettent pas de calculer le nombre réel de visites.)`,
     '',
     `3. Les commentaires des visiteuses (dernières 24 h)`,
     ...blocCommentaires,
