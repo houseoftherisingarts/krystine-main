@@ -8094,5 +8094,20 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/vexelhotjar/tracker.ts"
     ]
+  },
+  {
+    "quand": "2026-10-13T11:29:29.398Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c071577e",
+    "message": "Bilan du matin : les visites venues des séries de lettres du quiz ne sont plus comptées comme de la publicité (la pub a amené 3 visites cette semaine, pas 19)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
