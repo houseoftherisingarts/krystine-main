@@ -8077,5 +8077,22 @@
       "src/components/layout/AidePepin.tsx",
       "src/pages/DimanchesPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-13T11:26:37.401Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ead42199",
+    "message": "Quiz : la page se recharge seule (une fois) si elle était ouverte pendant une mise en ligne; les envois du formulaire du résultat sont maintenant comptés dans le bilan du matin et ne finissent plus en abandons",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "index.tsx",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/vexelhotjar/tracker.ts"
+    ]
   }
 ]
