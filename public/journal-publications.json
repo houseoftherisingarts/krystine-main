@@ -8126,5 +8126,20 @@
       "public/assets-manifest.json",
       "scripts/qa/verif-complete.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-14T20:49:09.869Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "841d5d8d",
+    "message": "Bilan du matin : l'alerte de connexion Firebase ne paraît que si la vérification du matin manque vraiment",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
