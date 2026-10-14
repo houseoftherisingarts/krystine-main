@@ -8162,5 +8162,20 @@
       "src/pages/admin/sections/DemandeNotes.tsx",
       "src/pages/admin/sections/dashboard/CoupDOeilCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-14T22:22:32.152Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "85732939",
+    "message": "Signature courriel de Sarah avec la vignette du podcast : page à copier sur /signatures/sarah.html",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/signatures/podcast-au-dela-des-tendances.jpg",
+      "public/signatures/sarah.html"
+    ]
   }
 ]
