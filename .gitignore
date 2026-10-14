@@ -72,3 +72,8 @@ scripts/qa/verif-routes.json
 
 # Copies de sauvegarde : elles vivent dans ~/.iris/sauvegardes, jamais dans le dépôt ni en ligne
 *.bak*
+
+# Envois planifiés : textes et journaux restent sur cet ordinateur
+scripts/courriel/envois-planifies/*.txt
+scripts/courriel/envois-planifies/*.log
+scripts/courriel/envois-planifies/*.envoye
