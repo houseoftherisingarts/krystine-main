@@ -8177,5 +8177,22 @@
       "public/signatures/podcast-au-dela-des-tendances.jpg",
       "public/signatures/sarah.html"
     ]
+  },
+  {
+    "quand": "2026-10-14T22:52:13.749Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3a5565d7",
+    "message": "Commentaires du site : une réponse approuvée par Krystine dans le balayage du matin part directement (fonction envoyerReponseApprouvee, script scripts/courriel/repondre-commentaire.mjs)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/newsletter/commentaire.ts",
+      "public/assets-manifest.json",
+      "scripts/courriel/repondre-commentaire.mjs"
+    ]
   }
 ]
