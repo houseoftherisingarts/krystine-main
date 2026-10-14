@@ -3,7 +3,7 @@ Document interne, lu par une IA. Rédigé le 6 septembre 2026 depuis le code du 
 
 1. LE SITE EN UNE MINUTE
 
-Krystinestlaurent.ca est le site officiel de Krystine St-Laurent, autrice, conférencière et experte en Ayurveda, fondatrice d'Inspirata Ayurveda. Le site est bâti en React, Three.js et Firebase (projet `krystinestlaurent-87566`), sans plateforme tierce : ni Kajabi (migration fermée le 30 août 2026), ni Circle. Il porte lui-même ses formations payantes, sa communauté, son infolettre et son podcast en direct.
+Krystinestlaurent.ca est le site officiel de Krystine St-Laurent, autrice, conférencière et experte en Ayurveda, fondatrice d'INSPIRATA AYURVEDA. Le site est bâti en React, Three.js et Firebase (projet `krystinestlaurent-87566`), sans plateforme tierce : ni Kajabi (migration fermée le 30 août 2026), ni Circle. Il porte lui-même ses formations payantes, sa communauté, son infolettre et son podcast en direct.
 
 Le site s'adresse à un lectorat francophone adulte qui cherche l'Ayurveda comme boussole intérieure, pas comme mode. Trois grands territoires composent le site :
 - la vitrine publique (biographie, livres, podcast, conférences, boutique de huiles Inspirata Nature) ;
@@ -12,7 +12,7 @@ Le site s'adresse à un lectorat francophone adulte qui cherche l'Ayurveda comme
 
 Deux domaines à ne jamais confondre : krystinestlaurent.ca (le site, ce document) et inspiratanature.com (la boutique de huiles, sur Shopify, boîte courriel `krystine@inspiratanature.com`).
 
-Les faits de parcours à réutiliser sans en inventer d'autres (`functions/src/newsletter/chatbot.ts`, texte déjà validé pour le chatbot public du site) : près de 40 ans à relier ce que nous avons appris à séparer. Infirmière en soins intensifs, en cardiologie, en chirurgie, en médecine de vol, puis en télémédecine, avant l'industrie pharmaceutique et la recherche clinique en insuffisance cardiaque. Puis l'herboristerie, l'Ayurveda et l'aromathérapie. Autrice de trois livres aux Éditions de l'Homme, la Trilogie d'Origine, près de 1 200 pages et douze années d'écriture, dont deux best-sellers. Créatrice et animatrice de la série télé « Santé ! La Vie ! » (trois saisons). Conférencière internationale, fondatrice d'Inspirata Ayurveda. Finaliste au Prix de la Santé Intégrative (catégorie Pionnier) et récipiendaire du Prime Mover Award (Las Vegas). Sa devise, reprise partout sur le site : relier ce que nous avons appris à séparer.
+Les faits de parcours à réutiliser sans en inventer d'autres (`functions/src/newsletter/chatbot.ts`, texte déjà validé pour le chatbot public du site) : près de 40 ans à relier ce que nous avons appris à séparer. Infirmière en soins intensifs, en cardiologie, en chirurgie, en médecine de vol, puis en télémédecine, avant l'industrie pharmaceutique et la recherche clinique en insuffisance cardiaque. Puis l'herboristerie, l'Ayurveda et l'aromathérapie. Autrice de trois livres aux Éditions de l'Homme, la Trilogie d'Origine, près de 1 200 pages et douze années d'écriture, dont deux best-sellers. Créatrice et animatrice de la série télé « Santé ! La Vie ! » (trois saisons). Conférencière internationale, fondatrice d'INSPIRATA AYURVEDA. Finaliste au Prix de la Santé Intégrative (catégorie Pionnier) et récipiendaire du Prime Mover Award (Las Vegas). Sa devise, reprise partout sur le site : relier ce que nous avons appris à séparer.
 
 La correspondance saisons-doshas, utilisée dans tout le site (quiz, formations, textes) : printemps = Kapha, été = Pitta, automne = Vata.
 

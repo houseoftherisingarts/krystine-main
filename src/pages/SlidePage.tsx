@@ -202,7 +202,7 @@ const SLIDES: Slide[] = [
     title: 'Krystine St-Laurent',
     description: [
       "Près de 40 ans à reconnecter avec les rythmes de la nature — soins intensifs, recherche clinique, herboristerie, Ayurveda.",
-      "Autrice best-seller, conférencière, fondatrice d'Inspirata Ayurveda.",
+      "Autrice best-seller, conférencière, fondatrice d'INSPIRATA AYURVEDA.",
     ],
   },
   // ── Slide 3 · Univers KSL · autoplay video intro.
