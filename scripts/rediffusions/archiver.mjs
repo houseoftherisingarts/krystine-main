@@ -11,8 +11,9 @@
 // Relancer la commande remplace l'archive existante de la même vidéo.
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, readdirSync, readFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync, mkdtempSync, readdirSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const PROJET = 'krystinestlaurent-87566';
@@ -30,7 +31,9 @@ if (!url) {
 
 // ── 1. yt-dlp : fiche, commentaires, clavardage ─────────────────────────────
 const dossier = mkdtempSync(join(tmpdir(), 'rediffusion-'));
-const r = spawnSync('yt-dlp', [
+// Sans yt-dlp installé (l'ordinateur de Krystine), uvx le lance sans installation.
+const aYtDlp = spawnSync('yt-dlp', ['--version']).status === 0;
+const r = spawnSync(aYtDlp ? 'yt-dlp' : 'uvx', [...(aYtDlp ? [] : ['yt-dlp']),
   '--skip-download', '--write-info-json', '--write-comments',
   '--write-subs', '--sub-langs', 'live_chat',
   '-o', join(dossier, '%(id)s'), url,
@@ -99,7 +102,18 @@ const commentaires = (info.comments || []).map(c => {
 });
 
 // ── 4. Firestore par REST, avec le jeton gcloud ─────────────────────────────
-const TOKEN = execFileSync('gcloud', ['auth', 'print-access-token'], { encoding: 'utf8' }).trim();
+// gcloud d'abord; sinon la connexion « firebase login » de la machine (ordinateur de Krystine).
+async function jeton() {
+  try { return execFileSync('gcloud', ['auth', 'print-access-token'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { /* pas de gcloud */ }
+  const candidats = [join(homedir(), '.iris/tools/node_modules/firebase-tools/lib/auth.js')];
+  try { candidats.unshift(execFileSync('npm', ['root', '-g'], { encoding: 'utf8' }).trim() + '/firebase-tools/lib/auth.js'); } catch { /* rien */ }
+  const chemin = candidats.find(existsSync);
+  const conf = join(homedir(), '.config/configstore/firebase-tools.json');
+  if (!chemin || !existsSync(conf)) throw new Error('Ni gcloud ni « firebase login » sur cet ordinateur.');
+  const t = await createRequire(import.meta.url)(chemin).getAccessToken(JSON.parse(readFileSync(conf, 'utf8')).tokens.refresh_token, []);
+  return t.access_token || t;
+}
+const TOKEN = await jeton();
 async function fs(method, chemin, corps) {
   const res = await fetch(`${BASE}/${chemin}`, {
     method,
