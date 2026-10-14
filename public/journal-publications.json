@@ -8219,5 +8219,27 @@
       "src/pages/OrigineExperience.tsx",
       "src/pages/origine/App.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-14T23:33:43.449Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "04984ba3",
+    "message": "Vitrine du site : « Autrice best-seller et conférencière » dans le titre et l'aperçu partagé (image sans INSPIRATA); bio complète gardée avec INSPIRATA AYURVEDA en majuscules partout; fiche Google : près de 40 ans",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/assistant.ts",
+      "index.html",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "public/iris/iris_site.md",
+      "public/iris/iris_system.md",
+      "public/medias/partage.jpg",
+      "src/pages/SlidePage.tsx"
+    ]
   }
 ]
