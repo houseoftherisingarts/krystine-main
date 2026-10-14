@@ -136,6 +136,14 @@ export const vhCollecter = onRequest(
     if (!SITES_PERMIS.includes(site) || !/^[a-z0-9-]{8,64}$/.test(sid)) { res.status(400).send(''); return; }
 
     const db = getFirestore();
+    // La vérification du matin, sur l'ordinateur de Krystine, n'a plus accès à
+    // la base : elle le dit ici, avant l'exclusion des adresses de l'admin
+    // (cet ordinateur en fait partie). Le Bilan du matin le met en tête.
+    if (d.t === 'iris-auth') {
+      await db.doc('sante/irisConnexion').set({ le: Timestamp.now(), ok: false, raison: texte(d.raison, 180) });
+      res.status(204).send('');
+      return;
+    }
     const r = await lireReglages(db);
     if (!r.actif || (ip && r.ips.has(ip))) { res.status(204).send(''); return; }
     const pays = texte(req.get('x-country-code') || req.get('cf-ipcountry') || '', 2).toUpperCase() || undefined;

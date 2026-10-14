@@ -464,8 +464,20 @@ if (!essai) {
     await ecrire('sante/verifComplete', bilan, T);
     await ecrire(`sante/verifComplete/jours/${JOUR}`, bilan, T);
     console.log('Résultat rangé dans sante/verifComplete');
+    await ecrire('sante/irisConnexion', { le: new Date(), ok: true, raison: '' }, T).catch(() => {});
   } catch (e) {
     console.error('Écriture dans la base impossible :', e.message);
+    // Connexion Firebase perdue sur cet ordinateur : on le signale par la porte
+    // publique du site (aucune clé requise), et le Bilan du matin l'écrit en
+    // tête du courriel (demande de Krystine, 14 oct. 2026).
+    try {
+      const sid = 'iris-verif-' + Math.random().toString(36).slice(2, 10);
+      await fetch(`${SITE}/api/vh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ v: 1, site: 'krystine', sid, t: 'iris-auth', raison: String(e.message).slice(0, 180) }),
+      });
+    } catch { /* hors ligne : le Bilan dira alors que la vérification n'a pas tourné */ }
   }
 }
 console.log(`VÉRIF COMPLÈTE : ${bilan.pages} pages, ${bilan.verifications} vérifications, ${bilan.ok} bonnes, ${anomalies.length} anomalie(s), ${bilan.dureeSecondes} s`);

@@ -348,6 +348,12 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   const optimiser = await sur(() => aOptimiser(sept, verif));
 
   const alertes = filet ? filet.controles.filter((c) => c.etat === 'alerte').map((c) => `${c.nom} : ${c.detail}`) : ['Le filet n’a pas pu tourner'];
+  // Iris déconnectée de Firebase sur l'ordinateur de Krystine (signalé par scripts/qa/verif-complete.mjs) : en tête des alertes.
+  const connexion = await sur(async () => (await db.doc('sante/irisConnexion').get()).data());
+  const signaleLe = (connexion?.le as Timestamp | undefined)?.toDate();
+  if (connexion && connexion.ok === false && signaleLe && Date.now() - signaleLe.getTime() < 12 * 3600 * 1000) {
+    alertes.unshift('Iris n’est plus connectée à Firebase sur votre ordinateur : la vérification du site de ce matin n’a pas pu être rangée, et Iris ne peut plus lire vos chiffres ni publier. Ouvrez Iris et écrivez « reconnecte Firebase ».');
+  }
 
   // La ligne « à surveiller » : la première chose qui mérite un regard.
   let surveiller = 'Rien de particulier ce matin.';
