@@ -8194,5 +8194,30 @@
       "public/assets-manifest.json",
       "scripts/courriel/repondre-commentaire.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-14T23:08:03.106Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "13f2d462",
+    "message": "Trilogie : douze ans d'écriture, et non huit (accueil, communauté, Expérience Origine, EO2, page Origine, traduction anglaise, chatbot et assistante)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/newsletter/assistant.ts",
+      "functions/src/newsletter/chatbot.ts",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/communaute/index.html",
+      "public/i18n/en.json",
+      "public/iris/iris_site.md",
+      "public/iris/iris_system.md",
+      "src/pages/InspiratHome.tsx",
+      "src/pages/OrigineDeuxPage.tsx",
+      "src/pages/OrigineExperience.tsx",
+      "src/pages/origine/App.tsx"
+    ]
   }
 ]
