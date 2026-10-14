@@ -1,4 +1,4 @@
-import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { MAIL_SECRETS, PUBLIC_BASE_URL, createTransporter, fromAddr } from './mail';
@@ -78,70 +78,96 @@ export const notifierCommentaire = onDocumentCreated(
 
 interface ReponseCommentaire { texte: string; le: Timestamp; par: string }
 
+/** Envoie une réponse à une visiteuse et la consigne sur sa fiche. Partagé par l'admin et par Iris. */
+async function envoyerReponseCommentaire(id: string, brut: string, par: string) {
+  const message = String(brut || '').replace(/\r\n/g, '\n').trim();
+  if (!id) throw new HttpsError('invalid-argument', 'Commentaire manquant.');
+  if (!message) throw new HttpsError('invalid-argument', 'La réponse est vide.');
+  if (message.length > 5000) throw new HttpsError('invalid-argument', 'La réponse dépasse 5000 caractères.');
+
+  const ref = getFirestore().doc(`bugs/${id}`);
+  const snap = await ref.get();
+  if (!snap.exists) throw new HttpsError('not-found', 'Commentaire introuvable.');
+  const d = snap.data() as Record<string, unknown>;
+  const courriel = String(d.courriel || d.email || '').trim();
+  if (!courriel || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel)) {
+    throw new HttpsError('failed-precondition', 'Pas de courriel : réponse impossible.');
+  }
+  // Garde contre un double envoi : la même réponse déjà partie il y a moins de deux minutes.
+  const deja = (Array.isArray(d.reponses) ? d.reponses : []) as ReponseCommentaire[];
+  const derniere = deja[deja.length - 1];
+  if (derniere && derniere.texte === message && derniere.le?.toMillis && Date.now() - derniere.le.toMillis() < 120_000) {
+    return { ok: true, doublon: true };
+  }
+  const original = String(d.texte || d.description || d.message || '').trim();
+  const text = [
+    message,
+    '',
+    original ? `Votre commentaire :\n${original}` : '',
+    '',
+    `Vous pouvez répondre directement à ce courriel : il arrive à ${TEAM_EMAIL}.`,
+  ].filter((l, i, a) => !(l === '' && a[i - 1] === '')).join('\n');
+  const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"></head><body style="margin:0;padding:32px 16px;background:#f6f3ee;font-family:Inter,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#2a2015;">
+    <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:15px;padding:32px;">
+      <p style="margin:0 0 18px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#7d6330;font-weight:600;">Réponse à votre commentaire</p>
+      <div style="font-size:15px;line-height:1.75;white-space:pre-wrap;">${esc(message)}</div>
+      ${original ? `<p style="margin:28px 0 6px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(42,32,21,.5);">Votre commentaire</p>
+      <blockquote style="margin:0;padding:12px 16px;border-left:2px solid #bb9a5e;background:#f6f3ee;border-radius:0 12px 12px 0;font-size:13px;line-height:1.6;color:rgba(42,32,21,.7);white-space:pre-wrap;">${esc(original)}</blockquote>` : ''}
+      <p style="margin:24px 0 0;font-size:12px;color:rgba(42,32,21,.55);">Vous pouvez répondre directement à ce courriel : il arrive à ${esc(TEAM_EMAIL)}.</p>
+    </div></body></html>`;
+
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({
+      from: fromAddr("L'équipe Krystine St-Laurent"),
+      to: courriel,
+      replyTo: TEAM_EMAIL,
+      subject: 'Réponse à votre commentaire',
+      text,
+      html,
+    });
+  } catch (err) {
+    throw new HttpsError('internal', `Envoi impossible : ${(err as Error).message}`);
+  } finally {
+    transporter.close();
+  }
+
+  // serverTimestamp() est refusé à l'intérieur d'un tableau : l'heure du serveur de la fonction en tient lieu.
+  await ref.update({
+    reponses: FieldValue.arrayUnion({ texte: message, le: Timestamp.now(), par }),
+    statut: 'regle',
+    derniereReponseLe: FieldValue.serverTimestamp(),
+  });
+  return { ok: true };
+}
+
 export const repondreCommentaire = onCall(
   { region: 'us-central1', secrets: MAIL_SECRETS, timeoutSeconds: 60 },
   async (req) => {
     const admin = assertAdmin(req);
-    const id = String(req.data?.id || '').trim();
-    const message = String(req.data?.message || '').replace(/\r\n/g, '\n').trim();
-    if (!id) throw new HttpsError('invalid-argument', 'Commentaire manquant.');
-    if (!message) throw new HttpsError('invalid-argument', 'La réponse est vide.');
-    if (message.length > 5000) throw new HttpsError('invalid-argument', 'La réponse dépasse 5000 caractères.');
+    return envoyerReponseCommentaire(String(req.data?.id || '').trim(), String(req.data?.message || ''), admin);
+  },
+);
 
-    const ref = getFirestore().doc(`bugs/${id}`);
-    const snap = await ref.get();
-    if (!snap.exists) throw new HttpsError('not-found', 'Commentaire introuvable.');
-    const d = snap.data() as Record<string, unknown>;
-    const courriel = String(d.courriel || d.email || '').trim();
-    if (!courriel || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(courriel)) {
-      throw new HttpsError('failed-precondition', 'Pas de courriel : réponse impossible.');
-    }
-    // Garde contre un double envoi : la même réponse déjà partie il y a moins de deux minutes.
-    const deja = (Array.isArray(d.reponses) ? d.reponses : []) as ReponseCommentaire[];
-    const derniere = deja[deja.length - 1];
-    if (derniere && derniere.texte === message && derniere.le?.toMillis && Date.now() - derniere.le.toMillis() < 120_000) {
-      return { ok: true, doublon: true };
-    }
-
-    const original = String(d.texte || d.description || d.message || '').trim();
-    const text = [
-      message,
-      '',
-      original ? `Votre commentaire :\n${original}` : '',
-      '',
-      `Vous pouvez répondre directement à ce courriel : il arrive à ${TEAM_EMAIL}.`,
-    ].filter((l, i, a) => !(l === '' && a[i - 1] === '')).join('\n');
-    const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"></head><body style="margin:0;padding:32px 16px;background:#f6f3ee;font-family:Inter,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#2a2015;">
-      <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:15px;padding:32px;">
-        <p style="margin:0 0 18px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#7d6330;font-weight:600;">Réponse à votre commentaire</p>
-        <div style="font-size:15px;line-height:1.75;white-space:pre-wrap;">${esc(message)}</div>
-        ${original ? `<p style="margin:28px 0 6px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(42,32,21,.5);">Votre commentaire</p>
-        <blockquote style="margin:0;padding:12px 16px;border-left:2px solid #bb9a5e;background:#f6f3ee;border-radius:0 12px 12px 0;font-size:13px;line-height:1.6;color:rgba(42,32,21,.7);white-space:pre-wrap;">${esc(original)}</blockquote>` : ''}
-        <p style="margin:24px 0 0;font-size:12px;color:rgba(42,32,21,.55);">Vous pouvez répondre directement à ce courriel : il arrive à ${esc(TEAM_EMAIL)}.</p>
-      </div></body></html>`;
-
-    const transporter = createTransporter();
+// ─── La réponse approuvée par Krystine dans le balayage du matin (14 oct. 2026) ─
+// Iris prépare la réponse, Krystine l'approuve dans la conversation, puis Iris
+// pose `reponseApprouvee` sur la fiche (scripts/courriel/repondre-commentaire.mjs).
+// Cette fonction l'envoie aussitôt par le même chemin que l'admin, puis retire
+// le champ. Seul un compte de service (Iris, l'admin) peut écrire ce champ.
+export const envoyerReponseApprouvee = onDocumentUpdated(
+  { document: 'bugs/{id}', secrets: MAIL_SECRETS, timeoutSeconds: 60 },
+  async (event) => {
+    const avant = event.data?.before.data() as Record<string, unknown> | undefined;
+    const apres = event.data?.after.data() as Record<string, unknown> | undefined;
+    const r = apres?.reponseApprouvee as { texte?: string; par?: string } | undefined;
+    if (!r?.texte) return;
+    if (JSON.stringify(avant?.reponseApprouvee) === JSON.stringify(r)) return;
+    const ref = getFirestore().doc(`bugs/${event.params.id}`);
     try {
-      await transporter.sendMail({
-        from: fromAddr("L'équipe Krystine St-Laurent"),
-        to: courriel,
-        replyTo: TEAM_EMAIL,
-        subject: 'Réponse à votre commentaire',
-        text,
-        html,
-      });
+      await envoyerReponseCommentaire(event.params.id, r.texte, r.par || 'Krystine (par Iris)');
+      await ref.update({ reponseApprouvee: FieldValue.delete(), reponseErreur: FieldValue.delete() });
     } catch (err) {
-      throw new HttpsError('internal', `Envoi impossible : ${(err as Error).message}`);
-    } finally {
-      transporter.close();
+      await ref.update({ reponseApprouvee: FieldValue.delete(), reponseErreur: String((err as Error).message || err) });
     }
-
-    // serverTimestamp() est refusé à l'intérieur d'un tableau : l'heure du serveur de la fonction en tient lieu.
-    await ref.update({
-      reponses: FieldValue.arrayUnion({ texte: message, le: Timestamp.now(), par: admin }),
-      statut: 'regle',
-      derniereReponseLe: FieldValue.serverTimestamp(),
-    });
-    return { ok: true };
   },
 );
