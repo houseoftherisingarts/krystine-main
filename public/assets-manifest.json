@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-14T22:03:00.045Z",
+  "generatedAt": "2026-10-14T22:22:24.016Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2989,6 +2989,13 @@
       "folder": "sante-parfaite/chapitres",
       "kind": "image",
       "size": 58336
+    },
+    {
+      "path": "/signatures/podcast-au-dela-des-tendances.jpg",
+      "name": "podcast-au-dela-des-tendances.jpg",
+      "folder": "signatures",
+      "kind": "image",
+      "size": 42668
     },
     {
       "path": "/speaking/assets/krystine-smile-640.webp",
