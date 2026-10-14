@@ -8109,5 +8109,22 @@
       "functions/src/bilan.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-14T20:43:26.008Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4b3fc72d",
+    "message": "Bilan du matin : alerte en tête du courriel si Iris perd sa connexion à Firebase sur l'ordinateur de Krystine; bannière des témoins comptée de façon anonyme",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "public/assets-manifest.json",
+      "scripts/qa/verif-complete.mjs"
+    ]
   }
 ]
