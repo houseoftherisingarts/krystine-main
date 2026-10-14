@@ -351,7 +351,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   // Iris déconnectée de Firebase sur l'ordinateur de Krystine (signalé par scripts/qa/verif-complete.mjs) : en tête des alertes.
   const connexion = await sur(async () => (await db.doc('sante/irisConnexion').get()).data());
   const signaleLe = (connexion?.le as Timestamp | undefined)?.toDate();
-  if (connexion && connexion.ok === false && signaleLe && Date.now() - signaleLe.getTime() < 12 * 3600 * 1000) {
+  // Le signal arrive par la porte publique du site : il ne compte que si la vérification du matin manque vraiment.
+  if (!verif && connexion && connexion.ok === false && signaleLe && Date.now() - signaleLe.getTime() < 12 * 3600 * 1000) {
     alertes.unshift('Iris n’est plus connectée à Firebase sur votre ordinateur : la vérification du site de ce matin n’a pas pu être rangée, et Iris ne peut plus lire vos chiffres ni publier. Ouvrez Iris et écrivez « reconnecte Firebase ».');
   }
 
