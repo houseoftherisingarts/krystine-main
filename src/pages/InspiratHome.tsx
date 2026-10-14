@@ -721,8 +721,8 @@ const InspiratHome: React.FC = () => {
               kicker={lang === 'FR' ? "L'œuvre fondatrice" : 'The founding work'}
               title={lang === 'FR' ? "La Trilogie d'Origine" : 'The Origin Trilogy'}
               lede={lang === 'FR'
-                ? "Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda — et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication."
-                : "Three books. 8 years. 1200 pages drawn from Ayurveda — and some of their unreleased material feeds the Origin Experience before publication."}
+                ? "Trois livres. 12 ans d'écriture. 1200 pages inspirées de l'Ayurveda — et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication."
+                : "Three books. 12 years of writing. 1200 pages drawn from Ayurveda — and some of their unreleased material feeds the Origin Experience before publication."}
               sprigs={['olive', 'laurel']}
               divider="bloom"
               className="mb-8"

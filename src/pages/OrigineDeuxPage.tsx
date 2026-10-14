@@ -406,7 +406,7 @@ const OrigineDeuxPage: React.FC = () => {
               <Eyebrow>L'Œuvre fondatrice</Eyebrow>
               <SectionTitle className="mt-4">La Trilogie d'Origine</SectionTitle>
               <DrawRule className="mt-5 w-16" />
-              <p className="mt-7 font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[62ch]">Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda, <span className="text-brassInk font-medium">et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication.</span></p>
+              <p className="mt-7 font-sans text-[1.05rem] leading-[1.85] text-inkSoft max-w-[62ch]">Trois livres. 12 ans d'écriture. 1200 pages inspirées de l'Ayurveda, <span className="text-brassInk font-medium">et une partie de leur contenu inédit nourrit Expérience Origine avant même sa publication.</span></p>
               <p className="mt-8 text-[2rem] text-brassInk leading-none" style={{ fontFamily: '"Pinyon Script", cursive' }}>Krystine</p>
             </Reveal>
             <Reveal delay={0.1} className="col-span-12 md:col-span-6 md:col-start-7">

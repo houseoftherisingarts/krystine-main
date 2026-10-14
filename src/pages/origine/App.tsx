@@ -161,7 +161,7 @@ const FullExperience: React.FC = () => {
       <div className="snap-start">
         <BookHeroSection
           imageUrl="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2FA%25CC%2580%2520venir%2520biento%25CC%2582t!.png&w=1200&output=webp"
-          text={<>Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda... <strong className="text-copper-bruni dark:text-copper-light font-medium">et une partie de son contenu inédit nourrit Expérience Origine avant même sa publication.</strong></>}
+          text={<>Trois livres. 12 ans d'écriture. 1200 pages inspirées de l'Ayurveda... <strong className="text-copper-bruni dark:text-copper-light font-medium">et une partie de son contenu inédit nourrit Expérience Origine avant même sa publication.</strong></>}
         />
       </div>
 
@@ -288,7 +288,7 @@ const FullExperience: React.FC = () => {
 
       <BookHeroSection
         imageUrl="https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2FA%25CC%2580%2520venir%2520biento%25CC%2582t!.png&w=1200&output=webp"
-        text={<>Trois livres. 8 ans. 1200 pages inspirées de l'Ayurveda... <strong className="text-copper-bruni dark:text-copper-light font-medium">et une partie de son contenu inédit nourrit Expérience Origine avant même sa publication.</strong></>}
+        text={<>Trois livres. 12 ans d'écriture. 1200 pages inspirées de l'Ayurveda... <strong className="text-copper-bruni dark:text-copper-light font-medium">et une partie de son contenu inédit nourrit Expérience Origine avant même sa publication.</strong></>}
       />
       
       <Suspense fallback={<div className="h-32" />}>
