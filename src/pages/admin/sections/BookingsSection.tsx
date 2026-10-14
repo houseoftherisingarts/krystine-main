@@ -8,12 +8,15 @@ import {
 } from '../../../firebase/firestore';
 import { Card, DangerButton, EmptyState, GhostButton } from '../primitives';
 import DemandesPresse from './DemandesPresse';
+import { AjoutDemandeCourriel, NotesDemande } from './DemandeNotes';
 
 const STATUS_OPTIONS: { id: BookingStatus; label: string; color: string }[] = [
-  { id: 'new',         label: 'Nouveau',     color: 'bg-[#BA7B39]/10 text-[#8B4A2F]' },
+  { id: 'new',         label: 'Nouvelle',    color: 'bg-[#BA7B39]/10 text-[#8B4A2F]' },
+  { id: 'to_verify',   label: 'À vérifier',  color: 'bg-yellow-50 text-yellow-700' },
+  { id: 'to_krystine', label: 'À Krystine',  color: 'bg-[#28352F]/10 text-[#28352F]' },
   { id: 'in_progress', label: 'En cours',    color: 'bg-yellow-50 text-yellow-600' },
-  { id: 'accepted',    label: 'Accepté',     color: 'bg-green-50 text-green-600' },
-  { id: 'declined',    label: 'Refusé',      color: 'bg-red-50 text-red-500' },
+  { id: 'accepted',    label: 'Acceptée',    color: 'bg-green-50 text-green-600' },
+  { id: 'declined',    label: 'Déclinée',    color: 'bg-red-50 text-red-500' },
 ];
 
 // ─── Label dictionaries (FR only — admin is internal) ────────────────────────
@@ -125,14 +128,15 @@ const DemandesConferences: React.FC = () => {
   };
 
   if (loading) return <div className="py-12 flex justify-center"><i className="fa-solid fa-circle-notch fa-spin text-[#8B4A2F] text-2xl" /></div>;
-  if (items.length === 0) return <EmptyState icon="fa-inbox">Aucune demande reçue.</EmptyState>;
+  if (items.length === 0) return <><AjoutDemandeCourriel onAjout={refresh} /><EmptyState icon="fa-inbox">Aucune demande reçue.</EmptyState></>;
 
   return (
     <div className="space-y-3">
+      <AjoutDemandeCourriel onAjout={refresh} />
       {items.map(b => {
         const isOpen = expanded === b.id;
         const status = STATUS_OPTIONS.find(s => s.id === (b.status || 'new')) || STATUS_OPTIONS[0];
-        const sourceLabel = b.source === 'conference-tour' ? 'Tournée' : b.source === 'conferenciere' ? 'Réserver Krystine' : b.source || 'Autre';
+        const sourceLabel = ({ 'conference-tour': 'Tournée', conferenciere: 'Réserver Krystine', collaboration: 'Collaboration', courriel: 'Reçue par courriel', 'medias-entrevue': 'Entrevue média' } as Record<string, string>)[b.source || ''] || b.source || 'Autre';
         return (
           <Card key={b.id} className="p-5">
             <div className="flex items-start gap-4">
@@ -163,6 +167,10 @@ const DemandesConferences: React.FC = () => {
                     <DetailRow label="Courriel"       value={b.email} />
                     <DetailRow label="Téléphone"      value={b.phone} />
                     <DetailRow label="Organisation"   value={b.organization} />
+                    <DetailRow label="Demande"        value={b.demande} />
+                    <DetailRow label="Contenu visé"   value={b.contenu} />
+                    <DetailRow label="Où, comment"    value={b.support} />
+                    <DetailRow label="Portée"         value={b.portee} />
                     <DetailRow label="Site web"       value={b.organizationUrl} />
                     <DetailRow label="Ville"          value={b.city} />
                     <DetailRow label="Région"         value={b.region} />
@@ -193,6 +201,7 @@ const DemandesConferences: React.FC = () => {
                         ))}
                       </div>
                     )}
+                    <NotesDemande demande={b} onChange={patch => setItems(prev => prev.map(i => i.id === b.id ? { ...i, ...patch } : i))} />
                   </div>
                 )}
               </div>

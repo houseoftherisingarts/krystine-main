@@ -906,7 +906,12 @@ export async function deleteDoshaResult(id: string) {
 }
 
 // ─── Booking Requests (conférence / contact) ─────────────────────────────────
-export type BookingStatus = 'new' | 'in_progress' | 'accepted' | 'declined';
+// « À vérifier » et « À Krystine » viennent de la charte de partage (14 oct. 2026);
+// « in_progress » reste lisible pour les anciennes demandes.
+export type BookingStatus = 'new' | 'to_verify' | 'to_krystine' | 'in_progress' | 'accepted' | 'declined';
+
+/** Une note datée de l'équipe sur une demande (Krystine, 14 oct. 2026). */
+export interface NoteDemande { texte: string; par: string; le: string }
 
 // Speaker-booking structured fields. A requester who fills the Réserver
 // Krystine form is expected to answer these; the admin Demandes view
@@ -979,6 +984,13 @@ export interface BookingRequest {
    */
   hostCapability?: 'request-only' | 'know-venue' | 'can-venue' | 'can-organize' | 'venue-and-organize';
   phone?: string;
+  // Le formulaire « Proposer une collaboration » (charte de partage, 14 oct. 2026).
+  demande?: string;
+  contenu?: string;
+  support?: string;
+  portee?: string;
+  notes?: NoteDemande[];
+  lienPublication?: string;
   status?: BookingStatus;
   // Origin tracking — the page / form that produced the request. Mirrors the
   // same field on NewsletterSubscriber / DoshaResult for a consistent CRM.
