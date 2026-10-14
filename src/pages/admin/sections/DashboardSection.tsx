@@ -16,6 +16,7 @@ import EntonnoirVataCard from './dashboard/EntonnoirVataCard';
 import NouveauxMembresCard from './dashboard/NouveauxMembresCard';
 import CibleNouvellesPersonnesCard from './dashboard/CibleNouvellesPersonnesCard';
 import CompteurCliquable from './dashboard/DetailCompteur';
+import CoupDOeilCard from './dashboard/CoupDOeilCard';
 
 interface Stat { label: string; value: number; icon: string; accent: string; hint?: string; }
 
@@ -72,11 +73,6 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
 
   const upcoming = events.filter(e => new Date(e.date) >= new Date()).length;
   const newBookings = bookings.filter(b => (b.status || 'new') === 'new').length;
-  const doshaBreakdown = { vata: 0, pitta: 0, kapha: 0 };
-  dosha.forEach(r => {
-    const k = r.dominant?.toLowerCase();
-    if (k === 'vata' || k === 'pitta' || k === 'kapha') doshaBreakdown[k]++;
-  });
 
   const stats: (Stat & { section: string })[] = [
     { label: 'Événements à venir', value: upcoming, icon: 'fa-calendar', accent: 'text-[#8B4A2F]', section: 'events' },
@@ -112,6 +108,9 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           </button>
         </div>
       </Card>
+
+      {/* D'un coup d'œil : ventes 24 h, ventes par mois, mouvement, quiz (Krystine, 14 oct. 2026) */}
+      <CoupDOeilCard dosha={dosha} />
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -222,31 +221,6 @@ const DashboardSection: React.FC<{ onNavigate: (s: any) => void }> = ({ onNaviga
           </ul>
         )}
       </Card>
-
-      {/* Dosha breakdown */}
-      {dosha.length > 0 && (
-        <Card className="p-6">
-          <h3 className="text-sm uppercase tracking-widest text-[#293027]/60 dark:text-white/60 font-bold mb-4">Répartition des résultats Dosha</h3>
-          <div className="grid grid-cols-3 gap-3">
-            {(['vata', 'pitta', 'kapha'] as const).map(k => {
-              const n = doshaBreakdown[k];
-              const pct = Math.round((n / dosha.length) * 100);
-              const color = k === 'vata' ? 'bg-[#8F9779]' : k === 'pitta' ? 'bg-[#BC4A3C]' : 'bg-[#4A7C9D]';
-              return (
-                <div key={k}>
-                  <div className="flex justify-between text-xs mb-1 text-[#293027] dark:text-white">
-                    <span className="capitalize font-serif">{k}</span>
-                    <span className="font-bold">{n} · {pct}%</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-[#293027]/5 dark:bg-white/5 overflow-hidden">
-                    <div className={`h-full ${color} transition-all`} style={{ width: `${pct}%` }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-      )}
 
       {/* Recent activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
