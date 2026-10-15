@@ -8291,5 +8291,25 @@
       "public/telechargements/le-vent.pdf",
       "src/pages/PaiementFormation.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-15T23:38:35.569Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5174dd59",
+    "message": "Quiz : le guide Vata offert avec chaque lecture (courriel du résultat et phrase sous le formulaire, /quiz) · champs du quiz à 16 px sur iPhone · lien du menu vers la page ouverte remonte en haut · chemin du désabonnement en haut de /politique-de-confidentialite",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "components/pages/PrivacyPolicy.tsx",
+      "functions/src/quizCourriel.ts",
+      "public/assets-manifest.json",
+      "src/pages/ClientPortal.tsx",
+      "src/pages/QuizLoeuvre.tsx",
+      "src/pages/client/ClientTelechargements.tsx"
+    ]
   }
 ]
