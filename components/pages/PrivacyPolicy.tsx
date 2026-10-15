@@ -24,6 +24,20 @@ const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({ lang }) => {
           {lang === 'fr' ? "Politique de confidentialité" : "Privacy Policy"}
         </h1>
 
+        {/* Le pied des lettres place ce lien juste après « Se désabonner » : la lettre du
+            4 oct. 2026 y a envoyé 158 clics (11 % des clics de la lettre). Celles qui
+            cherchaient à se désabonner trouvent ici le chemin, dès le haut de la page. */}
+        {lang === 'fr' && (
+          <aside className="mb-14 border-l-2 border-[#9c7a44] bg-[#efe6d7] px-6 py-5 text-[16px] leading-[1.7] text-[#1c1712]">
+            <p className="text-[0.68rem] uppercase tracking-[0.2em] text-[#7d6330] mb-2">Ne plus recevoir nos lettres</p>
+            <p>
+              Le lien « Se désabonner » se trouve au bas de chaque lettre, juste avant le lien « Politique de confidentialité ». Un seul clic suffit. Vous pouvez aussi écrire à{' '}
+              <a href="mailto:teamksl@inspiratanature.com" className="underline decoration-[#9c7a44] underline-offset-2">teamksl@inspiratanature.com</a>
+              {' '}et notre équipe s’en occupe pour vous.
+            </p>
+          </aside>
+        )}
+
         <div className="max-w-none space-y-12 text-[17px] leading-[1.75] text-[#1c1712]/85 [&_a]:text-[#1c1712] [&_a]:underline [&_a]:decoration-[#9c7a44] [&_strong]:text-[#1c1712]">
           <section className="space-y-4">
             <h2 className="font-['Fraunces',Georgia,serif] font-normal text-2xl md:text-3xl text-[#1c1712]">1. Introduction et portée</h2>

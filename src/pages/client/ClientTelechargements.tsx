@@ -17,6 +17,9 @@ const ClientTelechargements: React.FC = () => {
   const [items, setItems] = useState<{ achat: AchatFormation; lecons: Lecon[] }[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
+  // Le fichier qui n'a pas pu partir : sans ce message, le bouton revenait tel quel,
+  // sans un mot (clics « sans effet » sur Télécharger, mesure du 14 oct. 2026).
+  const [echec, setEchec] = useState<string | null>(null);
   const [tour, setTour] = useState(0);
   // Mes vidéos : toutes les vidéos de Krystine dès que la section est ouverte
   // (dix niskas, une fois), plus celles achetées à l'unité avant ce changement.
@@ -88,10 +91,12 @@ const ClientTelechargements: React.FC = () => {
   };
 
   const telecharger = async (fid: string, l: Lecon) => {
-    setBusy(l.id);
+    setBusy(l.id); setEchec(null);
     try {
       const url = await urlDeLecon(fid, l.id);
       window.location.href = url;
+    } catch {
+      setEchec(l.id);
     } finally {
       setBusy(null);
     }
@@ -158,6 +163,7 @@ const ClientTelechargements: React.FC = () => {
                       >
                         <i className="fa-solid fa-download mr-1" /> {busy === l.id ? (lang === 'FR' ? 'Un instant…' : 'One moment…') : (lang === 'FR' ? 'Télécharger' : 'Download')}
                       </button>
+                      {echec === l.id && <p className="w-full text-xs text-red-600">{lang === 'FR' ? 'Le téléchargement n’a pas fonctionné. Réessayez, ou écrivez-nous à teamksl@inspiratanature.com.' : 'The download did not work. Please try again, or write to teamksl@inspiratanature.com.'}</p>}
                     </li>
                   ))}
                 </ul>

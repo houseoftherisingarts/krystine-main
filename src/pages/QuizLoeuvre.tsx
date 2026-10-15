@@ -1022,6 +1022,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                     aria-hidden="true"
                     className="absolute -left-[9999px] h-0 w-0 opacity-0"
                   />
+                  {/* Champs à 16 px : sous ce seuil, l'iPhone grossit la page au toucher du
+                      champ et le bouton sort de l'écran (19 abandons pour 2 envois sur
+                      14 jours, souvent au Prénom ou au Courriel, mesure du 14 oct. 2026). */}
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <input
                       type="text"
@@ -1033,7 +1036,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       aria-invalid={champFautif === 'prenom' || undefined}
                       value={prenom}
                       onChange={e => { setPrenom(e.target.value); if (champFautif === 'prenom') setChampFautif(null); }}
-                      className={`w-full border-b ${champFautif === 'prenom' ? 'border-[#83322b]' : 'border-[#1c1712]/30'} bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]`}
+                      className={`w-full border-b ${champFautif === 'prenom' ? 'border-[#83322b]' : 'border-[#1c1712]/30'} bg-transparent py-3 text-[1rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]`}
                     />
                     <input
                       type="email"
@@ -1045,7 +1048,7 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                       aria-invalid={champFautif === 'courriel' || undefined}
                       value={courriel}
                       onChange={e => { setCourriel(e.target.value); if (champFautif === 'courriel') setChampFautif(null); }}
-                      className={`w-full border-b ${champFautif === 'courriel' ? 'border-[#83322b]' : 'border-[#1c1712]/30'} bg-transparent py-3 text-[0.95rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]`}
+                      className={`w-full border-b ${champFautif === 'courriel' ? 'border-[#83322b]' : 'border-[#1c1712]/30'} bg-transparent py-3 text-[1rem] text-[#1c1712] placeholder:text-[#1c1712]/45 outline-none transition-colors focus:border-[#9c7a44]`}
                     />
                   </div>
                   {RECAPTCHA_SITE_KEY && <div ref={captcha.boxRef} className="mt-6 flex justify-center" />}

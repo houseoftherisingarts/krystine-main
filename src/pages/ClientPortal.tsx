@@ -1028,8 +1028,18 @@ const OrdersTab: React.FC = () => {
     return (
       <div className="text-center py-12">
         <i className="fa-regular fa-box text-4xl text-[#293027]/30 dark:text-white/30 mb-4 block" />
-        <p className="text-[#293027]/60 dark:text-white/60 font-serif italic">
+        <p className="text-[#293027]/60 dark:text-white/60 font-serif">
           {lang === 'FR' ? 'Aucune commande pour l\'instant.' : 'No orders yet.'}
+        </p>
+        {/* Seules les commandes de la boutique payées depuis le 4 oct. 2026 avec l'adresse du
+            compte arrivent ici (functions/src/shopify/commandePayee.ts) : des membres
+            recliquaient « Commandes » en cherchant un achat plus ancien (mesure du 14 oct. 2026). */}
+        <p className="mt-3 mx-auto max-w-[34rem] text-sm leading-relaxed text-[#293027]/70 dark:text-white/70">
+          {lang === 'FR'
+            ? 'Les commandes de la boutique payées depuis le 4 octobre 2026 avec l’adresse de ce compte s’affichent ici. Une commande plus ancienne, ou faite avec une autre adresse, n’y paraît pas : écrivez-nous à '
+            : 'Shop orders paid since October 4, 2026 with this account’s email appear here. An older order, or one placed with another email, does not: write to us at '}
+          <a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2">teamksl@inspiratanature.com</a>
+          {lang === 'FR' ? ' et nous la retrouverons avec vous.' : ' and we will find it with you.'}
         </p>
       </div>
     );

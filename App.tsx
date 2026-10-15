@@ -169,6 +169,24 @@ const Chrome: React.FC = () => {
   );
 };
 
+// Un lien du menu ou du pied de page vers la page où l'on se trouve déjà ne
+// faisait rien (« FORMATIONS » sur /formations, « BOUTIQUE » sur /boutique :
+// clics sans effet, mesure du 14 oct. 2026). Il remonte maintenant en haut.
+const MemePageEnHaut: React.FC = () => {
+  useEffect(() => {
+    const surClic = (ev: MouseEvent) => {
+      if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      const a = ev.target instanceof Element ? ev.target.closest('a[href]') as HTMLAnchorElement | null : null;
+      if (!a || a.target === '_blank' || a.hash) return;
+      if (a.origin !== window.location.origin || a.pathname.replace(/\/$/, '') !== window.location.pathname.replace(/\/$/, '') || a.search !== window.location.search) return;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    document.addEventListener('click', surClic);
+    return () => document.removeEventListener('click', surClic);
+  }, []);
+  return null;
+};
+
 const Footing: React.FC = () => {
   const location = useLocation();
   if (
@@ -255,6 +273,7 @@ const App: React.FC = () => (
       <CalculOffre />
       <PageMeta />
       <Chrome />
+      <MemePageEnHaut />
       <Flottants />
       <CrayonSite />
       <ErrorBoundary>
