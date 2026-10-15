@@ -114,7 +114,8 @@ const estTest = (centsHT: number) => centsHT > 0 && centsHT <= 100;
  * paquets de niskas et pourboires. Montants taxes comprises, ventes test
  * de 1 $ exclues (elles gonflaient le total, 12 oct. 2026).
  */
-async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; titres: string[] }> {
+interface LigneVente { jour: string; montant: number; titre: string }
+async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; titres: string[]; detail: LigneVente[] }> {
   const db = getFirestore();
   // Les niskas et les pourboires ne font jamais tomber le compte des formations.
   const ouVide = <T,>(p: Promise<T>) => p.catch(() => null);
@@ -123,7 +124,8 @@ async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; 
     ouVide(db.collection('pointsEvents').where('kind', '==', 'achat-niskas').get()),
     ouVide(db.collection('pourboires').where('at', '>=', ts(de)).where('at', '<', ts(a)).get()),
   ]);
-  const lignes: { montant: number; titre: string }[] = [];
+  const lignes: LigneVente[] = [];
+  const jourDeTs = (t: unknown) => { const d = (t as { toDate?: () => Date })?.toDate?.(); return d ? jourDe(d) : ''; };
   const vus = new Set<string>();
   for (const d of parAchat.docs) {
     if (d.ref.parent.parent?.parent.id !== 'achatsFormations' || !d.get('sessionId') || vus.has(d.ref.path)) continue;
@@ -132,31 +134,39 @@ async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; 
     const ht = typeof d.get('montantHT') === 'number' ? Number(d.get('montantHT')) : Math.round(total * 100);
     if (estTest(ht)) continue;
     const titre = String(d.get('titre') || d.ref.id);
-    lignes.push({ montant: total, titre: `${titre} (${provenance(String(d.get('via') || ''), String(d.get('viaLettre') || ''))})` });
+    lignes.push({ jour: jourDeTs(d.get('acheteLe')), montant: total, titre: `${titre} (${provenance(String(d.get('via') || ''), String(d.get('viaLettre') || ''))})` });
   }
   for (const d of niskas?.docs || []) {
     const quand = d.get('at')?.toDate?.() as Date | undefined;
     if (!quand || quand < de || quand >= a) continue;
     const montant = Number(d.get('meta.total')) / 100 || Number(d.get('meta.montant')) || 0;
     if (estTest(Math.round(montant * 100))) continue;
-    lignes.push({ montant, titre: `${d.get('amount') || ''} niskas` });
+    lignes.push({ jour: jourDe(quand), montant, titre: `${d.get('amount') || ''} niskas` });
   }
-  for (const d of pourboires?.docs || []) lignes.push({ montant: Number(d.get('montant')) || 0, titre: 'pourboire du direct' });
+  for (const d of pourboires?.docs || []) lignes.push({ jour: jourDeTs(d.get('at')), montant: Number(d.get('montant')) || 0, titre: 'pourboire du direct' });
+  lignes.sort((x, y) => x.jour.localeCompare(y.jour));
   return {
     n: lignes.length,
     montant: Math.round(lignes.reduce((s, l) => s + l.montant, 0) * 100) / 100,
     titres: lignes.map((l) => l.titre),
+    detail: lignes,
   };
 }
 
 /** Shopify : seulement si le webhook a rangé au moins une commande dans les 30 derniers jours. */
-async function shopify(de: Date, a: Date, il30: Date): Promise<{ n: number; montant: number } | null> {
+async function shopify(de: Date, a: Date, il30: Date): Promise<{ n: number; montant: number; commandes: { nom: string; montant: number }[] } | null> {
   const col = getFirestore().collection('shopifyOrders');
   if ((await col.where('createdAt', '>=', ts(il30)).limit(1).get()).empty) return null;
   const snap = await col.where('createdAt', '>=', ts(de)).where('createdAt', '<', ts(a)).get();
   // Une commande annulée ou une commande test à 1 $ n'est pas une vente.
   const vraies = snap.docs.filter((d) => !d.get('cancelledAt') && (Number(d.get('totalPrice')) || 0) > 1);
-  return { n: vraies.length, montant: Math.round(vraies.reduce((s, d) => s + (Number(d.get('totalPrice')) || 0), 0) * 100) / 100 };
+  return {
+    n: vraies.length,
+    montant: Math.round(vraies.reduce((s, d) => s + (Number(d.get('totalPrice')) || 0), 0) * 100) / 100,
+    commandes: vraies
+      .sort((x, y) => (Number(x.get('orderNumber')) || 0) - (Number(y.get('orderNumber')) || 0))
+      .map((d) => ({ nom: String(d.get('name') || d.id), montant: Number(d.get('totalPrice')) || 0 })),
+  };
 }
 
 /** Les commentaires de la pastille « Un commentaire ? Écrivez-nous » (collection bugs, functions/src/pepin.ts), dernières 24 h. */
@@ -166,7 +176,15 @@ const TYPES_COMMENTAIRE: Record<string, string> = {
   idee: 'Une idée',
   introuvable: 'Je ne trouve pas ce que je cherche',
 };
-interface Commentaires { parType: Record<string, number>; lignes: string[]; nonTraites: number; enAttente: string[]; soutien: string[] }
+const SOURCES_DEMANDE: Record<string, string> = {
+  conferenciere: 'conférence',
+  'conference-tour': 'tournée de conférences',
+  'medias-entrevue': 'entrevue',
+  courriel: 'reçue par courriel',
+};
+/** Une personne qui attend une réponse, avec le nombre de jours d'attente (du plus ancien au plus récent dans le bilan). */
+interface Attente { jours: number; qui: string; quoi: string; ou: string; texte: string }
+interface Commentaires { parType: Record<string, number>; lignes: string[]; nonTraites: number; enAttente: string[]; soutien: string[]; quiAttend: Attente[] }
 async function commentaires(de: Date): Promise<Commentaires> {
   const db = getFirestore();
   const snap = await db.collection('bugs').where('cree', '>=', ts(de)).orderBy('cree', 'desc').get();
@@ -202,7 +220,41 @@ async function commentaires(de: Date): Promise<Commentaires> {
     const dernier = String(d.get('lastMessage') || '').replace(/\s+/g, ' ').trim();
     return `${qui} (${d.get('unreadByAdmin')} message(s) non lu(s)${depuis(d.get('lastMessageAt')) ? `, ${depuis(d.get('lastMessageAt'))}` : ''})${dernier ? ` : ${dernier.slice(0, 100)}` : ''}`;
   });
-  return { parType, lignes, nonTraites, enAttente, soutien };
+
+  // Toutes les personnes qui attendent, réunies et triées du plus ancien au plus récent (Krystine, 14 oct. 2026 : « c'est tout croche »).
+  const jours = (t: unknown) => {
+    const ms = (t as { toMillis?: () => number })?.toMillis?.();
+    return ms ? Math.max(0, Math.floor((Date.now() - ms) / 86_400_000)) : 0;
+  };
+  const quiAttend: Attente[] = [
+    ...attente.docs.map((d) => ({
+      jours: jours(d.get('cree')),
+      qui: String(d.get('nom') || '').trim() || String(d.get('courriel') || '').trim() || 'Une visiteuse',
+      quoi: 'commentaire sur le site',
+      ou: `page ${d.get('page') || 'inconnue'}, admin, onglet Commentaires des visiteuses`,
+      texte: coupe(String(d.get('texte') || d.get('description') || ''), 110),
+    })),
+    ...conv.docs.map((d) => ({
+      jours: jours(d.get('lastMessageAt')),
+      qui: String(d.get('memberName') || '').trim() || String(d.get('memberEmail') || '').trim() || 'Une cliente',
+      quoi: `${d.get('unreadByAdmin')} message(s) au soutien non lu(s)`,
+      ou: 'admin, onglet Messages',
+      texte: coupe(String(d.get('lastMessage') || ''), 100),
+    })),
+  ];
+  const demandes = await sur(() => db.collection('bookingRequests').where('status', '==', 'new').get());
+  for (const d of demandes?.docs || []) {
+    const org = String(d.get('organization') || '').trim();
+    quiAttend.push({
+      jours: jours(d.get('createdAt')),
+      qui: (String(d.get('name') || '').trim() || 'Quelqu’un') + (org ? `, ${org}` : ''),
+      quoi: `demande encore au statut « Nouvelle » (${SOURCES_DEMANDE[String(d.get('source'))] || d.get('source') || 'formulaire'})`,
+      ou: 'admin, onglet Demandes',
+      texte: coupe(String(d.get('demande') || d.get('message') || ''), 100),
+    });
+  }
+  quiAttend.sort((x, y) => y.jours - x.jours);
+  return { parType, lignes, nonTraites, enAttente, soutien, quiAttend };
 }
 
 /** La vérification complète du site (scripts/qa/verif-complete.mjs, sur l'ordinateur de Krystine, vers 5 h 45). */
@@ -230,6 +282,9 @@ async function veilleConferences(): Promise<{ nouvelles: Occasion[]; total: numb
   if (!le || Date.now() - le.getTime() > 12 * 3600 * 1000) return null;
   return { nouvelles: (d.get('nouvelles') || []) as Occasion[], total: Number(d.get('total')) || 0 };
 }
+
+/** Un titre trop long ou une page lente est à améliorer, pas une panne. */
+const estMineure = (probleme: string) => /^(titre trop long|chargement lent)/.test(probleme);
 
 /** « À optimiser aujourd'hui » : au plus 5 points classés par impact, lus dans vh_jours (VexelHotjar) et la vérification complète. Une donnée absente ne produit aucune ligne. */
 const coupe = (t: string, max: number) => { const x = t.replace(/\s+/g, ' ').trim(); return x.length > max ? `${x.slice(0, max)}…` : x; };
@@ -284,10 +339,11 @@ async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points
     }
   });
 
-  // Défauts trouvés ce matin sur le site en entier (les titres longs et les pages lentes passent en dernier).
+  // Seuls les petits défauts de la vérification (titres longs, pages lentes) viennent ici :
+  // les vraies pannes sont déjà dans « Ce qui est vraiment cassé », une seule fois.
   if (verif) {
-    for (const l of regrouper(verif.anomalies)) {
-      pts.push({ score: /titre trop long|chargement lent/.test(l) ? 20 : 1000, ligne: `Trouvé ce matin dans la vérification du site : ${l}.` });
+    for (const l of regrouper(verif.anomalies.filter((a) => estMineure(a.probleme)))) {
+      pts.push({ score: 20, ligne: `Trouvé ce matin dans la vérification du site : ${l}.` });
     }
   }
   for (const e of erreurs.values()) {
@@ -295,14 +351,21 @@ async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points
     pts.push({ score: 500 + e.n, ligne: `Une erreur technique survient sur ${e.path || 'le site'} : « ${coupe(e.msg, 90)} » (${fois(e.hier)} hier, ${fois(e.n)} sur 7 jours).` });
   }
   // Les clics de frustration ont leur propre rubrique, toujours présente (demande de Krystine, 6 oct. 2026).
+  // Seulement ce qui compte : au moins 1 clic hier, ou au moins 3 sur 7 jours (le bruit à 0 hier et 1 sur la semaine ne sort plus).
   const clics = [...elements.values()]
-    .filter((e) => e.r + e.m > 0)
+    .filter((e) => e.hierR + e.hierM >= 1 || e.r + e.m >= 3)
     .sort((a, b) => (b.hierR * 10 + b.hierM * 5 + b.r * 3 + b.m) - (a.hierR * 10 + a.hierM * 5 + a.r * 3 + a.m))
     .slice(0, 5)
-    .map((e) => `Sur ${e.page}, « ${coupe(e.tx || e.s, 60)} » : ${e.hierR} clic(s) de rage et ${e.hierM} clic(s) sans effet hier, ${e.r} et ${e.m} sur 7 jours.`);
+    .map((e) => {
+      const compte = (rage: number, sans: number) => {
+        const p = [rage ? `${rage} de rage` : '', sans ? `${sans} sans effet` : ''].filter(Boolean);
+        return p.length ? p.join(' et ') : 'aucun';
+      };
+      return `Sur ${e.page}, « ${coupe(e.tx || e.s, 60)} » : hier, ${compte(e.hierR, e.hierM)}; sur 7 jours, ${compte(e.r, e.m)}.`;
+    });
   for (const f of forms.values()) {
     if (f.abandons < 3 || f.abandons <= f.soumis) continue;
-    pts.push({ score: 60 + f.abandons, ligne: `Le formulaire de ${f.path || 'une page'} est souvent abandonné (${f.abandons} abandons contre ${f.soumis} envois sur 7 jours${f.champ ? `, souvent au champ « ${coupe(f.champ, 40)} »` : ''}).` });
+    pts.push({ score: 60 + f.abandons, ligne: `Le formulaire de ${f.path || 'une page'} est souvent abandonné (${f.abandons} abandons contre ${f.soumis} ${f.soumis > 1 ? 'envois' : 'envoi'} sur 7 jours${f.champ ? `, souvent au champ « ${coupe(f.champ, 40)} »` : ''}).` });
   }
   for (const dd of defil.values()) {
     if (dd.n < 20 || dd.quart / dd.n >= 0.5) continue;
@@ -321,7 +384,14 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   const debutAujourdhui = minuit(aujourdhui);
   const debut7 = minuit(sept[0]);
   const il30 = minuit(decaler(aujourdhui, -30));
+  // Le mois en cours, jusqu'à hier inclus (le 1er du mois, c'est le mois qui vient de finir).
+  const moisDebut = `${hier.slice(0, 8)}01`;
+  const debutMois = minuit(moisDebut);
 
+  const [venMois, shopMois] = await Promise.all([
+    sur(() => ventes(debutMois, debutAujourdhui)),
+    sur(() => shopify(debutMois, debutAujourdhui, il30)),
+  ]);
   const [filet, jH, j7, insH, ins7, resH, res7, venH, ven7, shopH, shop7, desH, des7, pepinsH, pepinsOuverts, aRattraper] = await Promise.all([
     filetDeja ? Promise.resolve(filetDeja) : sur(calculerFilet),
     sur(() => journees([hier])),
@@ -342,7 +412,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   ]);
   const [verif, comm, conferences] = await Promise.all([
     sur(verifComplete),
-    sur(() => commentaires(new Date(Date.now() - 24 * 3600 * 1000))),
+    // Même fenêtre que le reste du bilan : depuis hier 0 h.
+    sur(() => commentaires(debutHier)),
     sur(veilleConferences),
   ]);
   const optimiser = await sur(() => aOptimiser(sept, verif));
@@ -370,19 +441,25 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     veille: hier,
     septDebut: sept[0],
     // Une page en panne, une ressource cassée ou un parcours bloqué compte comme une alerte; un titre trop long ou une page lente, non.
-    verdict: alertes.length || (verif?.anomalies.some((a) => !/^(titre trop long|chargement lent)/.test(a.probleme)) ?? false) ? 'alerte' : 'ok',
+    verdict: alertes.length || (verif?.anomalies.some((a) => !estMineure(a.probleme)) ?? false) ? 'alerte' : 'ok',
     toutFonctionne: { alertes, pepinsHier: pepinsH, pepinsOuverts, quizARattraper: aRattraper, controles: filet?.controles.length ?? 0 },
     veilleChiffres: {
       visites: jH?.sessions ?? null, nouveauxNavigateurs: jH?.nouveaux ?? null,
       quizCommences: jH?.quizCommence ?? null, quizFinis: jH?.quizFini ?? null, resultatsEnregistres: resH,
       inscriptions: insH?.total ?? null, vraimentNouvelles: insH?.nouvelles ?? null, dejaConnues: insH?.connues ?? null, parSource: insH?.parSource ?? {},
-      ventes: venH?.n ?? null, montantVentes: venH?.montant ?? null, titresVentes: venH?.titres ?? [],
+      ventes: venH?.n ?? null, montantVentes: venH?.montant ?? null, titresVentes: venH?.titres ?? [], detailVentes: venH?.detail ?? [],
       shopify: shopH, visitesPub: jH?.pub ?? null, visitesInfolettre: jH?.infolettre ?? null, affiche: jH?.affiche ?? null, accepte: jH?.accepte ?? null, refuse: jH?.refuse ?? null, campagnes: jH?.campagnes ?? {}, desabonnements: desH,
     },
     septJours: {
       visites: j7?.sessions ?? null, quizCommences: j7?.quizCommence ?? null, quizFinis: j7?.quizFini ?? null, resultatsEnregistres: res7,
-      inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null, titresVentes: ven7?.titres ?? [],
+      inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null, titresVentes: ven7?.titres ?? [], detailVentes: ven7?.detail ?? [],
+      nouveauxNavigateurs: j7?.nouveaux ?? null, campagnes: j7?.campagnes ?? {}, parSource: ins7?.parSource ?? {},
       shopify: shop7, visitesPub: j7?.pub ?? null, visitesInfolettre: j7?.infolettre ?? null, affiche: j7?.affiche ?? null, accepte: j7?.accepte ?? null, refuse: j7?.refuse ?? null, desabonnements: des7,
+    },
+    moisEnCours: {
+      debut: moisDebut,
+      ventes: venMois?.n ?? null, montantVentes: venMois?.montant ?? null, detailVentes: venMois?.detail ?? [],
+      shopify: shopMois ? { n: shopMois.n, montant: shopMois.montant } : null,
     },
     surveiller,
     verifComplete: verif,
@@ -420,72 +497,160 @@ function regrouper(anomalies: { page: string; appareil: string; probleme: string
   });
 }
 
+const jourLong = (j: string) => new Date(`${j}T12:00:00Z`).toLocaleDateString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+const jourCourt = (j: string) => new Date(`${j}T12:00:00Z`).toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const pluriel = (k: number | null | undefined, mot: string, mots = `${mot}s`) => (k == null ? `? ${mots}` : `${n(k)} ${k > 1 ? mots : mot}`);
+const VH = 'VexelHotjar, personnes ayant accepté les témoins seulement';
+const BASE = 'base du site, tout le monde';
+
+/**
+ * Le texte du bilan (refait le 14 oct. 2026, Krystine : « c'est tout croche »).
+ * L'ordre : qui attend une réponse, ce qui est vraiment cassé, l'argent, la liste
+ * et le quiz, ce qui est à améliorer, les occasions de conférences. Chaque point
+ * n'apparaît qu'une fois; chaque chiffre a une seule source, nommée entre parenthèses.
+ */
 export function texteBilan(b: Bilan): string {
   const v = b.veilleChiffres;
   const s = b.septJours;
-  const dateHier = new Date(`${b.veille}T12:00:00Z`).toLocaleDateString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
-  const etat = b.toutFonctionne.alertes.length
-    ? `À vérifier :\n${b.toutFonctionne.alertes.map((a) => `• ${a}`).join('\n')}`
-    : `Oui. Les ${b.toutFonctionne.controles} vérifications du site sont bonnes (pages, case anti-robot, connexion, quiz).`;
-  const sources = Object.entries(v.parSource).sort((a, c) => c[1] - a[1]).map(([k, x]) => `${k} ${x}`).join(', ');
-  const camp = Object.entries(v.campagnes).sort((a, c) => c[1] - a[1]).slice(0, 3).map(([k, x]) => `${k} ${x}`).join(', ');
-  const vc = b.verifComplete;
-  const siteEntier = !vc
-    ? ['Le site en entier : la vérification complète de ce matin n’a pas tourné (l’ordinateur était sans doute éteint ou endormi).']
-    : vc.anomalies.length === 0
-      ? [`Le site en entier : ${n(vc.pages)} pages vérifiées sur téléphone, tablette et ordinateur, tout est bon.`]
-      : [
-        `Le site en entier : ${n(vc.pages)} pages vérifiées sur téléphone, tablette et ordinateur, ${n(vc.anomalies.length)} anomalie(s) :`,
-        ...regrouper(vc.anomalies).slice(0, 20).map((l) => `• ${l}`),
-      ];
+  const m = b.moisEnCours;
   const c = b.commentaires;
-  const blocCommentaires = !c
-    ? ['Les commentaires n’ont pas pu être lus ce matin.']
-    : c.lignes.length === 0
-      ? ['Aucun commentaire hier.', `Encore non traités au total : ${n(c.nonTraites)}.`]
-      : [
-        Object.entries(c.parType).map(([t, x]) => `${t} : ${x}`).join(' · '),
-        ...c.lignes.map((l) => `• ${l}`),
-        `Encore non traités au total : ${n(c.nonTraites)} (admin, onglet Commentaires des visiteuses).`,
-      ];
-  if (c && c.enAttente?.length) blocCommentaires.push('', 'Qui attend encore une réponse :', ...c.enAttente.map((l) => `• ${l}`));
-  if (c && c.soutien?.length) blocCommentaires.push('', 'Messages au soutien non lus (admin, onglet Messages) :', ...c.soutien.map((l) => `• ${l}`));
+  const hierTxt = `hier, ${jourLong(b.veille)}`;
+  const memeMois = b.septDebut.slice(0, 7) === b.veille.slice(0, 7);
+  const septTxt = `7 derniers jours, du ${memeMois ? String(Number(b.septDebut.slice(8))) : jourCourt(b.septDebut)} au ${jourCourt(b.veille)}`;
+
+  // ── 1. Qui attend une réponse ──
+  const attentes = c?.quiAttend ?? [];
+  const attendDepuis = (j: number) => (j <= 0 ? 'aujourd’hui' : j === 1 ? 'depuis 1 jour' : `depuis ${j} jours`);
+  const bloc1: string[] = [];
+  if (!c) bloc1.push('Les commentaires, les messages et les demandes n’ont pas pu être lus ce matin.');
+  else if (!attentes.length) bloc1.push('Tout le monde a reçu sa réponse sur le site.');
+  else bloc1.push(...attentes.map((a) => `• ${attendDepuis(a.jours)} : ${a.qui}, ${a.quoi} (${a.ou})${a.texte ? ` : « ${a.texte} »` : ''}`));
+  if ((b.toutFonctionne.quizARattraper ?? 0) > 0) {
+    bloc1.push(`• ${pluriel(b.toutFonctionne.quizARattraper, 'personne a', 'personnes ont')} fait le quiz sans recevoir le résultat (admin, onglet Quiz Dosha).`);
+  }
+  if (c) {
+    const types = Object.entries(c.parType).filter(([, x]) => x > 0).map(([t, x]) => `${t} ${x}`).join(', ');
+    bloc1.push(`Commentaires reçus depuis hier 0 h : ${n(c.lignes.length)}${types ? ` (${types})` : ''}. Encore ouverts au total : ${n(c.nonTraites)}.`);
+  }
+  bloc1.push('Les réponses aux lettres qui tombent dans les pourriels de teamksl se vérifient à part : Iris lance chaque matin scripts/courriel/pourriels-teamksl.sh (avec --ramener, elle les remet dans la boîte de réception).');
+
+  // ── 2. Ce qui est vraiment cassé ──
+  const vc = b.verifComplete;
+  const graves = vc ? vc.anomalies.filter((a) => !estMineure(a.probleme)) : [];
+  const irisDeconnectee = b.toutFonctionne.alertes.some((a) => a.startsWith('Iris n’est plus connectée'));
+  const bloc2: string[] = [];
+  for (const a of b.toutFonctionne.alertes) {
+    if (a.startsWith('Iris n’est plus connectée')) bloc2.push(`• ${a}`);
+    else if (a.startsWith('Le filet n’a pas pu tourner')) bloc2.push('• Le filet du matin (pages, clés, quiz) n’a pas pu tourner. Geste : ouvrez Iris et écrivez « relance le filet du matin ».');
+    else bloc2.push(`• ${a}. Geste : ouvrez Iris et écrivez « regarde le filet du matin ».`);
+  }
+  if (!vc && !irisDeconnectee) {
+    bloc2.push('• La vérification complète du site n’a pas tourné ce matin (l’ordinateur était sans doute éteint ou endormi à 5 h 45). Geste : ouvrez Iris et écrivez « lance la vérification complète du site » (elle lance node scripts/qa/verif-complete.mjs et range le résultat).');
+  }
+  if (graves.length) {
+    bloc2.push(...regrouper(graves).slice(0, 20).map((l) => `• ${l}`));
+    bloc2.push('Geste : ouvrez Iris et écrivez « corrige les anomalies de la vérification du site ».');
+  }
+  if (!bloc2.length) bloc2.push(`Tout fonctionne : les ${b.toutFonctionne.controles} vérifications du filet sont bonnes (pages, case anti-robot, connexion, quiz).`);
+  if (vc) bloc2.push(`Le site en entier : ${n(vc.pages)} pages vérifiées ce matin sur téléphone, tablette et ordinateur${graves.length ? `, ${pluriel(graves.length, 'panne')} ci-dessus` : ', tout s’affiche'}.`);
+
+  // ── 3. L'argent ──
+  const ventesSite = (k: number | null, montant: number | null) => (k ? `${pluriel(k, 'vente')}, ${argent(montant)}` : `${pluriel(k, 'vente')}`);
+  const shop = (x: { n: number; montant: number } | null | undefined) => (x ? (x.n ? `${pluriel(x.n, 'commande')}, ${argent(x.montant)}` : '0 commande') : null);
+  const ligneVente = (l: { jour: string; montant: number; titre: string }) => `   • ${l.jour ? `${jourCourt(l.jour)} : ` : ''}${l.titre} : ${argent(l.montant)}`;
+  const avant7 = (m?.detailVentes ?? []).filter((l) => l.jour && l.jour < b.septDebut);
+  const nomMois = new Date(`${m?.debut ?? b.veille}T12:00:00Z`).toLocaleDateString('fr-CA', { month: 'long', timeZone: 'UTC' });
+  const bloc3: string[] = [
+    `Site = formations, niskas et pourboires, taxes comprises (ventes test de 1 $ exclues). Boutique = commandes Shopify.`,
+    `${hierTxt[0].toUpperCase()}${hierTxt.slice(1)}`,
+    `• Site : ${ventesSite(v.ventes, v.montantVentes)}`,
+    ...(v.detailVentes ?? []).map(ligneVente),
+    ...(shop(v.shopify) ? [`• Boutique : ${shop(v.shopify)}`, ...(v.shopify?.commandes ?? []).map((o) => `   • commande ${o.nom} : ${argent(o.montant)}`)] : []),
+    `${septTxt[0].toUpperCase()}${septTxt.slice(1)}`,
+    `• Site : ${ventesSite(s.ventes, s.montantVentes)}`,
+    ...(s.detailVentes ?? []).map(ligneVente),
+    ...(shop(s.shopify) ? [`• Boutique : ${shop(s.shopify)}`] : []),
+    ...(m ? [
+      `Mois ${/^[aeiou]/.test(nomMois) ? 'd’' : 'de '}${nomMois}, du 1er au ${jourCourt(b.veille)}`,
+      `• Site : ${ventesSite(m.ventes, m.montantVentes)}`,
+      ...(avant7.length ? ['   Plus tôt ce mois-ci :', ...avant7.map(ligneVente)] : []),
+      ...(shop(m.shopify) ? [`• Boutique : ${shop(m.shopify)}`] : []),
+    ] : []),
+  ];
+
+  // ── 4. La liste et le quiz ──
+  const sources = Object.entries(v.parSource).sort((a, x) => x[1] - a[1]).map(([k, x]) => `${k} ${x}`).join(', ');
+  const camp = Object.entries(v.campagnes).sort((a, x) => x[1] - a[1]).slice(0, 3).map(([k, x]) => `${k} ${x}`).join(', ');
+  const paire = (h: number | null | undefined, sj: number | null | undefined) => `hier ${n(h)} · 7 jours ${n(sj)}`;
+  const aNoter: string[] = [];
+  if (v.desabonnements != null && v.inscriptions != null && v.desabonnements > Math.max(5, v.inscriptions)) aNoter.push(`Plus de désabonnements (${v.desabonnements}) que d’inscriptions (${v.inscriptions}) hier.`);
+  if (v.quizCommences != null && v.quizFinis != null && v.quizCommences >= 10 && v.quizFinis < v.quizCommences * 0.3) aNoter.push(`Beaucoup de quiz commencés (${v.quizCommences}) pour peu de résultats vus (${v.quizFinis}) hier, chez les personnes ayant accepté les témoins.`);
+  const bloc4: string[] = [
+    `Chaque ligne : ${hierTxt}, puis les ${septTxt}.`,
+    `• Quiz terminés (résultat rangé) : ${paire(v.resultatsEnregistres, s.resultatsEnregistres)} (${BASE})`,
+    `• Inscriptions à l’infolettre : hier ${n(v.inscriptions)}, dont ${pluriel(v.vraimentNouvelles, 'vraiment nouvelle', 'vraiment nouvelles')}${sources ? ` (${sources})` : ''} · 7 jours ${n(s.inscriptions)}, dont ${pluriel(s.vraimentNouvelles, 'nouvelle')} (${BASE})`,
+    `• Désabonnements : ${paire(v.desabonnements, s.desabonnements)} (${BASE})`,
+    `• Visites : ${paire(v.visites, s.visites)} (${VH})`,
+    `• Nouveaux navigateurs : ${paire(v.nouveauxNavigateurs, s.nouveauxNavigateurs)} (${VH})`,
+    `• Quiz commencés : ${paire(v.quizCommences, s.quizCommences)} (${VH})`,
+    `• Résultats du quiz vus à l’écran : ${paire(v.quizFinis, s.quizFinis)} (${VH})`,
+    `• Visites venues d’un courriel (infolettre ou série de lettres) : ${paire(v.visitesInfolettre, s.visitesInfolettre)} (${VH})`,
+    `• Visites venues de la publicité : ${paire(v.visitesPub, s.visitesPub)}${camp ? `, hier : ${camp}` : ''} (${VH})`,
+    `Les chiffres VexelHotjar ne voient qu’une partie des visiteuses. La bannière des témoins, hier : ${banniere(v.affiche, v.accepte, v.refuse)}; sur 7 jours : ${banniere(s.affiche, s.accepte, s.refuse)}. Un affichage = un onglet où la bannière est apparue, pas une personne.`,
+    ...aNoter.map((l) => `À noter : ${l}`),
+  ];
+
+  // ── 5. À améliorer ──
+  const bloc5: string[] = [];
+  if (b.clicsFrustration) {
+    bloc5.push('Clics de frustration (au moins 1 hier ou au moins 3 sur 7 jours, VexelHotjar) :');
+    bloc5.push(...(b.clicsFrustration.length ? b.clicsFrustration.map((l) => `• ${l}`) : ['• 0 élément au-dessus de ce seuil.']));
+  }
+  if (b.aOptimiser) {
+    bloc5.push('À optimiser aujourd’hui :');
+    bloc5.push(...(b.aOptimiser.length ? b.aOptimiser.map((l) => `• ${l}`) : ['• Les comportements d’hier ne montrent rien de précis à corriger.']));
+  }
+  if (!bloc5.length) bloc5.push('Les comportements des visiteuses n’ont pas pu être lus ce matin.');
+
+  // ── 6. Occasions de conférences ──
+  const bloc6 = !b.conferences
+    ? ['La veille de 2 h n’a pas tourné cette nuit (l’ordinateur était sans doute éteint ou endormi). Geste : ouvrez Iris et écrivez « lance la veille des conférences » (elle lance bash ~/.iris/veille-conferences/lancer.sh).']
+    : b.conferences.nouvelles.length === 0
+      ? [`Cette nuit : 0 nouvelle occasion (${n(b.conferences.total)} occasions suivies au total).`]
+      : b.conferences.nouvelles.map((o) => `• ${o.nom} (${[o.type, o.lieu, o.langue].filter(Boolean).join(', ')}) · date : ${o.date || 'non indiquée'} · date limite : ${o.dateLimite || 'non indiquée'} · ${o.sujet} · ${o.lien}`);
+
+  // ── En bref ──
+  const casses = bloc2.filter((l) => l.startsWith('• ')).length;
+  const plusVieux = attentes[0];
+  const venteHier = (v.montantVentes ?? 0) + (v.shopify?.montant ?? 0);
+  const enBref = [
+    attentes.length ? `${pluriel(attentes.length, 'personne attend', 'personnes attendent')} une réponse (la plus ancienne ${attendDepuis(plusVieux.jours)})` : 'tout le monde a sa réponse',
+    casses ? `${pluriel(casses, 'point cassé', 'points cassés')} ou à relancer` : 'tout fonctionne',
+    `ventes d’hier : ${argent(Math.round(venteHier * 100) / 100)}`,
+  ].join(' · ');
+
   const lignes = [
     'Bonjour Krystine,',
     '',
-    ...siteEntier,
+    `En bref : ${enBref}.`,
     '',
-    '1. Tout fonctionne ?',
-    etat,
-    `Quiz à rattraper (résultat non reçu) : ${n(b.toutFonctionne.quizARattraper)}. Pépins signalés hier : ${n(b.toutFonctionne.pepinsHier)} (encore ouverts au total : ${n(b.toutFonctionne.pepinsOuverts)}).`,
+    '1. Qui attend une réponse (du plus ancien au plus récent)',
+    ...bloc1,
     '',
-    `2. Les chiffres d’hier (${dateHier}), puis des 7 derniers jours`,
-    `Visites : ${n(v.visites)} · 7 jours : ${n(s.visites)}`,
-    `Quiz commencés : ${n(v.quizCommences)}, résultats vus : ${n(v.quizFinis)}, résultats enregistrés : ${n(v.resultatsEnregistres)} · 7 jours : ${n(s.quizCommences)} commencés, ${n(s.quizFinis)} vus, ${n(s.resultatsEnregistres)} enregistrés`,
-    `Inscriptions à l’infolettre : ${n(v.inscriptions)}, dont ${n(v.vraimentNouvelles)} vraiment nouvelles${sources ? ` (${sources})` : ''} · 7 jours : ${n(s.inscriptions)}, dont ${n(s.vraimentNouvelles)} nouvelles`,
-    `Ventes du site (formations, niskas, pourboires, taxes comprises) : ${n(v.ventes)} (${argent(v.montantVentes)}) · 7 jours : ${n(s.ventes)} (${argent(s.montantVentes)})`,
-    ...((s.titresVentes || []).length ? (s.titresVentes || []).map((t: string) => `   • ${t}`) : []),
-    ...(v.shopify || s.shopify ? [`Commandes de la boutique : ${n(v.shopify?.n)} (${argent(v.shopify?.montant)}) · 7 jours : ${n(s.shopify?.n)} (${argent(s.shopify?.montant)})`] : []),
-    `Visites venues de la publicité : ${n(v.visitesPub)}${camp ? ` (${camp})` : ''} · 7 jours : ${n(s.visitesPub)}`,
-    `Visites venues d’un courriel (infolettre ou série de lettres) : ${n(v.visitesInfolettre)} · 7 jours : ${n(s.visitesInfolettre)}`,
-    `Désabonnements : ${n(v.desabonnements)} · 7 jours : ${n(s.desabonnements)}`,
-    `Bannière des témoins, hier (${b.veille}) : ${banniere(v.affiche, v.accepte, v.refuse)}`,
-    `Bannière des témoins, 7 jours (du ${b.septDebut} au ${b.veille}) : ${banniere(s.affiche, s.accepte, s.refuse)}`,
-    `(Un affichage = un onglet où la bannière est apparue, pas une personne. Ces chiffres ne permettent pas de calculer le nombre réel de visites.)`,
+    '2. Ce qui est vraiment cassé',
+    ...bloc2,
     '',
-    `3. Les commentaires des visiteuses (dernières 24 h)`,
-    ...blocCommentaires,
+    '3. L’argent',
+    ...bloc3,
     '',
-    `4. À surveiller : ${b.surveiller}`,
+    '4. La liste et le quiz',
+    ...bloc4,
     '',
-    ...(b.clicsFrustration ? ['5. Clics de frustration (rage et sans effet)', ...(b.clicsFrustration.length ? b.clicsFrustration.map((l) => `• ${l}`) : ['Aucun clic de frustration hier ni dans les 7 derniers jours.']), ''] : []),
-    ...(b.aOptimiser ? ['6. À optimiser aujourd’hui', ...(b.aOptimiser.length ? b.aOptimiser.map((l) => `• ${l}`) : ['Rien de précis à corriger dans les comportements d’hier.']), ''] : []),
-    '7. Occasions de conférences (veille de la nuit)',
-    ...(!b.conferences
-      ? ['La veille de 2 h n’a pas tourné cette nuit (l’ordinateur était sans doute éteint).']
-      : b.conferences.nouvelles.length === 0
-        ? [`Rien de nouveau cette nuit (${n(b.conferences.total)} occasions suivies au total).`]
-        : b.conferences.nouvelles.map((o) => `• ${o.nom} (${[o.type, o.lieu, o.langue].filter(Boolean).join(', ')}) · date : ${o.date || 'non indiquée'} · date limite : ${o.dateLimite || 'non indiquée'} · ${o.sujet} · ${o.lien}`)),
+    '5. À améliorer',
+    ...bloc5,
+    '',
+    '6. Occasions de conférences (veille de la nuit)',
+    ...bloc6,
     '',
     'Le même bilan est dans l’admin, au tableau de bord.',
     '',

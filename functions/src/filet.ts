@@ -63,16 +63,28 @@ async function compter(col: string, champ: string, depuis: Date, source?: string
   }
 }
 
+/** Minuit d'hier à Montréal. */
+function minuitHier(): Date {
+  const fuseau = 'America/Toronto';
+  const jour = new Intl.DateTimeFormat('sv-SE', { timeZone: fuseau }).format(new Date(Date.now() - 24 * 3600e3));
+  const off = new Intl.DateTimeFormat('en-US', { timeZone: fuseau, timeZoneName: 'longOffset' })
+    .formatToParts(new Date(`${jour}T12:00:00Z`)).find((p) => p.type === 'timeZoneName')?.value.replace('GMT', '') || '-05:00';
+  return new Date(`${jour}T00:00:00${off === '' ? 'Z' : off}`);
+}
+
 export async function calculerFilet() {
   const maintenant = Date.now();
   const h24 = new Date(maintenant - 24 * 3600e3);
   const h48 = new Date(maintenant - 48 * 3600e3);
   const j7 = new Date(maintenant - 7 * 24 * 3600e3);
+  // Le compte des quiz part de minuit hier, comme le bilan : le 14 oct. 2026, la fenêtre
+  // de 24 h glissantes disait « 0 quiz » alors que 4 résultats étaient rangés hier.
+  const depuisHier = minuitHier();
 
   const [pages, cles, quiz24, quiz7j, formulaire48, inscrites24, inscrites7j] = await Promise.all([
     controlerPages(),
     controlerCles(),
-    compter('doshaResults', 'createdAt', h24),
+    compter('doshaResults', 'createdAt', depuisHier),
     compter('doshaResults', 'createdAt', j7),
     compter('doshaResults', 'createdAt', h48, 'quiz-courriel'),
     compter('newsletter', 'subscribedAt', h24),
@@ -81,9 +93,11 @@ export async function calculerFilet() {
 
   const mouvement: Controle[] = [
     {
-      nom: 'Quiz faits (24 h)',
+      nom: 'Quiz faits depuis hier 0 h',
       etat: quiz24 === 0 && quiz7j >= 3 ? 'alerte' : 'ok',
-      detail: `${quiz24} en 24 h · ${quiz7j} en 7 jours`,
+      detail: quiz24 === 0
+        ? `aucun résultat de quiz rangé depuis hier 0 h, alors que ${quiz7j} l’ont été en 7 jours`
+        : `${quiz24} depuis hier 0 h · ${quiz7j} en 7 jours`,
     },
     {
       // Le formulaire « Recevoir mes résultats » (sans compte) : c'est lui qui
