@@ -137,7 +137,7 @@
       "titre": "Étape 4 · Et ensuite ? (J+7)",
       "delaiHeures": 168,
       "subject": "Une semaine de gestes, et ensuite ?",
-      "preheader": "VATA Essentiel prend le relais pour toute la saison froide.",
+      "preheader": "Un cadeau pour votre deuxième semaine.",
       "bandeau": {
         "fond": "#141311",
         "texte": "#EEE7DB",
@@ -154,7 +154,20 @@
         },
         {
           "type": "paragraph",
-          "text": "Les Rituels essentiels sont une porte d'entrée. Pour vivre toute la saison froide avec des repères semaine après semaine, VATA Essentiel prend le relais : 16 capsules, 19 rituels, un guide de 204 pages."
+          "text": "Pour votre deuxième semaine, nous vous offrons notre guide sur Vata (éléments Vent et Espace). C'est le dosha qui fait courir le mental et qui fragmente les nuits. Vata est le roi des doshas : lorsqu'il s'emballe, il entraîne les deux autres avec lui. Dans ce guide, vous trouverez quoi faire lorsque vous vous réveillez à 3 h du matin, la respiration de l'abeille pour vous rendormir, une infusion qui réchauffe, et un carnet de sept jours pour voir ce qui change."
+        },
+        {
+          "type": "button",
+          "label": "Télécharger le PDF Vata",
+          "href": "https://www.krystinestlaurent.ca/le-vent?via=sequence-rituels"
+        },
+        {
+          "type": "paragraph",
+          "text": "Si vous l'avez déjà reçu avec votre lecture du quiz, c'est le moment de l'ouvrir."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les Rituels essentiels sont une porte d'entrée. Pour aller plus loin, avec des repères semaine après semaine, VATA Essentiel prend le relais : 16 capsules, 19 rituels, un guide de 204 pages."
         },
         {
           "type": "button",
