@@ -141,13 +141,17 @@ export async function calculerPeriode(de: string, a: string): Promise<Periode> {
       if (dans(i.get('sortie.le'))) serie.sorties += 1;
     }
     for (const e of etapes) {
-      const envoyees = inscrits.docs.filter((i) => dans(i.get(`envoyes.${e.cle}`))).length;
-      let ouvertes = 0; let cliquees = 0;
+      // Envoyées = celles qui portaient le compteur d'ouverture (notées dans
+      // `envois` depuis le 11 oct. 2026). Les lettres parties avant, sans
+      // compteur, faisaient croire à des lettres jamais ouvertes.
+      let envoyees = 0; let ouvertes = 0; let cliquees = 0;
       if (e.newsletterId) {
-        const [ouv, cl] = await Promise.all([
+        const [env, ouv, cl] = await Promise.all([
+          db.collection(`newsletters/${e.newsletterId}/envois`).get(),
           db.collection(`newsletters/${e.newsletterId}/ouvertures`).get(),
           db.collection(`newsletters/${e.newsletterId}/clics`).get(),
         ]);
+        envoyees = env.docs.filter((d) => dans(d.get('at'))).length;
         const robots = new Set(cl.docs.filter((c) => c.get('robot') === true).map((c) => c.id));
         ouvertes = ouv.docs.filter((o) => o.get('humaine') === true && !robots.has(o.id) && (dans(o.get('at')) || dans(o.get('humaineAt')))).length;
         cliquees = cl.docs.filter((c) => !robots.has(c.id) && dans(c.get('at'))).length;
