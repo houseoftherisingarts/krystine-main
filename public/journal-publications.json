@@ -8257,5 +8257,20 @@
       "functions/src/filet.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-15T11:58:40.243Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "375b0ad5",
+    "message": "Admin, carte « Le chemin vers VATA Essentiel » : les lettres envoyées avant le compteur d'ouverture (11 octobre) ne comptent plus comme jamais ouvertes",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/entonnoirVata.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
