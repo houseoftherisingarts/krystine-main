@@ -114,6 +114,8 @@ const BRUIT = [
   /hotjar|clarity\.ms/i, /net::ERR_ABORTED/i, /ResizeObserver loop/i,
   // Les lecteurs YouTube intégrés demandent l'accès à leurs témoins; le refus du navigateur invisible n'est pas une panne.
   /requestStorageAccess/i,
+  // Google refuse lui-même d'être encadré (avertissement « report-only » du formulaire anti-robot), rien n'est bloqué.
+  /report-only Content Security Policy/i,
 ];
 const bruit = (t) => BRUIT.some((re) => re.test(t));
 const court = (t, n = 160) => String(t).replace(/\s+/g, ' ').trim().slice(0, n);
