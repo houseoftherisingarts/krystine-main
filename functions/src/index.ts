@@ -12,6 +12,7 @@ export { sendWelcomeEmail } from './newsletter/welcome';
 export { sendLiveReminders, envoyerRappelDirect } from './newsletter/live';
 export { ouverture } from './newsletter/ouverture';
 export { clic } from './newsletter/clic';
+export { leVent } from './telechargement';
 export { resendWebhook } from './newsletter/webhook';
 export { sendScheduledNewsletters, previewNewsletter, audienceInfolettre } from './newsletter/send';
 export { newsletterAssistant, traduireInfolettre } from './newsletter/assistant';

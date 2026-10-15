@@ -45,6 +45,7 @@ const chargerStripe = () => (stripeCharge ??= loadStripe(CLE_STRIPE));
 /** Le formulaire Stripe intégré (Embedded Checkout), monté dans la page. */
 const CaisseIntegree: React.FC<{ clientSecret: string; onErreur: () => void }> = ({ clientSecret, onErreur }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const boite = useRef<HTMLDivElement>(null);
   const [pret, setPret] = useState(false);
   useEffect(() => {
     let annule = false;
@@ -59,13 +60,19 @@ const CaisseIntegree: React.FC<{ clientSecret: string; onErreur: () => void }> =
         caisse = c;
         if (ref.current) c.mount(ref.current);
         setPret(true);
+        // Le formulaire tombe sous le résumé, hors de l'écran sur un iPad à
+        // l'horizontale : Diane l'a cherché sans le voir (15 oct. 2026). La
+        // page descend toute seule jusqu'à lui dès qu'il est prêt.
+        setTimeout(() => boite.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
       })
       .catch(() => { if (!annule) onErreur(); });
     return () => { annule = true; caisse?.destroy(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientSecret]);
   return (
-    <div className="relative mt-8 min-h-[32rem] border border-[#9c7a44]/30 bg-white">
+    <>
+    <p className="mt-8 text-[0.95rem] leading-[1.7] text-[#1c1712]">Inscrivez votre courriel et votre carte ci-dessous.</p>
+    <div ref={boite} className="relative mt-4 min-h-[32rem] scroll-mt-28 border border-[#9c7a44]/30 bg-white">
       {!pret && (
         <p className="absolute inset-x-0 top-16 text-center text-[0.68rem] uppercase tracking-[0.2em] text-[#1c1712]/50">
           Le formulaire sécurisé s'ouvre…
@@ -73,6 +80,7 @@ const CaisseIntegree: React.FC<{ clientSecret: string; onErreur: () => void }> =
       )}
       <div ref={ref} />
     </div>
+    </>
   );
 };
 

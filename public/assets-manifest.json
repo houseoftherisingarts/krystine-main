@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-15T11:58:31.102Z",
+  "generatedAt": "2026-10-15T23:07:13.600Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -3031,6 +3031,13 @@
       "folder": "speaking/assets",
       "kind": "image",
       "size": 65882
+    },
+    {
+      "path": "/telechargements/le-vent.pdf",
+      "name": "le-vent.pdf",
+      "folder": "telechargements",
+      "kind": "document",
+      "size": 4807419
     },
     {
       "path": "/vata/banniere-automne.jpg",
