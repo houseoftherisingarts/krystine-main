@@ -8272,5 +8272,24 @@
       "functions/src/entonnoirVata.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-15T23:07:23.461Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "98cd8e70",
+    "message": "Paiement des formations : sur iPad et téléphone, la page descend jusqu'au formulaire (/paiement/...) · PDF Vata hébergé et compté (/le-vent)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "functions/src/index.ts",
+      "functions/src/telechargement.ts",
+      "public/assets-manifest.json",
+      "public/telechargements/le-vent.pdf",
+      "src/pages/PaiementFormation.tsx"
+    ]
   }
 ]
