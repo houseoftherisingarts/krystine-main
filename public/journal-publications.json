@@ -8241,5 +8241,21 @@
       "public/medias/partage.jpg",
       "src/pages/SlidePage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-15T01:02:25.893Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d166a56b",
+    "message": "Bilan du matin refait : qui attend une réponse en tête, ce qui est cassé une seule fois avec son geste, chaque vente avec son montant, une seule source par chiffre",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/filet.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
