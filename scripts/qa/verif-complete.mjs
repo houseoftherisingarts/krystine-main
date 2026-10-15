@@ -46,6 +46,13 @@ const APPAREILS = [
     userAgent: 'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' },
   { nom: 'ordinateur', cle: 'ordinateur', viewport: { width: 1440, height: 900 }, isMobile: false, hasTouch: false },
 ];
+// Les parcours d'achat passent aussi sur l'iPad tenu à l'horizontale (Chrome) :
+// Diane y a cherché le formulaire de paiement sans le voir (15 oct. 2026), et
+// Krystine veut les boutons de paiement validés chaque matin sur chaque appareil.
+const APPAREILS_PARCOURS = [...APPAREILS,
+  { nom: 'tablette à l’horizontale', cle: 'tablette-horizontale', viewport: { width: 1080, height: 670 }, isMobile: true, hasTouch: true,
+    userAgent: 'Mozilla/5.0 (iPad; CPU OS 26_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/155.0.8059.37 Mobile/15E148 Safari/604.1' },
+];
 
 // ─── 1. La liste des pages publiques ────────────────────────────────────────
 // Les routes du site (App.tsx : la copie posée à côté du script par le
@@ -318,7 +325,20 @@ async function parcours(navigateur, app) {
       const prix = /\d{2,3}\s?\$/.test(await page.locator('body').innerText());
       await cliquer(page.getByRole('button', { name: /continuer vers le paiement/i }).first());
       const stripe = await page.waitForSelector('iframe[src*="stripe.com"]', { timeout: 30000 }).then(() => true).catch(() => false);
-      noter(nom, prix && stripe, `${prix ? 'prix affiché' : 'PRIX ABSENT'}, ${stripe ? 'formulaire Stripe ouvert' : 'formulaire Stripe ABSENT'}`);
+      // Présent ne suffit pas : le formulaire doit être rempli par Stripe (la
+      // case du courriel) et visible à l'écran sans avoir à le chercher.
+      let champs = false; let visible = false;
+      if (stripe) {
+        await page.waitForTimeout(6000);
+        for (const f of page.frames().filter((x) => /stripe\.com/.test(x.url()))) {
+          if (await f.locator('input[type=email], input[name=email]').count().catch(() => 0)) { champs = true; break; }
+        }
+        visible = await page.evaluate(() => {
+          const r = [...document.querySelectorAll('iframe[src*="stripe.com"]')].map((x) => x.getBoundingClientRect()).find((x) => x.height > 200);
+          return !!r && r.top < innerHeight - 150 && r.bottom > 150;
+        }).catch(() => false);
+      }
+      noter(nom, prix && stripe && champs && visible, `${prix ? 'prix affiché' : 'PRIX ABSENT'}, ${!stripe ? 'formulaire Stripe ABSENT' : !champs ? 'formulaire Stripe VIDE (aucune case à remplir)' : !visible ? 'formulaire Stripe HORS DE L’ÉCRAN après le clic' : 'formulaire Stripe ouvert et visible'}`);
     } catch (e) {
       const texte = await page.locator('body').innerText().catch(() => '');
       const ferme = texte.match(/[^\n]*pas offerte à l.achat[^\n]*/)?.[0];
@@ -432,7 +452,7 @@ await Promise.all(Array.from({ length: PARALLELE }, async () => {
 }));
 
 const lesParcours = [];
-await Promise.all(APPAREILS.map(async (a) => {
+await Promise.all(APPAREILS_PARCOURS.map(async (a) => {
   const t0 = Date.now();
   try { lesParcours.push(...await parcours(navigateur, a)); }
   catch (e) { lesParcours.push({ nom: 'Parcours', appareil: a.nom, ok: false, detail: court(e.message) }); }
