@@ -134,6 +134,17 @@ export const RITUELS_VIVANTS = {
 };
 export const LIEN_PODCAST = `${SITE}/podcast`;
 
+// Le PDF « Le Vent », pour toutes les lectures (Krystine, 15 oct. 2026) : Vata
+// est le roi des doshas, il entraîne les deux autres. Le lien passe par
+// /le-vent, qui compte le téléchargement (telechargement.ts).
+export const PDF_VENT = {
+  libelle: 'Pour vous, dès maintenant',
+  titre: 'Vata (éléments Vent et Espace)',
+  phrase: 'C’est le dosha qui fait courir le mental et qui fragmente les nuits. Vata est le roi des doshas : lorsqu’il s’emballe, il entraîne les deux autres avec lui. Dans ce guide, vous trouverez quoi faire lorsque vous vous réveillez à 3 h du matin, la respiration de l’abeille pour vous rendormir, une infusion qui réchauffe, et un carnet de sept jours pour voir ce qui change.',
+  bouton: 'Télécharger le PDF Vata',
+  lien: `${SITE}/le-vent?via=courriel-quiz`,
+};
+
 
 export function lireProfil(p: { vata: number; pitta: number; kapha: number }): Profil {
   const dix = (d: Dosha) => Math.round((Number(p[d]) || 0) / 10) * 10;
@@ -395,6 +406,18 @@ export function renderResultatHtml(r: ResultatQuiz): string {
   </td></tr>
   ${suite}
 
+  <tr><td style="padding:26px 32px 4px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #9c7a44;background:#f4efe6;">
+      <tr><td align="center" style="padding:28px 28px 30px;">
+        <img src="${PICTO.vata}" width="44" height="44" alt="" style="display:block;margin:0 auto 14px;border:0;" />
+        ${libelle(esc(PDF_VENT.libelle))}
+        <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:30px;line-height:1.15;color:${ENCRE};">${esc(PDF_VENT.titre)}</p>
+        <p style="margin:14px 0 0;font-family:${SANS};font-size:15px;line-height:1.75;color:${DOUX};">${esc(PDF_VENT.phrase)}</p>
+        <p style="margin:20px 0 0;"><a href="${esc(PDF_VENT.lien)}" style="display:inline-block;background:${ENCRE};color:#f4efe6;font-family:${SANS};font-size:12px;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;padding:16px 28px;">${esc(PDF_VENT.bouton)}</a></p>
+      </td></tr>
+    </table>
+  </td></tr>
+
   <tr><td style="padding:28px 40px 26px;">
     ${libelle('La direction')}
     <p style="margin:0;font-family:${SERIF};font-weight:300;font-size:22px;line-height:1.4;color:${ENCRE};">${esc(L.direction)}</p>
@@ -464,6 +487,7 @@ export function renderResultatTexte(r: ResultatQuiz): string {
     ...(L.sousCarte ? ['', L.sousCarte] : []),
     ...(r.suite ? ['', texteSuite(r).titre] : []),
     ...(!r.suite && r.lienSuite ? ['', `${texteSuite(r).titre} : ${r.lienSuite}`, texteSuite(r).ligne] : []),
+    '', `${PDF_VENT.libelle} : ${PDF_VENT.titre}`, PDF_VENT.phrase, `${PDF_VENT.bouton} : ${PDF_VENT.lien}`,
     '',
     'La direction',
     L.direction,
