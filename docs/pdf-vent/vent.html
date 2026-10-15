@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Le Vent · Krystine St-Laurent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: 148mm 210mm; margin: 0; }
+  :root {
+    --creme: #f4efe6; --creme2: #efe6d7; --encre: #1c1712; --texte: #3a2f23;
+    --or: #7d6330; --filet: #9c7a44; --sauge: #74824a; --olive: #3f4a27;
+    --vert: #28352F; --cuivre: #BA7B39; --ivoire: #EEE7DB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--creme); color: var(--encre); font-family: Inter, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 148mm; height: 210mm; padding: 16mm 15mm 14mm; position: relative; overflow: hidden; page-break-after: always; background: var(--creme); display: flex; flex-direction: column; }
+  .page.alt { background: var(--creme2); }
+  .tete { display: flex; justify-content: space-between; font-size: 6.4pt; letter-spacing: .2em; text-transform: uppercase; color: var(--or); border-bottom: .5pt solid var(--filet); padding-bottom: 2.2mm; margin-bottom: 9mm; }
+  .pied { position: absolute; bottom: 8mm; left: 15mm; right: 15mm; display: flex; justify-content: space-between; font-size: 6.2pt; letter-spacing: .16em; text-transform: uppercase; color: var(--or); }
+  .serif { font-family: Fraunces, Georgia, serif; font-weight: 300; }
+  .accroche { font-size: 6.8pt; letter-spacing: .22em; text-transform: uppercase; color: var(--or); font-weight: 600; margin-bottom: 3mm; }
+  h2 { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 21pt; line-height: 1.08; margin-bottom: 6mm; color: var(--encre); }
+  p { font-size: 9pt; line-height: 1.75; color: var(--texte); margin-bottom: 3.6mm; }
+  .src { font-size: 6.6pt; letter-spacing: .08em; color: var(--or); margin-top: 1mm; }
+  .filet { width: 18mm; height: .6pt; background: var(--filet); margin: 5mm 0; }
+  .trou { border: .8pt dashed #83322b; color: #83322b; font-size: 8pt; line-height: 1.6; padding: 4mm; margin: 2mm 0 4mm; }
+
+  /* Couverture */
+  .couv { justify-content: space-between; text-align: center; }
+  .couv .picto { width: 52mm; margin: 4mm auto 0; display: block; }
+  .couv h1 { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 40pt; line-height: .95; letter-spacing: .01em; }
+  .couv .sous { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 12.5pt; color: var(--texte); margin-top: 4mm; line-height: 1.35; }
+  .couv .signe { font-size: 7pt; letter-spacing: .26em; text-transform: uppercase; color: var(--or); }
+  .couv .elements { font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: var(--sauge); margin-top: 3mm; font-weight: 600; }
+
+  /* Pleine page sombre (une seule) */
+  .sombre { background: var(--vert); color: var(--ivoire); justify-content: center; text-align: center; }
+  .sombre .tete { color: var(--cuivre); border-color: rgba(186,123,57,.5); position: absolute; top: 16mm; left: 15mm; right: 15mm; }
+  .sombre blockquote { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 25pt; line-height: 1.15; color: var(--ivoire); }
+  .sombre .src { color: var(--cuivre); margin-top: 6mm; font-size: 7pt; letter-spacing: .18em; text-transform: uppercase; }
+  .sombre p { color: rgba(238,231,219,.82); text-align: left; margin-top: 10mm; }
+  .sombre .pied { color: var(--cuivre); }
+
+  /* Listes de gestes */
+  ol.gestes { list-style: none; counter-reset: g; }
+  ol.gestes li { counter-increment: g; display: grid; grid-template-columns: 9mm 1fr; font-size: 8.8pt; line-height: 1.6; color: var(--texte); padding: 2.4mm 0; border-bottom: .4pt solid rgba(156,122,68,.35); }
+  ol.gestes li::before { content: counter(g, decimal-leading-zero); font-family: Fraunces, Georgia, serif; font-size: 12pt; color: var(--sauge); line-height: 1.1; }
+
+  /* Recette */
+  .recette { display: grid; grid-template-columns: 40mm 1fr; gap: 6mm; }
+  .recette h3 { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: var(--olive); font-weight: 600; margin-bottom: 2.5mm; }
+  .recette ul { list-style: none; }
+  .recette ul li { font-size: 8.2pt; line-height: 1.55; color: var(--texte); padding: 1.3mm 0; border-bottom: .4pt solid rgba(156,122,68,.3); }
+  .recette p { font-size: 8.4pt; }
+  .note { font-size: 7.4pt; color: var(--texte); border-left: 1pt solid var(--filet); padding-left: 3mm; margin-top: 3mm; line-height: 1.6; }
+
+  /* Carnet de sept jours */
+  table.carnet { width: 100%; border-collapse: collapse; margin-top: 2mm; }
+  table.carnet th { font-size: 5.8pt; letter-spacing: .12em; text-transform: uppercase; color: var(--or); font-weight: 600; text-align: left; padding: 0 1.5mm 2mm; vertical-align: bottom; }
+  table.carnet td { border-top: .5pt solid rgba(156,122,68,.45); height: 13.5mm; padding: 1.5mm; font-family: Fraunces, Georgia, serif; font-size: 11pt; color: var(--sauge); vertical-align: top; }
+  table.carnet td + td { border-left: .5pt solid rgba(156,122,68,.25); }
+
+  /* Porte */
+  .portrait { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 12.5pt; line-height: 1.5; color: var(--encre); margin-bottom: 5mm; }
+  .bouton { display: inline-block; background: var(--encre); color: var(--creme); font-size: 7.4pt; letter-spacing: .2em; text-transform: uppercase; padding: 4mm 7mm; text-decoration: none; margin-top: 3mm; }
+  .adresse { font-size: 7.4pt; color: var(--or); margin-top: 3mm; letter-spacing: .04em; }
+
+  /* Quatrième */
+  .quatrieme { background: #34241a; color: var(--ivoire); justify-content: flex-end; }
+  .quatrieme .picto { width: 26mm; opacity: .9; margin-bottom: 8mm; }
+  .quatrieme p { color: rgba(238,231,219,.8); }
+  .quatrieme .ref { font-size: 7.6pt; line-height: 1.7; color: rgba(238,231,219,.75); }
+  .quatrieme .site { font-family: Fraunces, Georgia, serif; font-size: 15pt; color: var(--ivoire); margin-top: 6mm; }
+  .quatrieme .pied { color: var(--cuivre); }
+</style>
+</head>
+<body>
+
+<!-- 1. Couverture -->
+<section class="page couv">
+  <div class="tete" style="width:100%"><span>N° 01 · Le Vent</span><span>Québec · MMXXVI</span></div>
+  <div>
+    <img class="picto" src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/vata.png" alt="">
+    <div class="elements">Vata · Vent et Espace</div>
+  </div>
+  <div>
+    <h1>Le Vent</h1>
+    <div class="sous">Lorsque le vent prend trop de place</div>
+  </div>
+  <div class="signe">Krystine St-Laurent</div>
+</section>
+
+<!-- 2. Mot d'accueil -->
+<section class="page">
+  <div class="tete"><span>Le Vent</span><span>Un mot pour commencer</span></div>
+  <div class="accroche">Bienvenue</div>
+  <h2>Ce document vous accompagne</h2>
+  <div class="trou">À ÉCRIRE PAR KRYSTINE : quelques lignes à la personne qui vient de terminer le quiz et ouvre ce document. Aucun texte existant ne s'adresse à elle à ce moment-là.</div>
+  <p>Le mental part dans tous les sens. Le sommeil devient plus fragile. Lorsque le vent prend trop de place, tout devient plus difficile à tenir ensemble.</p>
+  <div class="src">Votre lecture du quiz</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>02</span></div>
+</section>
+
+<!-- 3. Reconnaître le Vent -->
+<section class="page alt">
+  <div class="tete"><span>Le Vent</span><span>Reconnaître</span></div>
+  <div class="accroche">I · Reconnaître le Vent</div>
+  <h2>Le fil se perd un peu, puis davantage</h2>
+  <p>Il y a des périodes où le Vent commence exactement comme cela, presque discrètement. Les idées se bousculent davantage, notre attention passe plus rapidement d’une chose à une autre et ce qui demandait auparavant peu d’effort devient plus difficile à retenir, à poursuivre ou à terminer.</p>
+  <p>Parfois, même la nuit n’arrête plus complètement le mouvement. Le corps peut être épuisé et, pourtant, vers trois heures du matin, le mental repartir comme si quelqu’un avait rallumé la lumière. C’est l’un des visages très reconnaissables du Vent lorsqu’il prend davantage de place.</p>
+  <div class="filet"></div>
+  <p>Une peau plus sèche, des articulations qui craquent davantage, un réveil au milieu de la nuit ou une raideur au lever peuvent sembler sans lien lorsqu’ils sont regardés séparément. Mis ensemble, ils commencent pourtant à raconter une histoire différente.</p>
+  <div class="pied"><span>Krystine St-Laurent</span><span>03</span></div>
+</section>
+
+<!-- 4. Ce qui l'emballe -->
+<section class="page">
+  <div class="tete"><span>Le Vent</span><span>Ce qui l’attise</span></div>
+  <div class="accroche">II · Ce qui l’attise</div>
+  <h2>Des portes restées ouvertes</h2>
+  <p>Dans Nature &amp; Ayurveda, les sens sont décrits comme des portes d’entrée. Les yeux reçoivent les écrans et la lumière, les oreilles reçoivent les sons, les alertes et les conversations, tandis que notre attention passe continuellement d’un endroit à l’autre. Lorsque le Vent domine, chaque nouvelle stimulation peut venir s’ajouter à ce qui bougeait déjà.</p>
+  <p>À cela s’ajoutent le stress, les changements qui s’enchaînent, les imprévus, les décisions à prendre et parfois tout un chaos extérieur sur lequel nous avons peu de prise. Même lorsque nous restons physiquement immobiles, notre environnement peut continuer à produire du mouvement à l’intérieur.</p>
+  <div class="filet"></div>
+  <p>L’Ayurveda repose sur une observation que nous retrouverons souvent : ce qui se ressemble s’accumule.</p>
+  <p>Le mouvement s’ajoute au mouvement, l’irrégularité à l’irrégularité, la sécheresse à la sécheresse, et ce qui n’était au départ qu’un état passager peut devenir progressivement plus présent lorsque les mêmes qualités continuent de s’additionner.</p>
+  <div class="pied"><span>Krystine St-Laurent</span><span>04</span></div>
+</section>
+
+<!-- 5. La clé (la seule page sombre) -->
+<section class="page sombre">
+  <div class="tete"><span>Le Vent</span><span>La clé</span></div>
+  <blockquote>« La clé pour apaiser vata : la régularité. »</blockquote>
+  <div class="src">Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p. 130</div>
+  <p>La régularité fait contrepoids au mouvement parce qu’elle réduit une partie de ce que le corps doit constamment anticiper. Des repas pris à des heures plus constantes, un coucher qui revient sensiblement au même moment, davantage de chaleur, moins de stimulation et certains repères qui demeurent d’un jour à l’autre commencent à créer une autre qualité autour de nous.</p>
+  <div class="pied"><span>Krystine St-Laurent</span><span>05</span></div>
+</section>
+
+<!-- 6. Gestes -->
+<section class="page">
+  <div class="tete"><span>Le Vent</span><span>Les gestes</span></div>
+  <div class="accroche">III · Pour s’enraciner, s’apaiser et se réchauffer</div>
+  <h2>Des repères, jour après jour</h2>
+  <ol class="gestes">
+    <li><span>Maintenir une routine de vie, avec des habitudes bien ancrées (méditation, yoga ou autre activité plus calme).</span></li>
+    <li><span>S’offrir un temps de silence et de repos durant la journée, par exemple 5 minutes à chaque heure.</span></li>
+    <li><span>Prendre une longue douche ou un bain le matin pour s’apaiser avant de démarrer la journée.</span></li>
+    <li><span>Réduire les stimuli (au niveau des yeux, du nez et des oreilles).</span></li>
+    <li><span>Créer de l’espace pour obtenir un sommeil suffisamment réparateur.</span></li>
+    <li><span>S’offrir un repas en silence durant la journée.</span></li>
+    <li><span>Prioriser les soupes et les potages chauds.</span></li>
+    <li><span>S’offrir des moments de calme et de douceur.</span></li>
+  </ol>
+  <div class="src" style="margin-top:3mm">Nature &amp; Ayurveda, Éditions de l’Homme, 2018, « Conseils pour apaiser VATA »</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>06</span></div>
+</section>
+
+<!-- 7. La nuit -->
+<section class="page alt">
+  <div class="tete"><span>Le Vent</span><span>La nuit</span></div>
+  <div class="accroche">IV · Entre 2 h et 6 h</div>
+  <h2>Lorsque le sommeil ne revient pas</h2>
+  <p>Ce temps de la nuit est un temps Vata. Si vous vous êtes couchée vers 21 h ou 22 h, il est normal que votre corps tende à s’éveiller. C’est le moment idéal pour méditer (avant le lever du soleil), afin de remettre en ordre vos micro-horloges périphériques.</p>
+  <p>La méditation peut être un bon outil également si vous vous éveillez vers 2 h ou 3 h du matin et tentez de vous rendormir. Souvent, nous avons tendance à augmenter notre stress si le sommeil ne revient pas. Une séance d’automassage du ventre, du thorax ou des pieds avec une huile pour apaiser Vata, une méditation ou une séance de cohérence cardiaque peuvent vraiment repositionner le mental au neutre et nous aider à nous rendormir.</p>
+  <div class="src">Féminité &amp; Ayurveda, Éditions de l’Homme, 2022, p. 141</div>
+  <div class="filet"></div>
+  <div class="accroche">La respiration de l’abeille</div>
+  <p>À l’aide de vos pouces, bouchez vos oreilles. Les yeux fermés, inspirez profondément par le nez et, en expirant, relâchez votre souffle en faisant le son « mmmmm ». Le son de votre expiration, rappelant le bourdonnement d’une abeille, résonnera dans votre tête. Répétez cette respiration 3 ou 4 fois, ou même davantage si vous le désirez.</p>
+  <div class="src">Nature &amp; Ayurveda, Éditions de l’Homme, 2018</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>07</span></div>
+</section>
+
+<!-- 8. Infusion -->
+<section class="page">
+  <div class="tete"><span>Le Vent</span><span>À la cuisine</span></div>
+  <div class="accroche">V · Une infusion pour apaiser vata</div>
+  <h2>Fenouil, cardamome et cannelle</h2>
+  <div class="recette">
+    <div>
+      <h3>Ingrédients</h3>
+      <ul>
+        <li>5 à 8 graines de fenouil</li>
+        <li>4 à 6 graines de cardamome (verte)</li>
+        <li>4 ou 5 graines de coriandre</li>
+        <li>1 morceau de gingembre bio pelé, tranché ou râpé (environ 2,5 cm/1 po)</li>
+        <li>1 bâton de cannelle</li>
+        <li>1 sommité fleurie (tige et feuilles) de basilic sacré (ou de basilic vert frais)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Préparation · environ 4 litres</h3>
+      <p>Dans une casserole, porter à ébullition 4 litres (16 tasses) d’eau, puis réduire le feu à doux (pour éviter qu’elle ne bouille de nouveau).</p>
+      <p>Y déposer les graines de fenouil, de cardamome et de coriandre, le gingembre et le bâton de cannelle. Laisser frémir pendant environ 10 minutes. Retirer du feu et ajouter le basilic. Laisser infuser environ 10 minutes.</p>
+      <p>Avant de servir, on peut filtrer le mélange ou le verser directement avec les plantes dans un grand contenant en verre. Se conserve à température ambiante pendant 24 heures ou au réfrigérateur pendant 48 heures.</p>
+      <div class="note">Le bâton de cannelle peut servir plus d’une fois. Utilisez la cannelle avec parcimonie si vous prenez des médicaments anticoagulants.</div>
+    </div>
+  </div>
+  <div class="src" style="margin-top:4mm">Nature &amp; Ayurveda, Éditions de l’Homme, 2018</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>08</span></div>
+</section>
+
+<!-- 9. Carnet de sept jours -->
+<section class="page alt">
+  <div class="tete"><span>Le Vent</span><span>Votre carnet</span></div>
+  <div class="accroche">VI · Sept jours d’observation</div>
+  <h2>Ce que vous remarquez</h2>
+  <p style="font-size:8.2pt">Une ligne par jour. Il suffit de noter, sans juger.</p>
+  <table class="carnet">
+    <tr><th></th><th>Heure du coucher</th><th>Réveil la nuit ?</th><th>Repas chaud au lever ?</th><th>Ce que je remarque</th></tr>
+    <tr><td>1</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>2</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>3</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>4</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>5</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>6</td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>7</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <div class="pied"><span>Krystine St-Laurent</span><span>09</span></div>
+</section>
+
+<!-- 10. La porte vers VATA Essentiel -->
+<section class="page">
+  <div class="tete"><span>Le Vent</span><span>Aller plus loin</span></div>
+  <div class="accroche">VATA Essentiel</div>
+  <h2>Un sens à la fois</h2>
+  <div class="portrait">Il est 3 h du matin. Elle a les mains glacées, et le mental déjà au travail : la réunion de demain, la liste qui s'allonge, ce qu'elle a oublié de dire. Le jour, elle tient tout, les gens, les projets, les décisions. Le soir, le corps lâche avant elle.</div>
+  <p>Ce qu'elle ressent porte un nom : Vata (Vent et Espace), le vent qui fait tourner le moulin intérieur. Plus il vente, plus le mental s'emballe, et il s'apaise lorsque nous lui offrons des points de repère, un sens à la fois.</p>
+  <p>VATA Essentiel poursuit cette exploration à travers les sens, le souffle, le toucher, la chaleur et la régularité, avec de courtes capsules que vous pouvez suivre à votre rythme.</p>
+  <div class="trou">À TRANCHER PAR KRYSTINE : garder « à votre rythme » ici, ou le remplacer comme dans les lettres 2 à 5.</div>
+  <a class="bouton" href="https://www.krystinestlaurent.ca/vata?via=pdf-vent">Découvrir VATA Essentiel</a>
+  <div class="adresse">krystinestlaurent.ca/vata</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>10</span></div>
+</section>
+
+<!-- 11. Quatrième de couverture -->
+<section class="page quatrieme">
+  <img class="picto" src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/vata-noir.png" alt="">
+  <div class="accroche" style="color:var(--cuivre)">La Trilogie d’Origine</div>
+  <div class="ref">Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018.<br>Krystine St-Laurent, Féminité &amp; Ayurveda, Éditions de l’Homme, 2022.</div>
+  <div class="site">krystinestlaurent.ca</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>INSPIRATA AYURVEDA</span></div>
+</section>
+
+</body>
+</html>
