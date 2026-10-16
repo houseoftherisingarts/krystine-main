@@ -8414,5 +8414,32 @@
       "src/components/cours/CheminSens.tsx",
       "src/components/cours/PictoTrace.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T02:30:48.950Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "5ec00914",
+    "message": "Rituels essentiels : la capsule bonus masquée et remplacée par l'étape « Et après les Rituels ? » sur sa propre page (/rituels-essentiels/la-suite) : le miroir du vécu, puis VATA en prolongement ou en réponse, ou un seul geste sans vente; plus aucune offre sous le guide; miniature du guide corrigée (elle montrait une couverture de VATA) et couverture du guide aplatie (elle s'affichait en rose dans l'aperçu)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firestore.rules",
+      "functions/src/index.ts",
+      "functions/src/newsletter/rituelsReponse.ts",
+      "public/assets-manifest.json",
+      "public/cours-documents/rituels-vivants/012.jpg",
+      "src/components/cours/CheminSens.tsx",
+      "src/components/cours/MiroirVecu.tsx",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/RituelsLaSuite.tsx",
+      "src/pages/cours/programmes.ts",
+      "src/pages/origine2/piliers.ts",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
