@@ -165,7 +165,7 @@ async function envoyerEtape(transporter: Transporter, lettre: NewsletterDoc, des
     // Les clics comptés comme dans l'infolettre (/c, clic.ts), pour suivre le
     // chemin quiz, lettres, page VATA, achat (12 oct. 2026). Pas sur un essai.
     html: newsletterId ? suivreLesClics(renderEmailHtml(lettre.blocks, opts), newsletterId, ficheId) : renderEmailHtml(lettre.blocks, opts),
-    text: renderEmailText(lettre.blocks, opts),
+    text: renderEmailText(lettre.blocks, opts).replace(/\{\{s\}\}/g, newsletterId ? ficheId : 'apercu'),
     headers: {
       'List-Unsubscribe': `<${unsubscribeOneClickUrl(jeton)}>`,
       'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',

@@ -153,6 +153,29 @@
           "text": "Une semaine déjà. Si quelques gestes sont restés, c'est que le corps les a reconnus."
         },
         {
+          "type": "choix",
+          "groupe": "rituels",
+          "question": "Où en êtes-vous avec vos Rituels ?",
+          "options": [
+            {
+              "cle": "quotidien",
+              "libelle": "Presque chaque jour"
+            },
+            {
+              "cle": "commence",
+              "libelle": "J'ai commencé"
+            },
+            {
+              "cle": "pas-encore",
+              "libelle": "Pas encore"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Il n'y a pas de bonne ou de mauvaise réponse, et surtout aucune pression : juste un petit miroir pour mieux vous accompagner."
+        },
+        {
           "type": "paragraph",
           "text": "Pour votre deuxième semaine, nous vous offrons notre guide sur Vata (éléments Vent et Espace). C'est le dosha qui fait courir le mental et qui fragmente les nuits. Vata est le roi des doshas : lorsqu'il s'emballe, il entraîne les deux autres avec lui. Dans ce guide, vous trouverez quoi faire lorsque vous vous réveillez à 3 h du matin, la respiration de l'abeille pour vous rendormir, une infusion qui réchauffe, et un carnet de sept jours pour voir ce qui change."
         },

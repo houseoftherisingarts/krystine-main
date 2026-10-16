@@ -51,6 +51,7 @@ export { mesDemandes } from './mesDemandes';
 export { vhCollecter, vhAgreger, vhAgregerMaintenant, vhEffacerSession, vhPurger } from './vexelhotjar';
 export { youtubeVideos } from './youtube';
 export { enregistrerChoix } from './newsletter/choix';
+export { enregistrerRituels } from './newsletter/rituelsReponse';
 export { analyserInfolettres, analyseHebdomadaire } from './newsletter/analyse';
 export { brouillonsPodcast } from './newsletter/brouillonsPodcast';
 export { sauvegardeNocturne } from './sauvegarde';

@@ -395,13 +395,16 @@ function blockToEmail(block: NewsletterBlock, firstName?: string, pal: Palette =
       // chaque carré mène à /mes-choix, déjà coché, où la lectrice complète et
       // envoie. {{s}} devient l'identifiant de sa fiche à l'envoi (send.ts), et
       // le paramètre interet/preference pose l'étiquette dès le clic (clic.ts).
-      const groupe = c.groupe === 'preference' ? 'preference' : 'interet';
+      const groupe = c.groupe === 'preference' ? 'preference' : c.groupe === 'rituels' ? 'rituels' : 'interet';
       const options = (Array.isArray(c.options) ? c.options : []).filter((o: any) => o && o.cle && o.libelle);
       if (!options.length) return '';
       const fondCarre = pal.sombre ? 'rgba(238,231,219,0.06)' : '#f7f2ea';
       const bord = pal.sombre ? 'rgba(224,176,96,0.45)' : 'rgba(156,122,68,0.45)';
       const carre = (o: any) => {
-        const lien = `${PUBLIC_BASE_URL}/mes-choix?s={{s}}&coche=${groupe}:${encodeURIComponent(o.cle)}&${groupe}=${encodeURIComponent(o.cle)}`;
+        // Le miroir des Rituels (15 oct. 2026) : un clic mène à /rituels-reponse, qui note la réponse.
+        const lien = groupe === 'rituels'
+          ? `${PUBLIC_BASE_URL}/rituels-reponse?s={{s}}&r=${encodeURIComponent(o.cle)}`
+          : `${PUBLIC_BASE_URL}/mes-choix?s={{s}}&coche=${groupe}:${encodeURIComponent(o.cle)}&${groupe}=${encodeURIComponent(o.cle)}`;
         return `<td width="50%" valign="top" style="width:50%;padding:6px;"><a href="${esc(lien)}" target="_blank" style="display:block;text-decoration:none;background:${fondCarre};border:1px solid ${bord};border-radius:12px;padding:14px 16px;">
           <span style="display:inline-block;width:13px;height:13px;border:1.5px solid ${pal.accent};border-radius:3px;vertical-align:-2px;margin-right:8px;"></span><span style="font-family:${CHARTE.sans};font-size:${t(11)}px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:${pal.accent};">${esc(o.libelle)}</span>
           ${o.phrase ? `<div style="padding-top:8px;font-family:${CHARTE.serif};font-size:${t(16)}px;line-height:1.4;color:${pal.ink};">${esc(o.phrase)}</div>` : ''}
@@ -616,7 +619,9 @@ function rendreTexte(blocks: NewsletterBlock[], opts: RenderEmailOptions): strin
         break;
       case 'choix':
         if (c.question) lines.push(String(c.question));
-        lines.push((Array.isArray(c.options) ? c.options : []).map((o: any) => `- ${o.libelle} : ${o.phrase || ''}`).join('\n'));
+        lines.push((Array.isArray(c.options) ? c.options : []).map((o: any) => c.groupe === 'rituels'
+          ? `- ${o.libelle} : ${PUBLIC_BASE_URL}/rituels-reponse?s={{s}}&r=${encodeURIComponent(o.cle)}`
+          : `- ${o.libelle} : ${o.phrase || ''}`).join('\n'));
         break;
       case 'univers':
         lines.push('Découvrir l’univers de Krystine', `${PUBLIC_BASE_URL}/medias · ${PUBLIC_BASE_URL}/podcast · ${PUBLIC_BASE_URL}`);

@@ -456,6 +456,12 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow write: if false;
     }
+    // Le miroir des Rituels (15 oct. 2026) : écrit par enregistrerRituels
+    // (Admin SDK), lu par l'admin seulement.
+    match /reponsesRituels/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
 
     // ── Newsletter campaigns ──
     // Only admins can create, update, delete. Bodies are readable by anyone
