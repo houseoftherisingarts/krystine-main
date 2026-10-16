@@ -8485,5 +8485,23 @@
       "public/assets-manifest.json",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T20:03:59.196Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "145f67f9",
+    "message": "Boutique : merci automatique après une commande (3 h après, une fois par cliente, jamais aux points de vente), mécanique en place mais éteinte jusqu'au go de Krystine",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/shopify/merciBoutique.ts",
+      "functions/src/shopify/types.ts",
+      "functions/src/shopify/webhook.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
