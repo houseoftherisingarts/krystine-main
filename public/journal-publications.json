@@ -8683,5 +8683,32 @@
       "functions/src/filet.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-16T23:19:04.195Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "99558238",
+    "message": "/evenements : les trois « Retraite à venir » et le TEDx « Fil en développement » retirés, Les Dimanches d'Origine (dates à venir, liste pour être avisée) et EXPÉRIENCE ORIGINE (inscriptions dès le 1er novembre) ajoutés; tome 3 remis à « février 2027 » partout où le 3 mars restait (accueil, médias, podcast, presse, Origine, agenda); Bilan du matin : revenus mois par mois sur l'année financière (1er novembre au 31 octobre) avec le total",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "src/content.ts",
+      "src/content/presse.ts",
+      "src/lib/evenements.ts",
+      "src/lib/liveEvents.ts",
+      "src/pages/InspiratHome.tsx",
+      "src/pages/MediasLoeuvre.tsx",
+      "src/pages/MediasPage.tsx",
+      "src/pages/SlidePage.tsx",
+      "src/pages/concepts/MediasV2.tsx",
+      "src/pages/origine/components/components/ui/PricingSection.tsx",
+      "src/pages/podcast/App.tsx"
+    ]
   }
 ]
