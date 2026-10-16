@@ -27,7 +27,7 @@ export interface SemaineVata {
   /** Une pastille propre sans élargir la carte (« Module 1 » des Rituels essentiels). */
   pastille?: { fr: string; en: string };
   /** Le picto posé sur la photo de la carte (celui de la promesse de la page de vente). */
-  picto?: 'boussole' | 'coeur' | 'souffle' | 'main' | 'feuille' | 'livre';
+  picto?: 'lotus' | 'goutte' | 'souffle' | 'arbre' | 'pousse' | 'livre';
 }
 
 const img = (n: number) => ({

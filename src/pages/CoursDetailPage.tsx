@@ -20,7 +20,7 @@ import { restaurerKajabiAuto } from '../firebase/kajabi';
 import TexteLecon from '../lib/texteLecon';
 import { LecteurVideoPleinEcran } from '../components/LecteurVideoEmbarque';
 import SeuilVata from '../components/cours/SeuilVata';
-import CheminSens, { type EtatSemaine } from '../components/cours/CheminSens';
+import CheminSens, { PICTOS, type EtatSemaine } from '../components/cours/CheminSens';
 import LecteurAudioCours from '../components/cours/LecteurAudioCours';
 import VideoLecon, { vignetteDeLecon } from '../components/cours/VideoLecon';
 import VignetteComposee, { compositionCours } from '../components/cours/VignetteComposee';
@@ -956,7 +956,7 @@ const CoursDetailPage: React.FC = () => {
                               className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-serif text-[11px] normal-case tracking-normal text-[#F7F3EA]"
                               style={{ background: achevee ? sem.couleur.vive : `${sem.couleur.vive}bb` }}
                             >
-                              {achevee ? <i className="fa-solid fa-check text-[9px]" /> : etatsSemaines[sem.rang]?.verrouillee ? <i className="fa-solid fa-lock text-[8px]" /> : sem.rang}
+                              {achevee ? <i className="fa-solid fa-check text-[9px]" /> : etatsSemaines[sem.rang]?.verrouillee ? <i className="fa-solid fa-lock text-[8px]" /> : sem.picto && PICTOS[sem.picto] ? (() => { const P = PICTOS[sem.picto!]; return <P size={14} weight="light" />; })() : sem.rang}
                             </span>
                           )}
                           {sem ? (

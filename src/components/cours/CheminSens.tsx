@@ -2,10 +2,13 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { SemaineVata } from '../../pages/vata/semaines';
 import type { Programme } from '../../pages/cours/programmes';
-import { Compass, Heartbeat, Wind, HandPalm, Leaf, BookOpenText } from '@phosphor-icons/react';
+import { FlowerLotus, Drop, Wind, Tree, Plant, BookOpenText } from '@phosphor-icons/react';
 
-const PICTOS: Record<string, React.ComponentType<{ size?: number; weight?: 'light' }>> = {
-  boussole: Compass, coeur: Heartbeat, souffle: Wind, main: HandPalm, feuille: Leaf, livre: BookOpenText,
+export const PICTOS: Record<string, React.ComponentType<{ size?: number; weight?: 'light' }>> = {
+  lotus: FlowerLotus, goutte: Drop, souffle: Wind, arbre: Tree, pousse: Plant, livre: BookOpenText,
+};
+const NOMS: Record<string, string> = {
+  lotus: 'Le lotus', goutte: 'La goutte', souffle: 'Le souffle', arbre: 'L’arbre', pousse: 'La pousse', livre: 'Le livre',
 };
 
 // Le chemin des huit portes de la perception : chaque semaine devient une grande carte portrait
@@ -99,12 +102,15 @@ const Carte: React.FC<{
         )}
       </span>
 
-      {/* Le picto de la promesse, posé sur la photo (Rituels essentiels, 15 oct. 2026). */}
+      {/* Le picto de chaque carte, grand et nommé pour qu'il se lise (Rituels essentiels, 15 oct. 2026). */}
       {s.picto && PICTOS[s.picto] && (() => {
         const Icone = PICTOS[s.picto!];
         return (
-          <span aria-hidden className="absolute left-4 top-[3.6rem] grid h-9 w-9 place-items-center rounded-full bg-[#BA7B39] sm:left-auto sm:right-4 sm:top-4 sm:h-11 sm:w-11 text-[#151d19] shadow-[0_8px_22px_-10px_rgba(0,0,0,0.6)]">
-            <Icone size={19} weight="light" />
+          <span aria-hidden className={`absolute flex flex-col items-center gap-2 ${s.etiquette ? 'right-5 top-1/2 -translate-y-1/2 sm:right-10' : 'inset-x-0 top-[21%]'}`}>
+            <span className="grid h-14 w-14 place-items-center rounded-full border border-[#d9a05b]/70 bg-[#0d110f]/25 text-[#EEE7DB] sm:h-[4.5rem] sm:w-[4.5rem]">
+              <Icone size={34} weight="light" />
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#EEE7DB]/85">{NOMS[s.picto!]}</span>
           </span>
         );
       })()}

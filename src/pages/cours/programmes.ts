@@ -40,17 +40,18 @@ export function pastilleDe(s: Chapitre, programme: Programme, fr: boolean): stri
 }
 
 // ── Rituels essentiels · l'intérieur calqué sur VATA (Krystine, 15 oct. 2026) ──
-// Chaque carte porte le picto de la promesse que la cliente a lue en achetant. Les lignes
+// Les teintes avancent du froid de l'aube à la chaleur de la terre, et chaque
+// carte porte un picto tiré des capsules (Krystine, 15 oct. 2026). Les lignes
 // sous les capsules sont tirées des transcriptions (coffre, 20_formations).
 // Les visuels attendent la maquette de Krystine (15 oct. 2026) : d'ici là, la teinte et le picto.
 const RE_CH = { image: '', bandeau: '', vignette: '' };
 const RE: Chapitre[] = [
-  { rang: 0, roman: 'I', pastille: { fr: 'Module 1', en: 'Module 1' }, picto: 'boussole', sens: { fr: 'L’Ayurveda en bref', en: 'Ayurveda in brief' }, promesse: { fr: 'Retrouver un cap clair grâce à une sagesse ancienne, rendue simple aujourd’hui.', en: 'Find a clear course through an ancient wisdom made simple.' }, couleur: { encre: '#28352F', vive: '#4E6349' }, ...RE_CH },
-  { rang: 1, roman: 'II', pastille: { fr: 'Module 2', en: 'Module 2' }, picto: 'coeur', sens: { fr: 'L’automassage', en: 'Self-massage' }, promesse: { fr: 'Apaiser le système nerveux.', en: 'Soothe the nervous system.' }, couleur: { encre: '#8F6526', vive: '#C79A52' }, ...RE_CH },
-  { rang: 2, roman: 'III', pastille: { fr: 'Module 3', en: 'Module 3' }, picto: 'souffle', sens: { fr: 'Le nez et la bouche', en: 'Nose and mouth' }, promesse: { fr: 'Respirer mieux et clarifier vos pensées.', en: 'Breathe better and clear your thoughts.' }, couleur: { encre: '#44626D', vive: '#6E93A0' }, ...RE_CH },
-  { rang: 3, roman: 'IV', pastille: { fr: 'Module 4', en: 'Module 4' }, picto: 'main', sens: { fr: 'Les mains et les pieds', en: 'Hands and feet' }, promesse: { fr: 'Libérer les tensions accumulées dans les mains et les pieds.', en: 'Release the tension held in hands and feet.' }, couleur: { encre: '#8A4F2C', vive: '#BA7B39' }, ...RE_CH },
-  { rang: 4, roman: 'V', etiquette: { fr: 'Bonus', en: 'Bonus' }, picto: 'feuille', sens: { fr: 'Plantes, stress et sagesse', en: 'Plants, stress and wisdom' }, promesse: { fr: 'Le stress, l’insomnie et l’anxiété vus par l’Ayurveda, et les plantes qui apaisent le Vent.', en: 'Stress, insomnia and anxiety through Ayurveda, and the plants that calm the Wind.' }, couleur: { encre: '#4E6349', vive: '#7A9270' }, ...RE_CH },
-  { rang: 5, roman: 'VI', etiquette: { fr: 'À télécharger', en: 'Downloads' }, picto: 'livre', sens: { fr: 'Le guide des Rituels essentiels', en: 'The Essential rituals guide' }, promesse: { fr: '14 pages tirées de Nature & Ayurveda, pour garder les gestes sous la main.', en: '14 pages from Nature & Ayurveda, to keep the gestures at hand.' }, couleur: { encre: '#8F6526', vive: '#C79A52' }, ...RE_CH },
+  { rang: 0, roman: 'I', pastille: { fr: 'Module 1', en: 'Module 1' }, picto: 'lotus', sens: { fr: 'L’Ayurveda en bref', en: 'Ayurveda in brief' }, promesse: { fr: 'Retrouver un cap clair grâce à une sagesse ancienne, rendue simple aujourd’hui.', en: 'Find a clear course through an ancient wisdom made simple.' }, couleur: { encre: '#3B4F63', vive: '#6A87A3' }, ...RE_CH },
+  { rang: 1, roman: 'II', pastille: { fr: 'Module 2', en: 'Module 2' }, picto: 'goutte', sens: { fr: 'L’automassage', en: 'Self-massage' }, promesse: { fr: 'Apaiser le système nerveux.', en: 'Soothe the nervous system.' }, couleur: { encre: '#4E6349', vive: '#7A9270' }, ...RE_CH },
+  { rang: 2, roman: 'III', pastille: { fr: 'Module 3', en: 'Module 3' }, picto: 'souffle', sens: { fr: 'Le nez et la bouche', en: 'Nose and mouth' }, promesse: { fr: 'Respirer mieux et clarifier vos pensées.', en: 'Breathe better and clear your thoughts.' }, couleur: { encre: '#6A6B41', vive: '#9BA067' }, ...RE_CH },
+  { rang: 3, roman: 'IV', pastille: { fr: 'Module 4', en: 'Module 4' }, picto: 'arbre', sens: { fr: 'Les mains et les pieds', en: 'Hands and feet' }, promesse: { fr: 'Libérer les tensions accumulées dans les mains et les pieds.', en: 'Release the tension held in hands and feet.' }, couleur: { encre: '#8A4F2C', vive: '#BA7B39' }, ...RE_CH },
+  { rang: 4, roman: 'V', etiquette: { fr: 'Bonus', en: 'Bonus' }, picto: 'pousse', sens: { fr: 'Plantes, stress et sagesse', en: 'Plants, stress and wisdom' }, promesse: { fr: 'Le stress, l’insomnie et l’anxiété vus par l’Ayurveda, et les plantes qui apaisent le Vent.', en: 'Stress, insomnia and anxiety through Ayurveda, and the plants that calm the Wind.' }, couleur: { encre: '#28352F', vive: '#5E7F6B' }, ...RE_CH },
+  { rang: 5, roman: 'VI', etiquette: { fr: 'À télécharger', en: 'Downloads' }, picto: 'livre', sens: { fr: 'Le guide des Rituels essentiels', en: 'The Essential rituals guide' }, promesse: { fr: '14 pages tirées de Nature & Ayurveda, pour garder les gestes sous la main.', en: '14 pages from Nature & Ayurveda, to keep the gestures at hand.' }, couleur: { encre: '#7d6330', vive: '#BA9A5E' }, ...RE_CH },
 ];
 const RE_CLES: [RegExp, number][] = [[/ayurveda/i, 0], [/automassage/i, 1], [/nez|bouche/i, 2], [/mains|pieds/i, 3], [/plus loin/i, 4], [/t[ée]l[ée]charger/i, 5]];
 
