@@ -8336,5 +8336,19 @@
       "src/pages/admin/sections/DashboardSection.tsx",
       "src/pages/admin/sections/dashboard/MiroirRituelsCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T00:51:06.399Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8f32f1df",
+    "message": "Page de cours (/cours/…) : « Déjà inscrite ? Connectez-vous pour retrouver vos capsules » sous le bouton d'achat, pour l'acheteuse non connectée qui arrive d'un courriel",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
