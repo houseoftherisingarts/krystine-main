@@ -8441,5 +8441,19 @@
       "src/pages/origine2/piliers.ts",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-10-16T02:36:27.811Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "44ebf418",
+    "message": "Admin, tableau de bord : la carte « Le miroir des Rituels » montre aussi les réponses de fin de cours (« Comment vous sentez-vous après ces gestes ? »)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/admin/sections/dashboard/MiroirRituelsCard.tsx"
+    ]
   }
 ]
