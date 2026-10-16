@@ -8471,5 +8471,19 @@
       "public/rituels-vivants/soin-du-nez.webp",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T03:05:12.251Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fa62565e",
+    "message": "Page de vente des Rituels : plus aucun arrêt sur image des vidéos (bouts de menton); les modules et la section « Rituels essentiels » montrent les tuiles du cours, teinte et picto gravé, comme à l'intérieur",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
