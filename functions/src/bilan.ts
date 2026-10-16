@@ -461,12 +461,18 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   const moisDebut = `${hier.slice(0, 8)}01`;
   const debutMois = minuit(moisDebut);
 
-  // Les revenus mois par mois depuis janvier, jusqu'à hier inclus (Krystine, 16 oct. 2026 : « on doit mettre les revenus mensuels aussi, clairement »).
-  const annee = hier.slice(0, 4);
-  const debutAnnee = minuit(`${annee}-01-01`);
+  // Les revenus mois par mois de l'année financière, jusqu'à hier inclus (Krystine, 16 oct. 2026 :
+  // « on doit mettre les revenus mensuels aussi, clairement » et « mon année financière commence en novembre »).
+  const anHier = Number(hier.slice(0, 4));
+  const moisHier = Number(hier.slice(5, 7));
+  const anDebut = moisHier >= 11 ? anHier : anHier - 1;
+  const moisListe = Array.from({ length: ((moisHier - 11 + 12) % 12) + 1 }, (_, i) => {
+    const k = 10 + i; // novembre = 10 (base 0)
+    return `${anDebut + Math.floor(k / 12)}-${String((k % 12) + 1).padStart(2, '0')}-01`;
+  });
+  const debutAnnee = minuit(moisListe[0]);
   const commandesAnnee = await sur(() => commandesShopifyEntre(debutAnnee, debutAujourdhui));
   const shopDirect = (de: Date, a: Date) => (commandesAnnee ? Promise.resolve(shopifyDans(commandesAnnee, de, a)) : shopify(de, a, il30));
-  const moisListe = Array.from({ length: Number(hier.slice(5, 7)) }, (_, i) => `${annee}-${String(i + 1).padStart(2, '0')}-01`);
   const revenusMensuels = await Promise.all(moisListe.map(async (debut, i) => {
     const fin = i + 1 < moisListe.length ? minuit(moisListe[i + 1]) : debutAujourdhui;
     const [site, boutique] = await Promise.all([sur(() => ventes(minuit(debut), fin)), sur(() => shopDirect(minuit(debut), fin))]);
@@ -676,9 +682,10 @@ export function texteBilan(b: Bilan): string {
     const nomDe = (mois: string) => new Date(`${mois}-15T12:00:00Z`).toLocaleDateString('fr-CA', { month: 'long', timeZone: 'UTC' });
     const somme = (k: 'site' | 'boutique' | 'total') => (rm.some((r) => r[k] == null) ? null : Math.round(rm.reduce((x, r) => x + (r[k] ?? 0), 0) * 100) / 100);
     bloc3.push(
-      `Revenus mois par mois, ${rm[0].mois.slice(0, 4)} (boutique + site = total)`,
+      `Revenus mois par mois, année financière ${rm[0].mois.slice(0, 4)}-${Number(rm[0].mois.slice(0, 4)) + 1} (du 1er novembre au 31 octobre; boutique + site = total)`,
       ...rm.map((r, i) => `• ${nomDe(r.mois)}${i === rm.length - 1 ? ` (au ${jourCourt(b.veille)})` : ''} : boutique ${argent(r.boutique)}${r.commandes != null ? ` (${pluriel(r.commandes, 'commande')})` : ''} + site ${argent(r.site)} = ${argent(r.total)}`),
-      `• Depuis le 1er janvier : boutique ${argent(somme('boutique'))} + site ${argent(somme('site'))} = ${argent(somme('total'))}`,
+      `• Total de l’année financière, du 1er novembre ${rm[0].mois.slice(0, 4)} au ${jourCourt(b.veille)} : boutique ${argent(somme('boutique'))} + site ${argent(somme('site'))} = ${argent(somme('total'))}`,
+      'Le site ne compte que les ventes payées sur krystinestlaurent.ca; les cours vendus dans Kajabi avant sa fermeture (30 août 2026) n’y sont pas.',
     );
   }
 

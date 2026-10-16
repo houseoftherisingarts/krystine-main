@@ -138,7 +138,7 @@ function depuisCure(ev: LiveEvent): RendezVous {
     titre: { fr: ev.titleFR, en: ev.titleEN },
     sousTitre: ev.subtitleFR ? { fr: ev.subtitleFR, en: ev.subtitleEN || ev.subtitleFR } : undefined,
     lieu: ev.locationFR ? { fr: ev.locationFR, en: ev.locationEN || ev.locationFR } : undefined,
-    nature: ev.id === 'tedx' ? 'scene' : NATURE_CUREE[ev.kind] || 'rencontre',
+    nature: ev.id === 'tedx' ? 'scene' : ev.id === 'dimanches-origine' ? 'enLigne' : ev.id === 'origine-2' ? 'programme' : NATURE_CUREE[ev.kind] || 'rencontre',
     image: IMAGES_CUREES[ev.id],
     geste,
     vedette: !!ev.featured,

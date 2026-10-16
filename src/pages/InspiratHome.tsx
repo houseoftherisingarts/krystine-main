@@ -240,7 +240,7 @@ const InspiratHome: React.FC = () => {
     { title: 'Nature & Ayurveda',   year: '2018',                                                cover: 'https://storage.googleapis.com/inspirata/Livres/nature%20ayurveda%20front.jpg', mystery: false },
     { title: 'Féminité & Ayurveda', year: '2022',                                                cover: 'https://storage.googleapis.com/inspirata/Livres/feminite%20ayurveda%20front.jpg', mystery: false },
     { title: '', /* third title kept secret until release — see mystery flag */
-      year: lang === 'FR' ? '3 mars 2027' : 'March 3, 2027',                                  cover: null as string | null, mystery: true },
+      year: lang === 'FR' ? 'Février 2027' : 'February 2027',                                  cover: null as string | null, mystery: true },
   ];
 
   return (
@@ -784,7 +784,7 @@ const InspiratHome: React.FC = () => {
                     {/* Launch date banner — only on the mystery (third) book. */}
                     {b.mystery && (
                       <span className="absolute top-[19%] left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[9px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
-                        {lang === 'FR' ? 'Parution le 3 mars 2027' : 'Out March 3, 2027'}
+                        {lang === 'FR' ? 'Parution en février 2027' : 'Out February 2027'}
                       </span>
                     )}
                   </div>

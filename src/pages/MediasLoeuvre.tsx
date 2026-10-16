@@ -256,7 +256,7 @@ const MediasLoeuvre: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-cream/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                       {isLocked && (
                         <span className="absolute top-3 left-1/2 -translate-x-1/2 rounded-full bg-brass text-espressoDeep px-3 py-1 text-[0.58rem] uppercase tracking-[0.2em] font-bold shadow-md whitespace-nowrap">
-                          {lang === 'FR' ? 'Parution · 3 mars 2027' : 'Release · March 3, 2027'}
+                          {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
                         </span>
                       )}
                     </div>
@@ -277,8 +277,8 @@ const MediasLoeuvre: React.FC = () => {
                             type="button"
                             onClick={() => setWaitlistTarget({
                               id: 'parution-livre-3',
-                              labelFR: 'Parution · Titre à révéler (3 mars 2027)',
-                              labelEN: 'Release · Title to be revealed (March 3, 2027)',
+                              labelFR: 'Parution · Titre à révéler (février 2027)',
+                              labelEN: 'Release · Title to be revealed (February 2027)',
                             })}
                             className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-espresso px-5 py-3 font-sans text-[0.66rem] uppercase tracking-[0.18em] text-ctext transition-colors hover:bg-espressoDeep min-h-[44px]"
                           >

@@ -1098,7 +1098,7 @@ const App: React.FC = () => {
                     >Expérience Origine</a> dure douze semaines en
                     cohorte fondatrice, avec une partie inédite du
                     troisième tome de la trilogie (<em>Énergie &amp;
-                    Ayurveda</em>, parution le 3 mars 2027) partagée en
+                    Ayurveda</em>, parution en février 2027) partagée en
                     avant-première.
                   </p>
                 </section>
