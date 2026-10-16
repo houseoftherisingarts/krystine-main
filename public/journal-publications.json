@@ -8639,5 +8639,19 @@
       "src/pages/podcast/App.tsx",
       "src/pages/podcast/QuestionLive.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T22:19:08.358Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "441c166d",
+    "message": "Accueil, carte d'Expérience Origine : « Inscriptions dès le 1er novembre » remplace « Automne 2026 », et la phrase « revient cet automne » est retirée (aucune date de départ tant que Krystine n'a pas tranché)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/accueil/index.html",
+      "public/assets-manifest.json"
+    ]
   }
 ]
