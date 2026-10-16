@@ -28,7 +28,7 @@ import { DocumentsLecon, FenetreDocument, PALETTE_COURS } from '../components/co
 import BravoSemaine from '../components/cours/BravoSemaine';
 import BravoDiplome from '../components/cours/BravoDiplome';
 import type { DiplomeInfos } from '../components/cours/Diplome';
-import { programmeDe } from './cours/programmes';
+import { programmeDe, pastilleDe } from './cours/programmes';
 import { nettoyerKajabi, sansRepetitions, nomDocumentLisible } from './cours/nettoyerKajabi';
 import StickerFormat, { formatDe } from '../components/cours/StickerFormat';
 import { prixEnVigueur } from '../lib/versements';
@@ -93,7 +93,7 @@ const CoursDetailPage: React.FC = () => {
   const chapitreDeModule = (nom?: string) => programme?.chapitres[rangDeModule(nom)];
   // « Introduction », puis « Semaine 1 » à 7 : les mêmes mots partout (Krystine, 29 sept. 2026).
   const libelleSemaine = (s: { rang: number; sens: { fr: string; en: string } }) =>
-    `${(s as { etiquette?: { fr: string; en: string } }).etiquette ? etiquetteSemaine(s as never, lang === 'FR') : s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
+    `${(s as { pastille?: unknown }).pastille ? pastilleDe(s as never, programme!, lang === 'FR') : (s as { etiquette?: { fr: string; en: string } }).etiquette ? etiquetteSemaine(s as never, lang === 'FR') : s.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${s.rang}`} · ${lang === 'FR' ? s.sens.fr : s.sens.en}`;
   const CHAPITRES = programme?.chapitres ?? [];
   const [achete, setAchete] = useState(false);
   // Santé la vie achetée à l'épisode ou à la saison : seuls ces épisodes s'ouvrent
@@ -518,6 +518,16 @@ const CoursDetailPage: React.FC = () => {
         {/* Les cartes restent visibles en rangée, toutes, numérotées dans
             l'ordre, avec un cadenas sur les semaines à venir (Krystine, 29 sept.
             2026). La liste des leçons ne les répète plus. */}
+        {/* « Par où commencer » (Rituels essentiels, 15 oct. 2026) */}
+        {estVata && accessible && programme?.accueil && (
+          <section className="mx-auto mt-10 max-w-[1720px] px-5 md:px-10">
+            <div className="rounded-[18px] border border-[#BA7B39]/30 bg-[#28352F] px-6 py-7 text-[#EEE7DB] md:px-10 md:py-9">
+              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d9a05b]">{lang === 'FR' ? 'Bienvenue' : 'Welcome'}</p>
+              <h2 className="mt-3 font-serif text-[clamp(1.6rem,2.6vw,2.2rem)] leading-[1.1]">{lang === 'FR' ? programme.accueil.titre.fr : programme.accueil.titre.en}</h2>
+              <p className="mt-3 max-w-[70ch] text-[15px] leading-[1.75] text-[#EEE7DB]/85">{lang === 'FR' ? programme.accueil.texte.fr : programme.accueil.texte.en}</p>
+            </div>
+          </section>
+        )}
         {estVata && accessible && (
           <CheminSens programme={programme!} etats={etatsSemaines} courante={courante ? rangDeModule(courante.moduleNom) : -1} lang={lang} onOuvrir={ouvrirSemaine} />
         )}
@@ -951,7 +961,7 @@ const CoursDetailPage: React.FC = () => {
                           )}
                           {sem ? (
                             <span className="min-w-0">
-                              <span className="block text-[9px] opacity-70">{(sem as { etiquette?: unknown }).etiquette ? etiquetteSemaine(sem as never, lang === 'FR') : sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
+                              <span className="block text-[9px] opacity-70">{(sem as { pastille?: unknown }).pastille ? pastilleDe(sem as never, programme!, lang === 'FR') : (sem as { etiquette?: unknown }).etiquette ? etiquetteSemaine(sem as never, lang === 'FR') : sem.rang === 0 ? 'Introduction' : `${lang === 'FR' ? programme!.prefixe.fr : programme!.prefixe.en} ${sem.rang}`}</span>
                               <span className="block leading-snug">{lang === 'FR' ? sem.sens.fr : sem.sens.en}</span>
                             </span>
                           ) : <span className="min-w-0 truncate">{nomModule(g.nom)}</span>}
@@ -1130,6 +1140,24 @@ const CoursDetailPage: React.FC = () => {
                         </p>
                         {/* Sur Vata, le texte se justifie sous le lecteur (Krystine n'aime pas
                             le drapeau à gauche); la coupure des mots évite les rivières de blanc. */}
+                        {/* Ce que la capsule apprend et le geste du jour (Rituels essentiels, 15 oct. 2026). */}
+                        {programme?.resumes?.[courante.id] && (
+                          <div className="mt-6 max-w-[68ch] border-l-2 border-[#BA7B39] pl-5">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8B4A2F] dark:text-[#d9a05b]">Dans cette capsule</p>
+                            <p className="mt-1.5 text-[15px] leading-[1.7] text-[#3a2f23] dark:text-white/85">{programme.resumes[courante.id].apprend}</p>
+                            {programme.resumes[courante.id].geste && (<>
+                              <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.24em] text-[#8B4A2F] dark:text-[#d9a05b]">Le geste d’aujourd’hui</p>
+                              <p className="mt-1.5 font-serif text-[1.15rem] leading-[1.45] text-[#293027] dark:text-white">{programme.resumes[courante.id].geste}</p>
+                            </>)}
+                          </div>
+                        )}
+                        {programme?.suite?.lecons.includes(courante.id) && (
+                          <div className="mt-6 max-w-[68ch] rounded-[16px] bg-[#28352F] px-6 py-6 text-[#EEE7DB]">
+                            <p className="font-serif text-[1.35rem] leading-[1.2]">{programme.suite.titre}</p>
+                            <p className="mt-2 text-[14px] leading-[1.7] text-[#EEE7DB]/85">{programme.suite.texte}</p>
+                            <a href={programme.suite.lien} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-[#151d19] hover:bg-[#d9a05b]">{programme.suite.bouton} <i className="fa-solid fa-arrow-right" /></a>
+                          </div>
+                        )}
                         {courante.texte?.trim() && (
                           <TexteLecon
                             texte={sansRepetitions(

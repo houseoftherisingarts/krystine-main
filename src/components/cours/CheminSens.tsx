@@ -2,6 +2,11 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { SemaineVata } from '../../pages/vata/semaines';
 import type { Programme } from '../../pages/cours/programmes';
+import { Compass, Heartbeat, Wind, HandPalm, Leaf, BookOpenText } from '@phosphor-icons/react';
+
+const PICTOS: Record<string, React.ComponentType<{ size?: number; weight?: 'light' }>> = {
+  boussole: Compass, coeur: Heartbeat, souffle: Wind, main: HandPalm, feuille: Leaf, livre: BookOpenText,
+};
 
 // Le chemin des huit portes de la perception : chaque semaine devient une grande carte portrait
 // avec sa photo, et les cartes montent en cascade quand elles entrent dans
@@ -74,7 +79,9 @@ const Carte: React.FC<{
 
       <span className="absolute left-4 top-4 flex items-center gap-2">
         <span className="flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#d9a05b] backdrop-blur-sm">
-          {s.etiquette
+          {s.pastille
+            ? (lang === 'FR' ? s.pastille.fr : s.pastille.en)
+            : s.etiquette
             ? (lang === 'FR' ? s.etiquette.fr : s.etiquette.en)
             : s.rang === 0
               ? 'Introduction'
@@ -91,6 +98,16 @@ const Carte: React.FC<{
           </span>
         )}
       </span>
+
+      {/* Le picto de la promesse, posé sur la photo (Rituels essentiels, 15 oct. 2026). */}
+      {s.picto && PICTOS[s.picto] && (() => {
+        const Icone = PICTOS[s.picto!];
+        return (
+          <span aria-hidden className="absolute left-4 top-[3.6rem] grid h-9 w-9 place-items-center rounded-full bg-[#BA7B39] sm:left-auto sm:right-4 sm:top-4 sm:h-11 sm:w-11 text-[#151d19] shadow-[0_8px_22px_-10px_rgba(0,0,0,0.6)]">
+            <Icone size={19} weight="light" />
+          </span>
+        );
+      })()}
 
       <span className="absolute inset-x-0 bottom-0 block p-4 md:p-5">
         <span className="block font-serif text-[clamp(1.35rem,1.7vw,1.75rem)] leading-[1.1] text-[#EEE7DB]">

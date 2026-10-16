@@ -23,7 +23,37 @@ export interface Programme {
   prefixe: { fr: string; en: string };
   chapitres: Chapitre[];
   rangDeModule: (nom?: string) => number;
+  /** La carte « Par où commencer », au-dessus des modules. */
+  accueil?: { titre: { fr: string; en: string }; texte: { fr: string; en: string } };
+  /** Sous chaque leçon (par identifiant) : ce qu'elle apprend et le geste du jour. */
+  resumes?: Record<string, { apprend: string; geste?: string }>;
+  /** La porte vers la suite, sous les leçons nommées. */
+  suite?: { lecons: string[]; titre: string; texte: string; bouton: string; lien: string };
 }
+
+/** « Module 1 », « Bonus », « Introduction », « Semaine 3 » : la pastille d'un chapitre. */
+export function pastilleDe(s: Chapitre, programme: Programme, fr: boolean): string {
+  if (s.pastille) return fr ? s.pastille.fr : s.pastille.en;
+  if (s.etiquette) return fr ? s.etiquette.fr : s.etiquette.en;
+  if (s.rang === 0) return 'Introduction';
+  return `${fr ? programme.prefixe.fr : programme.prefixe.en} ${s.rang}`;
+}
+
+// ── Rituels essentiels · l'intérieur calqué sur VATA (Krystine, 15 oct. 2026) ──
+// Chaque carte porte le picto de la promesse que la cliente a lue en achetant. Les lignes
+// sous les capsules sont tirées des transcriptions (coffre, 20_formations).
+// Les visuels attendent la maquette de Krystine (15 oct. 2026) : d'ici là, la teinte et le picto.
+const RE_CH = { image: '', bandeau: '', vignette: '' };
+const RE: Chapitre[] = [
+  { rang: 0, roman: 'I', pastille: { fr: 'Module 1', en: 'Module 1' }, picto: 'boussole', sens: { fr: 'L’Ayurveda en bref', en: 'Ayurveda in brief' }, promesse: { fr: 'Retrouver un cap clair grâce à une sagesse ancienne, rendue simple aujourd’hui.', en: 'Find a clear course through an ancient wisdom made simple.' }, couleur: { encre: '#28352F', vive: '#4E6349' }, ...RE_CH },
+  { rang: 1, roman: 'II', pastille: { fr: 'Module 2', en: 'Module 2' }, picto: 'coeur', sens: { fr: 'L’automassage', en: 'Self-massage' }, promesse: { fr: 'Apaiser le système nerveux.', en: 'Soothe the nervous system.' }, couleur: { encre: '#8F6526', vive: '#C79A52' }, ...RE_CH },
+  { rang: 2, roman: 'III', pastille: { fr: 'Module 3', en: 'Module 3' }, picto: 'souffle', sens: { fr: 'Le nez et la bouche', en: 'Nose and mouth' }, promesse: { fr: 'Respirer mieux et clarifier vos pensées.', en: 'Breathe better and clear your thoughts.' }, couleur: { encre: '#44626D', vive: '#6E93A0' }, ...RE_CH },
+  { rang: 3, roman: 'IV', pastille: { fr: 'Module 4', en: 'Module 4' }, picto: 'main', sens: { fr: 'Les mains et les pieds', en: 'Hands and feet' }, promesse: { fr: 'Libérer les tensions accumulées dans les mains et les pieds.', en: 'Release the tension held in hands and feet.' }, couleur: { encre: '#8A4F2C', vive: '#BA7B39' }, ...RE_CH },
+  { rang: 4, roman: 'V', etiquette: { fr: 'Bonus', en: 'Bonus' }, picto: 'feuille', sens: { fr: 'Plantes, stress et sagesse', en: 'Plants, stress and wisdom' }, promesse: { fr: 'Le stress, l’insomnie et l’anxiété vus par l’Ayurveda, et les plantes qui apaisent le Vent.', en: 'Stress, insomnia and anxiety through Ayurveda, and the plants that calm the Wind.' }, couleur: { encre: '#4E6349', vive: '#7A9270' }, ...RE_CH },
+  { rang: 5, roman: 'VI', etiquette: { fr: 'À télécharger', en: 'Downloads' }, picto: 'livre', sens: { fr: 'Le guide des Rituels essentiels', en: 'The Essential rituals guide' }, promesse: { fr: '14 pages tirées de Nature & Ayurveda, pour garder les gestes sous la main.', en: '14 pages from Nature & Ayurveda, to keep the gestures at hand.' }, couleur: { encre: '#8F6526', vive: '#C79A52' }, ...RE_CH },
+];
+const RE_CLES: [RegExp, number][] = [[/ayurveda/i, 0], [/automassage/i, 1], [/nez|bouche/i, 2], [/mains|pieds/i, 3], [/plus loin/i, 4], [/t[ée]l[ée]charger/i, 5]];
+
 
 // Les teintes, du froid au chaud, comme la perception qui s'éclaircit.
 const T = [
@@ -62,6 +92,50 @@ const SP: Chapitre[] = ([
 }));
 
 export const PROGRAMMES: Record<string, Programme> = {
+  'rituels-vivants': {
+    id: 'rituels-vivants',
+    surtitre: { fr: 'Inspirés de l’Ayurveda', en: 'Inspired by Ayurveda' },
+    titre: { fr: 'Rituels\nessentiels', en: 'Essential\nrituals' },
+    couverture: '/rituels-vivants/seuil.webp',
+    duree: { fr: '10 capsules et un bonus', en: '10 capsules and a bonus' },
+    chemin: { etiquette: { fr: 'Le parcours', en: 'The path' }, titre: { fr: 'Moins de 5 minutes par jour', en: 'Less than 5 minutes a day' } },
+    unite: { fr: ['étape', 'étapes'], en: ['step', 'steps'] },
+    prefixe: { fr: 'Module', en: 'Module' },
+    chapitres: RE,
+    rangDeModule: (nom?: string) => {
+      if (!nom) return -1;
+      for (const [re, rang] of RE_CLES) if (re.test(nom)) return rang;
+      return -1;
+    },
+    accueil: {
+      titre: { fr: 'Par où commencer', en: 'Where to begin' },
+      texte: {
+        fr: 'Suivez les modules dans l’ordre, à votre rythme. Les trois capsules sur l’Ayurveda posent les bases, puis viennent les gestes, chacun en moins de 5 minutes par jour. Sous chaque capsule, une ligne vous dit ce qu’elle vous apprend et le geste à essayer aujourd’hui.',
+        en: 'Follow the modules in order, at your own pace. The three Ayurveda capsules lay the ground, then come the gestures, each in less than 5 minutes a day. Under each capsule, a line tells you what it teaches and the gesture to try today.',
+      },
+    },
+    resumes: {
+      '001': { apprend: 'Le parcours de Krystine, des soins intensifs aux plantes médicinales, et ce que veut dire Ayurveda : la science, la sagesse de la vie. Vous êtes unique, et non une moyenne.', geste: 'Observez une journée : ce qui vous fait du bien, et ce qui vous en fait moins.' },
+      '002': { apprend: 'La tête, le cœur, le corps et l’esprit ne se séparent pas. Nous portons les mêmes éléments que la nature, et les quatre portes du débalancement : le corps, les émotions, la déconnexion et la surstimulation des sens.', geste: 'Repérez laquelle des quatre portes est la plus ouverte chez vous en ce moment.' },
+      '003': { apprend: 'Les cinq éléments, dehors et dedans, et les trois doshas : Vata (Vent et Espace), Pitta (Feu et Eau), Kapha (Eau et Terre). Les saisons de la vie, et pourquoi le corps sait.', geste: 'Faites le quiz du site pour voir quels éléments sont les plus présents en ce moment.' },
+      '004': { apprend: 'L’huile se dit sneha, un mot qui veut dire aussi amour. Le bâton sec casse, le bâton huilé plie : ce que l’automassage quotidien fait aux tissus et au système nerveux.', geste: 'Massez-vous les mains et les pieds avec un peu d’huile, quelques minutes.' },
+      '005': { apprend: 'En vidéo, le rituel du matin : le brossage à sec, l’huile mêlée à l’eau sous la douche, un massage vigoureux, puis l’eau fraîche. Le rituel du soir est écrit sous la vidéo.', geste: 'Demain matin, essayez le massage vigoureux sous la douche.' },
+      '006': { apprend: 'Le massage de la poitrine, pour activer la circulation et éviter la stagnation, avec plein d’amour.', geste: 'Deux à cinq minutes de massage de la poitrine, le matin sous la douche ou le soir.' },
+      '007': { apprend: 'L’huile comme lien : le massage à deux, ou l’espace sacré que vous vous créez seule.', geste: 'Massez les mains ou les épaules d’une personne proche, ou les vôtres.' },
+      '008': { apprend: 'Le nez, porte du souffle : de 20 000 à 25 000 respirations par jour, l’huile au bout du doigt et la respiration alternée.', geste: 'Deux minutes de respiration alternée, cinq secondes pour inspirer, cinq pour expirer.' },
+      '009': { apprend: 'La bouche, porte de la digestion : la langue comme miroir du matin, le gratte-langue en cuivre et le gargarisme à l’huile.', geste: 'Au réveil, regardez la langue dans le miroir, puis grattez-la de cinq à sept fois.' },
+      '010': { apprend: 'Masser les mains et les pieds pour déloger les tensions, puis s’enraciner.', geste: 'Ce soir, massez les pieds et gardez des bas de laine pour la nuit.' },
+      '011': { apprend: 'Le stress, l’insomnie et l’anxiété vus par l’Ayurveda : trop de Vent, et les plantes qui l’apaisent.' },
+      '012': { apprend: 'Le guide de 14 pages, tiré de Nature & Ayurveda : les gestes des capsules, à garder sous la main.' },
+    },
+    suite: {
+      lecons: ['011', '012'],
+      titre: 'Pour aller plus loin',
+      texte: 'Lorsque le Vent prend trop de place, le mental s’emballe et les nuits se fragmentent. VATA Essentiel prolonge ces gestes, semaine après semaine.',
+      bouton: 'Découvrir VATA Essentiel',
+      lien: '/vata?via=cours-rituels',
+    },
+  },
   'kajabi-2148687644': {
     id: 'kajabi-2148687644',
     surtitre: { fr: 'L’Expérience Ayurveda', en: 'The Ayurveda Experience' },

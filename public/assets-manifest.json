@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T00:51:56.475Z",
+  "generatedAt": "2026-10-16T01:57:45.609Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2730,6 +2730,13 @@
       "folder": "rituels-vivants",
       "kind": "image",
       "size": 31176
+    },
+    {
+      "path": "/rituels-vivants/seuil.webp",
+      "name": "seuil.webp",
+      "folder": "rituels-vivants",
+      "kind": "image",
+      "size": 56936
     },
     {
       "path": "/rituels-vivants/soin-de-la-bouche.webp",
