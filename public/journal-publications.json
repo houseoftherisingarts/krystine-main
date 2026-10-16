@@ -8667,5 +8667,21 @@
       "public/assets-manifest.json",
       "public/communaute/index.html"
     ]
+  },
+  {
+    "quand": "2026-10-16T22:49:31.420Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "96799cfb",
+    "message": "Bilan du matin : les chiffres de la boutique sont lus directement dans Shopify (le webhook en manquait), remboursements déduits, et une nouvelle section « Revenus mois par mois » depuis janvier (boutique + site = total, et le cumul depuis le 1er janvier)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/filet.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
