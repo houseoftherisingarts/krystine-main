@@ -28,6 +28,8 @@ export interface SemaineVata {
   pastille?: { fr: string; en: string };
   /** Le picto posé sur la photo de la carte (celui de la promesse de la page de vente). */
   picto?: 'lotus' | 'goutte' | 'souffle' | 'arbre' | 'pousse' | 'livre';
+  /** Une carte qui mène à sa propre page au lieu d'ouvrir des leçons (« La suite » des Rituels). */
+  lien?: string;
 }
 
 const img = (n: number) => ({

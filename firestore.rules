@@ -462,6 +462,10 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow write: if false;
     }
+    match /vecuRituels/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
 
     // ── Newsletter campaigns ──
     // Only admins can create, update, delete. Bodies are readable by anyone

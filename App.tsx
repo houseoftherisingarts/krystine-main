@@ -54,6 +54,7 @@ const AdminDashboard   = lazy(() => import('./src/pages/AdminDashboard'));
 const UnsubscribePage  = lazy(() => import('./src/pages/UnsubscribePage'));
 const MesChoix = lazy(() => import('./src/pages/MesChoix'));
 const RituelsReponse = lazy(() => import('./src/pages/RituelsReponse'));
+const RituelsLaSuite = lazy(() => import('./src/pages/RituelsLaSuite'));
 const EvaluationVata = lazy(() => import('./src/pages/EvaluationVata'));
 const SlideBg          = lazy(() => import('./src/pages/SlideBg'));
 // /vexel is the hidden inbox for Salon des Inconnus website-inquiry leads
@@ -394,6 +395,7 @@ const App: React.FC = () => (
           <Route path="/desinscription" element={<UnsubscribePage />} />
           <Route path="/mes-choix" element={<MesChoix />} />
           <Route path="/rituels-reponse" element={<RituelsReponse />} />
+          <Route path="/rituels-essentiels/la-suite" element={<RituelsLaSuite />} />
           {/* L'évaluation de fin de VATA Essentiel (3 oct. 2026) */}
           <Route path="/evaluation/vata" element={<EvaluationVata />} />
           {/* Hidden / unlisted — slide-style background of the home hero */}

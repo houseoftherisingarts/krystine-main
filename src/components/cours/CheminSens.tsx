@@ -82,7 +82,7 @@ const Carte: React.FC<{
   return (
     <motion.button
       type="button"
-      onClick={onOuvrir}
+      onClick={s.lien ? () => window.location.assign(s.lien!) : onOuvrir}
       initial={reduce ? false : { opacity: 0, y: 40, filter: 'blur(5px)' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once: true, amount: 0.25 }}
@@ -168,7 +168,9 @@ const Carte: React.FC<{
             ? (etat?.ouvertureLe
                 ? (lang === 'FR' ? `S’ouvre le ${etat.ouvertureLe}` : `Opens ${etat.ouvertureLe}`)
                 : (lang === 'FR' ? 'S’ouvre bientôt' : 'Opens soon'))
-            : total > 0
+            : s.lien
+              ? (lang === 'FR' ? 'Ouvrir' : 'Open')
+              : total > 0
               ? `${faites}/${total} ${lang === 'FR' ? 'leçons' : 'lessons'}`
               : lang === 'FR' ? 'À venir' : 'Coming'}
         </span>

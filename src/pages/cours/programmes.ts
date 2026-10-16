@@ -28,7 +28,7 @@ export interface Programme {
   /** Sous chaque leçon (par identifiant) : ce qu'elle apprend et le geste du jour. */
   resumes?: Record<string, { apprend: string; geste?: string }>;
   /** La porte vers la suite, sous les leçons nommées. */
-  suite?: { lecons: string[]; titre: string; texte: string; bouton: string; lien: string };
+  suite?: { lecons: string[]; titre: string; texte: string; bouton: string; lien: string; surtitre?: string; phrase?: string; image?: string; details?: string[] };
 }
 
 /** « Module 1 », « Bonus », « Introduction », « Semaine 3 » : la pastille d'un chapitre. */
@@ -50,10 +50,10 @@ const RE: Chapitre[] = [
   { rang: 1, roman: 'II', pastille: { fr: 'Module 2', en: 'Module 2' }, picto: 'goutte', sens: { fr: 'L’automassage', en: 'Self-massage' }, promesse: { fr: 'Apaiser le système nerveux.', en: 'Soothe the nervous system.' }, couleur: { encre: '#4E6349', vive: '#7A9270' }, ...RE_CH },
   { rang: 2, roman: 'III', pastille: { fr: 'Module 3', en: 'Module 3' }, picto: 'souffle', sens: { fr: 'Le nez et la bouche', en: 'Nose and mouth' }, promesse: { fr: 'Respirer mieux et clarifier vos pensées.', en: 'Breathe better and clear your thoughts.' }, couleur: { encre: '#6A6B41', vive: '#9BA067' }, ...RE_CH },
   { rang: 3, roman: 'IV', pastille: { fr: 'Module 4', en: 'Module 4' }, picto: 'arbre', sens: { fr: 'Les mains et les pieds', en: 'Hands and feet' }, promesse: { fr: 'Libérer les tensions accumulées dans les mains et les pieds.', en: 'Release the tension held in hands and feet.' }, couleur: { encre: '#8A4F2C', vive: '#BA7B39' }, ...RE_CH },
-  { rang: 4, roman: 'V', etiquette: { fr: 'Bonus', en: 'Bonus' }, picto: 'pousse', sens: { fr: 'Plantes, stress et sagesse', en: 'Plants, stress and wisdom' }, promesse: { fr: 'Le stress, l’insomnie et l’anxiété vus par l’Ayurveda, et les plantes qui apaisent le Vent.', en: 'Stress, insomnia and anxiety through Ayurveda, and the plants that calm the Wind.' }, couleur: { encre: '#28352F', vive: '#5E7F6B' }, ...RE_CH },
+  { rang: 4, roman: 'V', etiquette: { fr: 'Bonus', en: 'Bonus' }, picto: 'pousse', lien: '/rituels-essentiels/la-suite', sens: { fr: 'Et après les Rituels ?', en: 'And after the rituals?' }, promesse: { fr: 'Un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble.', en: 'A small mirror of what you lived, and the next step that suits you.' }, couleur: { encre: '#28352F', vive: '#5E7F6B' }, ...RE_CH },
   { rang: 5, roman: 'VI', etiquette: { fr: 'À télécharger', en: 'Downloads' }, picto: 'livre', sens: { fr: 'Le guide des Rituels essentiels', en: 'The Essential rituals guide' }, promesse: { fr: '14 pages tirées de Nature & Ayurveda, pour garder les gestes sous la main.', en: '14 pages from Nature & Ayurveda, to keep the gestures at hand.' }, couleur: { encre: '#7d6330', vive: '#BA9A5E' }, ...RE_CH },
 ];
-const RE_CLES: [RegExp, number][] = [[/ayurveda/i, 0], [/automassage/i, 1], [/nez|bouche/i, 2], [/mains|pieds/i, 3], [/plus loin/i, 4], [/t[ée]l[ée]charger/i, 5]];
+const RE_CLES: [RegExp, number][] = [[/ayurveda/i, 0], [/automassage/i, 1], [/nez|bouche/i, 2], [/mains|pieds/i, 3], [/t[ée]l[ée]charger/i, 5]];
 
 
 // Les teintes, du froid au chaud, comme la perception qui s'éclaircit.
@@ -98,7 +98,7 @@ export const PROGRAMMES: Record<string, Programme> = {
     surtitre: { fr: 'Inspirés de l’Ayurveda', en: 'Inspired by Ayurveda' },
     titre: { fr: 'Rituels\nessentiels', en: 'Essential\nrituals' },
     couverture: '/rituels-vivants/seuil.webp',
-    duree: { fr: '10 capsules et un bonus', en: '10 capsules and a bonus' },
+    duree: { fr: '10 capsules', en: '10 capsules' },
     chemin: { etiquette: { fr: 'Le parcours', en: 'The path' }, titre: { fr: 'Moins de 5 minutes par jour', en: 'Less than 5 minutes a day' } },
     unite: { fr: ['étape', 'étapes'], en: ['step', 'steps'] },
     prefixe: { fr: 'Module', en: 'Module' },
@@ -126,13 +126,16 @@ export const PROGRAMMES: Record<string, Programme> = {
       '008': { apprend: 'Le nez, porte du souffle : de 20 000 à 25 000 respirations par jour, l’huile au bout du doigt et la respiration alternée.', geste: 'Deux minutes de respiration alternée, cinq secondes pour inspirer, cinq pour expirer.' },
       '009': { apprend: 'La bouche, porte de la digestion : la langue comme miroir du matin, le gratte-langue en cuivre et le gargarisme à l’huile.', geste: 'Au réveil, regardez la langue dans le miroir, puis grattez-la de cinq à sept fois.' },
       '010': { apprend: 'Masser les mains et les pieds pour déloger les tensions, puis s’enraciner.', geste: 'Ce soir, massez les pieds et gardez des bas de laine pour la nuit.' },
-      '011': { apprend: 'Le stress, l’insomnie et l’anxiété vus par l’Ayurveda : trop de Vent, et les plantes qui l’apaisent.' },
       '012': { apprend: 'Le guide de 14 pages, tiré de Nature & Ayurveda : les gestes des capsules, à garder sous la main.' },
     },
     suite: {
-      lecons: ['011', '012'],
-      titre: 'Pour aller plus loin',
+      lecons: [],
+      surtitre: 'Pour aller plus loin',
+      titre: 'VATA Essentiel',
+      phrase: 'Apaiser le mental, un sens à la fois',
       texte: 'Lorsque le Vent prend trop de place, le mental s’emballe et les nuits se fragmentent. VATA Essentiel prolonge ces gestes, semaine après semaine.',
+      image: '/vata/carte-eventail.jpg',
+      details: ['16 capsules audio', '7 semaines', '19 rituels', 'Un guide de 204 pages'],
       bouton: 'Découvrir VATA Essentiel',
       lien: '/vata?via=cours-rituels',
     },

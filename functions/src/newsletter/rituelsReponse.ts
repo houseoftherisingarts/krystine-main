@@ -33,3 +33,26 @@ export const enregistrerRituels = onCall({ region: 'us-central1', cors: true }, 
   }, { merge: true });
   return { ok: true };
 });
+
+// ─── Le miroir de fin du cours (Krystine, 15 oct. 2026) ─────────────────────
+// Sous le bonus et le guide : « Comment vous sentez-vous après ces gestes ? ».
+// L'acheteuse est connectée : sa réponse se pose dans vecuRituels/{uid}, lu
+// par l'admin (carte « Le miroir des Rituels »), et la suite qu'on lui montre
+// en dépend (VATA en prolongement, VATA en réponse, ou un seul geste, sans vente).
+const VECUS = ['calme', 'agite', 'rythme'] as const;
+
+export const enregistrerVecu = onCall({ region: 'us-central1' }, async (req) => {
+  const uid = req.auth?.uid;
+  if (!uid) throw new HttpsError('unauthenticated', 'Connexion requise.');
+  const r = String((req.data as { r?: unknown } | undefined)?.r || '');
+  if (!(VECUS as readonly string[]).includes(r)) throw new HttpsError('invalid-argument', 'Réponse inconnue.');
+  const t = req.auth?.token as { email?: string; name?: string } | undefined;
+  await getFirestore().doc(`vecuRituels/${uid}`).set({
+    email: t?.email || '',
+    prenom: String(t?.name || '').trim().split(/\s+/)[0] || '',
+    reponse: r,
+    le: FieldValue.serverTimestamp(),
+    historique: FieldValue.arrayUnion({ reponse: r, le: new Date().toISOString() }),
+  }, { merge: true });
+  return { ok: true };
+});

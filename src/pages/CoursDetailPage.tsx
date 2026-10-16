@@ -531,6 +531,7 @@ const CoursDetailPage: React.FC = () => {
         {estVata && accessible && (
           <CheminSens programme={programme!} etats={etatsSemaines} courante={courante ? rangDeModule(courante.moduleNom) : -1} lang={lang} onOuvrir={ouvrirSemaine} />
         )}
+
         {avisVerrou && (
           <p role="status" className="fixed inset-x-4 bottom-6 z-50 mx-auto w-fit max-w-[calc(100%-2rem)] rounded-full border border-[#BA7B39]/40 bg-[#151d19]/92 px-5 py-2.5 text-center text-[13px] text-[#EEE7DB] shadow-[0_14px_36px_-16px_rgba(20,19,17,0.8)] backdrop-blur-md">
             <i className="fa-solid fa-lock mr-2 text-[11px] text-[#d9a05b]" />{avisVerrou}
@@ -1151,13 +1152,6 @@ const CoursDetailPage: React.FC = () => {
                             </>)}
                           </div>
                         )}
-                        {programme?.suite?.lecons.includes(courante.id) && (
-                          <div className="mt-6 max-w-[68ch] rounded-[16px] bg-[#28352F] px-6 py-6 text-[#EEE7DB]">
-                            <p className="font-serif text-[1.35rem] leading-[1.2]">{programme.suite.titre}</p>
-                            <p className="mt-2 text-[14px] leading-[1.7] text-[#EEE7DB]/85">{programme.suite.texte}</p>
-                            <a href={programme.suite.lien} className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#BA7B39] px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-[#151d19] hover:bg-[#d9a05b]">{programme.suite.bouton} <i className="fa-solid fa-arrow-right" /></a>
-                          </div>
-                        )}
                         {courante.texte?.trim() && (
                           <TexteLecon
                             texte={sansRepetitions(
@@ -1244,9 +1238,9 @@ const CoursDetailPage: React.FC = () => {
               const semaine = lecons.filter(l => !verrouillee(l) && rangDeModule(l.moduleNom) === rang);
               const docs: Array<{ cle: string; titre: string; image: string; url: (t?: { nom: string }) => Promise<string> }> = [];
               semaine.forEach(l => {
-                if (l.type === 'pdf') docs.push({ cle: l.id, titre: l.titre, image: `/vata/documents/${l.id}.jpg`, url: t => urlDeLecon(id, l.id, t) });
+                if (l.type === 'pdf') docs.push({ cle: l.id, titre: l.titre, image: id === FORMATION_VATA ? `/vata/documents/${l.id}.jpg` : `/cours-documents/${id}/${l.id}.jpg`, url: t => urlDeLecon(id, l.id, t) });
                 else (l.docs || []).forEach((d, i) => {
-                  if (/\.pdf$/i.test(d.nom)) docs.push({ cle: `${l.id}-${i}`, titre: nomDocumentLisible(d.nom, l.titre, l.docs!.length), image: `/vata/documents/${l.id}-${i}.jpg`, url: t => urlDeDocumentLecon(id, l.id, i, t) });
+                  if (/\.pdf$/i.test(d.nom)) docs.push({ cle: `${l.id}-${i}`, titre: nomDocumentLisible(d.nom, l.titre, l.docs!.length), image: id === FORMATION_VATA ? `/vata/documents/${l.id}-${i}.jpg` : `/cours-documents/${id}/${l.id}-${i}.jpg`, url: t => urlDeDocumentLecon(id, l.id, i, t) });
                 });
               });
               const c = programme!.chapitres[rang];

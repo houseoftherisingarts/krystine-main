@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T02:18:29.529Z",
+  "generatedAt": "2026-10-16T02:30:40.724Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -1022,6 +1022,13 @@
       "folder": "conferences",
       "kind": "image",
       "size": 241418
+    },
+    {
+      "path": "/cours-documents/rituels-vivants/012.jpg",
+      "name": "012.jpg",
+      "folder": "cours-documents/rituels-vivants",
+      "kind": "image",
+      "size": 28909
     },
     {
       "path": "/evenements/anglicane-large.webp",
