@@ -4,6 +4,7 @@ import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO } from './newsletter/mail';
 import { assertAdmin } from './newsletter/send';
 import { calculerBilan, rangerEtEnvoyerBilan } from './bilan';
+import { SECRETS_SHOPIFY } from './shopify/jeton';
 
 // ─── Le filet du matin (Krystine, 4 oct. 2026) ──────────────────────────────
 // Le 3 oct. 2026, une version du site construite sans la clé anti-robot a
@@ -143,7 +144,7 @@ async function rangerEtAlerter(r: Awaited<ReturnType<typeof calculerFilet>>) {
 }
 
 export const filetDuMatin = onSchedule(
-  { schedule: '30 6 * * *', timeZone: 'America/Toronto', region: 'us-central1', timeoutSeconds: 540, memory: '512MiB', secrets: [...MAIL_SECRETS] },
+  { schedule: '30 6 * * *', timeZone: 'America/Toronto', region: 'us-central1', timeoutSeconds: 540, memory: '512MiB', secrets: [...MAIL_SECRETS, ...SECRETS_SHOPIFY] },
   async () => {
     const r = await calculerFilet();
     console.log('[filetDuMatin]', r.verdict, JSON.stringify(r.chiffres));

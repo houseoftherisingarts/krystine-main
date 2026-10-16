@@ -3,6 +3,7 @@ import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO } from './newsletter/mail';
 import { assertAdmin } from './newsletter/send';
 import { calculerFilet } from './filet';
+import { jetonShopify, SECRETS_SHOPIFY } from './shopify/jeton';
 
 // ─── Le bilan du matin (Krystine, 6 oct. 2026) ──────────────────────────────
 // « Une tâche chaque matin pour s'assurer que tout fonctionne et aller
@@ -153,7 +154,56 @@ async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; 
   };
 }
 
-/** Shopify : seulement si le webhook a rangé au moins une commande dans les 30 derniers jours. */
+interface CommandeShopify { nom: string; numero: number; montant: number; cree: Date }
+/**
+ * Les commandes lues directement dans Shopify (16 oct. 2026, Krystine : « tes stats
+ * de Shopify ne sont pas à jour ») : le webhook en manquait. Montant = total actuel
+ * de la commande (remboursements déduits), commandes annulées et tests exclus.
+ */
+async function commandesShopifyEntre(de: Date, a: Date): Promise<CommandeShopify[]> {
+  const { shop, token } = await jetonShopify();
+  const q = `created_at:>='${de.toISOString()}' created_at:<'${a.toISOString()}'`;
+  const toutes: CommandeShopify[] = [];
+  let apres: string | null = null;
+  for (let page = 0; page < 40; page++) {
+    const resp = await fetch(`https://${shop}/admin/api/2026-07/graphql.json`, {
+      method: 'POST',
+      headers: { 'X-Shopify-Access-Token': token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: `query($q: String!, $apres: String) { orders(first: 250, after: $apres, query: $q, sortKey: CREATED_AT) {
+          nodes { name number createdAt cancelledAt test currentTotalPriceSet { shopMoney { amount } } }
+          pageInfo { hasNextPage endCursor } } }`,
+        variables: { q, apres },
+      }),
+    });
+    if (!resp.ok) throw new Error(`Shopify ${resp.status}: ${(await resp.text()).slice(0, 200)}`);
+    const json = (await resp.json()) as {
+      data?: { orders: { nodes: { name: string; number: number; createdAt: string; cancelledAt: string | null; test: boolean; currentTotalPriceSet: { shopMoney: { amount: string } } }[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } } };
+      errors?: { message: string }[];
+    };
+    if (json.errors?.length || !json.data) throw new Error(`Shopify : ${(json.errors || []).map((e) => e.message).join('; ').slice(0, 300)}`);
+    for (const o of json.data.orders.nodes) {
+      const montant = Number(o.currentTotalPriceSet.shopMoney.amount) || 0;
+      if (o.cancelledAt || o.test || montant <= 1) continue;
+      toutes.push({ nom: o.name, numero: o.number, montant, cree: new Date(o.createdAt) });
+    }
+    if (!json.data.orders.pageInfo.hasNextPage) break;
+    apres = json.data.orders.pageInfo.endCursor;
+  }
+  return toutes;
+}
+
+/** Les commandes Shopify d'une fenêtre, prises dans la liste lue directement (sinon dans le webhook). */
+function shopifyDans(liste: CommandeShopify[], de: Date, a: Date) {
+  const vraies = liste.filter((o) => o.cree >= de && o.cree < a).sort((x, y) => x.numero - y.numero);
+  return {
+    n: vraies.length,
+    montant: Math.round(vraies.reduce((s, o) => s + o.montant, 0) * 100) / 100,
+    commandes: vraies.map((o) => ({ nom: o.nom, montant: o.montant })),
+  };
+}
+
+/** Shopify par le webhook (secours) : seulement si le webhook a rangé au moins une commande dans les 30 derniers jours. */
 async function shopify(de: Date, a: Date, il30: Date): Promise<{ n: number; montant: number; commandes: { nom: string; montant: number }[] } | null> {
   const col = getFirestore().collection('shopifyOrders');
   if ((await col.where('createdAt', '>=', ts(il30)).limit(1).get()).empty) return null;
@@ -411,9 +461,27 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   const moisDebut = `${hier.slice(0, 8)}01`;
   const debutMois = minuit(moisDebut);
 
+  // Les revenus mois par mois depuis janvier, jusqu'à hier inclus (Krystine, 16 oct. 2026 : « on doit mettre les revenus mensuels aussi, clairement »).
+  const annee = hier.slice(0, 4);
+  const debutAnnee = minuit(`${annee}-01-01`);
+  const commandesAnnee = await sur(() => commandesShopifyEntre(debutAnnee, debutAujourdhui));
+  const shopDirect = (de: Date, a: Date) => (commandesAnnee ? Promise.resolve(shopifyDans(commandesAnnee, de, a)) : shopify(de, a, il30));
+  const moisListe = Array.from({ length: Number(hier.slice(5, 7)) }, (_, i) => `${annee}-${String(i + 1).padStart(2, '0')}-01`);
+  const revenusMensuels = await Promise.all(moisListe.map(async (debut, i) => {
+    const fin = i + 1 < moisListe.length ? minuit(moisListe[i + 1]) : debutAujourdhui;
+    const [site, boutique] = await Promise.all([sur(() => ventes(minuit(debut), fin)), sur(() => shopDirect(minuit(debut), fin))]);
+    return {
+      mois: debut.slice(0, 7),
+      site: site?.montant ?? null,
+      ventesSite: site?.n ?? null,
+      boutique: boutique?.montant ?? null,
+      commandes: boutique?.n ?? null,
+      total: site && boutique ? Math.round((site.montant + boutique.montant) * 100) / 100 : null,
+    };
+  }));
   const [venMois, shopMois] = await Promise.all([
     sur(() => ventes(debutMois, debutAujourdhui)),
-    sur(() => shopify(debutMois, debutAujourdhui, il30)),
+    sur(() => shopDirect(debutMois, debutAujourdhui)),
   ]);
   const [filet, jH, j7, insH, ins7, resH, res7, venH, ven7, shopH, shop7, desH, des7, pepinsH, pepinsOuverts, aRattraper] = await Promise.all([
     filetDeja ? Promise.resolve(filetDeja) : sur(calculerFilet),
@@ -425,8 +493,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     sur(() => compterEntre('doshaResults', 'createdAt', debut7, debutAujourdhui)),
     sur(() => ventes(debutHier, debutAujourdhui)),
     sur(() => ventes(debut7, debutAujourdhui)),
-    sur(() => shopify(debutHier, debutAujourdhui, il30)),
-    sur(() => shopify(debut7, debutAujourdhui, il30)),
+    sur(() => shopDirect(debutHier, debutAujourdhui)),
+    sur(() => shopDirect(debut7, debutAujourdhui)),
     sur(() => compterEntre('newsletter', 'unsubscribedAt', debutHier, debutAujourdhui)),
     sur(() => compterEntre('newsletter', 'unsubscribedAt', debut7, debutAujourdhui)),
     sur(() => compterEntre('bugs', 'cree', debutHier, debutAujourdhui)),
@@ -484,6 +552,8 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
       ventes: venMois?.n ?? null, montantVentes: venMois?.montant ?? null, detailVentes: venMois?.detail ?? [],
       shopify: shopMois ? { n: shopMois.n, montant: shopMois.montant } : null,
     },
+    revenusMensuels,
+    sourceBoutique: commandesAnnee ? 'shopify' : 'webhook',
     surveiller,
     verifComplete: verif,
     commentaires: comm,
@@ -585,7 +655,7 @@ export function texteBilan(b: Bilan): string {
   const avant7 = (m?.detailVentes ?? []).filter((l) => l.jour && l.jour < b.septDebut);
   const nomMois = new Date(`${m?.debut ?? b.veille}T12:00:00Z`).toLocaleDateString('fr-CA', { month: 'long', timeZone: 'UTC' });
   const bloc3: string[] = [
-    `Site = formations, niskas et pourboires, taxes comprises (ventes test de 1 $ exclues). Boutique = commandes Shopify.`,
+    `Site = formations, niskas et pourboires, taxes comprises (ventes test de 1 $ exclues). Boutique = commandes lues directement dans Shopify, taxes et livraison comprises, remboursements déduits${b.sourceBoutique === 'webhook' ? ' (Shopify n’a pas répondu ce matin : chiffres du webhook, possiblement incomplets)' : ''}.`,
     `${hierTxt[0].toUpperCase()}${hierTxt.slice(1)}`,
     `• Site : ${ventesSite(v.ventes, v.montantVentes)}`,
     ...(v.detailVentes ?? []).map(ligneVente),
@@ -601,6 +671,16 @@ export function texteBilan(b: Bilan): string {
       ...(shop(m.shopify) ? [`• Boutique : ${shop(m.shopify)}`] : []),
     ] : []),
   ];
+  const rm = b.revenusMensuels ?? [];
+  if (rm.length) {
+    const nomDe = (mois: string) => new Date(`${mois}-15T12:00:00Z`).toLocaleDateString('fr-CA', { month: 'long', timeZone: 'UTC' });
+    const somme = (k: 'site' | 'boutique' | 'total') => (rm.some((r) => r[k] == null) ? null : Math.round(rm.reduce((x, r) => x + (r[k] ?? 0), 0) * 100) / 100);
+    bloc3.push(
+      `Revenus mois par mois, ${rm[0].mois.slice(0, 4)} (boutique + site = total)`,
+      ...rm.map((r, i) => `• ${nomDe(r.mois)}${i === rm.length - 1 ? ` (au ${jourCourt(b.veille)})` : ''} : boutique ${argent(r.boutique)}${r.commandes != null ? ` (${pluriel(r.commandes, 'commande')})` : ''} + site ${argent(r.site)} = ${argent(r.total)}`),
+      `• Depuis le 1er janvier : boutique ${argent(somme('boutique'))} + site ${argent(somme('site'))} = ${argent(somme('total'))}`,
+    );
+  }
 
   // ── 4. La liste et le quiz ──
   const sources = Object.entries(v.parSource).sort((a, x) => x[1] - a[1]).map(([k, x]) => `${k} ${x}`).join(', ');
@@ -706,7 +786,7 @@ export async function rangerEtEnvoyerBilan(b: Bilan, envoyer = true) {
 // Le même bilan, à la demande, depuis l'admin ou par Iris. Le courriel ne
 // part jamais qu'à Krystine.
 export const lancerBilan = onCall(
-  { region: 'us-central1', timeoutSeconds: 300, memory: '512MiB', secrets: [...MAIL_SECRETS] },
+  { region: 'us-central1', timeoutSeconds: 300, memory: '512MiB', secrets: [...MAIL_SECRETS, ...SECRETS_SHOPIFY] },
   async (req) => {
     assertAdmin(req);
     const b = await calculerBilan();
