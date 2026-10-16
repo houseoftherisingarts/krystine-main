@@ -8455,5 +8455,21 @@
       "public/assets-manifest.json",
       "src/pages/admin/sections/dashboard/MiroirRituelsCard.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T03:01:25.543Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a5ef984e",
+    "message": "Page de vente des Rituels (/rituels-essentiels) : l'éventail d'arrêts sur image et l'extrait qui coupaient le visage de Krystine remplacés par la photo « Le fondu », sans visage; les images du soin du nez et de l'automassage recadrées pour ne garder que les gestes",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/rituels-vivants/automassage-bras.webp",
+      "public/rituels-vivants/soin-du-nez.webp",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
