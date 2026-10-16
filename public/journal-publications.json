@@ -8710,5 +8710,19 @@
       "src/pages/origine/components/components/ui/PricingSection.tsx",
       "src/pages/podcast/App.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T23:36:41.152Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "eaa375db",
+    "message": "/podcast/question : un direct passé ne s'affiche plus (le direct du 18 septembre restait), seulement le direct du podcast en cours ou le prochain; les Dimanches d'Origine n'y apparaissent pas",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/podcast/QuestionLive.tsx"
+    ]
   }
 ]
