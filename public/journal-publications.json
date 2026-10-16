@@ -8382,5 +8382,22 @@
       "src/pages/cours/programmes.ts",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-10-16T02:09:16.146Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e96db162",
+    "message": "Cours des Rituels essentiels : cartes en teintes qui avancent du bleu ardoise au cuivre, grand picto nommé sur chaque carte (lotus, goutte, souffle, arbre, pousse, livre) et le même picto dans la liste des capsules à la place du chiffre",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/CheminSens.tsx",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/cours/programmes.ts",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
