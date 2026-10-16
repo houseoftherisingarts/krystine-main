@@ -81,13 +81,17 @@ const MONTAGE_SLV = { src: '/medias/sante-la-vie-montage.mp4', poster: '/medias/
 const VideoMedia: React.FC<{ lang: string; src: string; poster: string; label: string; bouton: [string, string]; etiquette: string; legende: string }> = ({ lang, src, poster, label, bouton, etiquette, legende }) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [joue, setJoue] = useState(false);
+  // Entre le clic et la première image, la vidéo se charge (13 à 50 Mo) : sans
+  // signe d'attente, des visiteuses recliquaient (clics sans effet, 16 oct. 2026).
+  const [attend, setAttend] = useState(false);
   const lancer = () => {
     const v = ref.current;
     if (!v) return;
     // Une seule vidéo à la fois sur la page (tour des boutons, 9 oct. 2026).
     document.querySelectorAll('video').forEach((o) => { if (o !== v && !o.muted) o.pause(); });
     v.muted = false;
-    v.play().catch(() => {});
+    setAttend(true);
+    v.play().catch(() => setAttend(false));
     setJoue(true);
   };
   return (
@@ -102,6 +106,9 @@ const VideoMedia: React.FC<{ lang: string; src: string; poster: string; label: s
           playsInline
           preload="metadata"
           onPlay={() => setJoue(true)}
+          onPlaying={() => setAttend(false)}
+          onWaiting={() => setAttend(true)}
+          onPause={() => setAttend(false)}
           aria-label={label}
           className="h-full w-full object-cover"
         />
@@ -116,6 +123,11 @@ const VideoMedia: React.FC<{ lang: string; src: string; poster: string; label: s
               <Play size={22} weight="fill" className="translate-x-[2px]" />
             </span>
           </button>
+        )}
+        {joue && attend && (
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center" role="status" aria-label={lang === 'FR' ? 'La vidéo se charge' : 'The video is loading'}>
+            <span className="h-12 w-12 animate-spin rounded-full border-2 border-[#f4efe6]/25 border-t-[#f4efe6]" />
+          </span>
         )}
         {!joue && (
           <span className="pointer-events-none absolute left-0 top-0 bg-[#1c1712] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.24em] text-[#f4efe6]">
