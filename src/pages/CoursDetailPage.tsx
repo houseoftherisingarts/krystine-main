@@ -12,7 +12,7 @@ import {
   urlDeLecon, marquerFormationTerminee,
   type Formation, type Lecon,
 } from '../firebase/formations';
-import { useAuth, useUI } from '../contexts/AppContext';
+import { useApp, useAuth, useUI } from '../contexts/AppContext';
 import { SANTE_LA_VIE_ID } from '../lib/pointsConfig';
 import CadreFoyer from '../components/communaute/CadreFoyer';
 import { getMember } from '../firebase/firestore';
@@ -78,6 +78,7 @@ const CoursDetailPage: React.FC = () => {
   const id = idDeCours(idAdresse);
   const { user, isAdmin } = useAuth();
   const { lang } = useUI();
+  const { setSignInOpen } = useApp();
   const [formation, setFormation] = useState<Formation | null>(null);
   // Le rabais qui attend une membre arrivée par le code d'une ambassadrice.
   const [rabaisAmb, setRabaisAmb] = useState<{ rabaisPct: number; nom: string } | null>(null);
@@ -848,6 +849,16 @@ const CoursDetailPage: React.FC = () => {
                   <p className="mt-3 text-xs text-[#38403a]/50 dark:text-white/50">
                     {lang === 'FR' ? 'Paiement sécurisé par Stripe. La formation apparaît dans votre espace dès le paiement.' : 'Secure payment by Stripe. The course appears in your space right after payment.'}
                   </p>
+                  {/* Une acheteuse qui arrive d'un courriel sur un appareil où elle n'est pas
+                      connectée voyait la vente et croyait devoir repayer (Krystine, 15 oct. 2026). */}
+                  {!user && (
+                    <p className="mt-4 text-sm text-[#293027] dark:text-white">
+                      {lang === 'FR' ? 'Déjà inscrite ? ' : 'Already enrolled? '}
+                      <button type="button" onClick={() => setSignInOpen(true)} className="font-bold underline decoration-[#BA7B39] underline-offset-4 hover:text-[#8B4A2F]">
+                        {lang === 'FR' ? 'Connectez-vous pour retrouver vos capsules' : 'Sign in to find your lessons'}
+                      </button>
+                    </p>
+                  )}
                 </>
               )}
               {isAdmin && (
