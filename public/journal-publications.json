@@ -8517,5 +8517,21 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T21:17:25.731Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "c0141713",
+    "message": "Tout le site : une seule petite bulle d'aide à droite (« Un commentaire » ou « Un problème ou une question »), qui se retire pendant le défilement; « Un commentaire ? Écrivez-nous » passe au pied de page (version préparée par la Ronde, décision de Krystine du 16 oct.)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/aide-pepin.js",
+      "public/assets-manifest.json",
+      "src/components/layout/AidePepin.tsx",
+      "src/components/layout/Footer.tsx"
+    ]
   }
 ]
