@@ -12,7 +12,7 @@ import {
   urlDeLecon, marquerFormationTerminee,
   type Formation, type Lecon,
 } from '../firebase/formations';
-import { useApp, useAuth, useUI } from '../contexts/AppContext';
+import { useAuth, useUI } from '../contexts/AppContext';
 import { SANTE_LA_VIE_ID } from '../lib/pointsConfig';
 import CadreFoyer from '../components/communaute/CadreFoyer';
 import { getMember } from '../firebase/firestore';
@@ -78,7 +78,6 @@ const CoursDetailPage: React.FC = () => {
   const id = idDeCours(idAdresse);
   const { user, isAdmin } = useAuth();
   const { lang } = useUI();
-  const { setSignInOpen } = useApp();
   const [formation, setFormation] = useState<Formation | null>(null);
   // Le rabais qui attend une membre arrivée par le code d'une ambassadrice.
   const [rabaisAmb, setRabaisAmb] = useState<{ rabaisPct: number; nom: string } | null>(null);
@@ -854,7 +853,7 @@ const CoursDetailPage: React.FC = () => {
                   {!user && (
                     <p className="mt-4 text-sm text-[#293027] dark:text-white">
                       {lang === 'FR' ? 'Déjà inscrite ? ' : 'Already enrolled? '}
-                      <button type="button" onClick={() => setSignInOpen(true)} className="font-bold underline decoration-[#BA7B39] underline-offset-4 hover:text-[#8B4A2F]">
+                      <button type="button" onClick={() => window.dispatchEvent(new Event('krystine:connexion'))} className="font-bold underline decoration-[#BA7B39] underline-offset-4 hover:text-[#8B4A2F]">
                         {lang === 'FR' ? 'Connectez-vous pour retrouver vos capsules' : 'Sign in to find your lessons'}
                       </button>
                     </p>
