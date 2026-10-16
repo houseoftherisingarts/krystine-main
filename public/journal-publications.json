@@ -8653,5 +8653,19 @@
       "public/accueil/index.html",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-16T22:22:08.435Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "d3a37458",
+    "message": "/communaute : la carte « Saison en cours · Pitta » (fausse, et Pitta en liste d'attente) devient VATA Essentiel, à votre rythme, sans saison",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/communaute/index.html"
+    ]
   }
 ]
