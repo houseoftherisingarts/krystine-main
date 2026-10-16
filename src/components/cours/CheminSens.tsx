@@ -2,13 +2,12 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { SemaineVata } from '../../pages/vata/semaines';
 import type { Programme } from '../../pages/cours/programmes';
+import { GrainGradient } from '@paper-design/shaders-react';
+import PictoTrace, { aUnTrace } from './PictoTrace';
 import { FlowerLotus, Drop, Wind, Tree, Plant, BookOpenText } from '@phosphor-icons/react';
 
 export const PICTOS: Record<string, React.ComponentType<{ size?: number; weight?: 'light' }>> = {
   lotus: FlowerLotus, goutte: Drop, souffle: Wind, arbre: Tree, pousse: Plant, livre: BookOpenText,
-};
-const NOMS: Record<string, string> = {
-  lotus: 'Le lotus', goutte: 'La goutte', souffle: 'Le souffle', arbre: 'L’arbre', pousse: 'La pousse', livre: 'Le livre',
 };
 
 // Le chemin des huit portes de la perception : chaque semaine devient une grande carte portrait
@@ -17,6 +16,37 @@ const NOMS: Record<string, string> = {
 // cinquante flammes grises, illisible en desktop et cassé en mobile.
 
 const EASE = [0.16, 0.8, 0.24, 1] as const;
+
+// Le fond qui respire (Paper Shaders, comme le Foyer), dans la teinte de la
+// carte. Le canevas ne vit que lorsque la carte est à l'écran.
+const FondCarte: React.FC<{ encre: string; vive: string; fige: boolean }> = ({ encre, vive, fige }) => {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { rootMargin: '15% 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <span ref={ref} aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${vive} 0%, ${encre} 100%)` }}>
+      {visible && (
+        <GrainGradient
+          className="absolute inset-0 h-full w-full"
+          colorBack={encre}
+          colors={[encre, vive, vive, '#c9a46a']}
+          softness={1}
+          intensity={0.12}
+          noise={0.07}
+          shape="wave"
+          speed={fige ? 0 : 0.12}
+          scale={1.6}
+        />
+      )}
+    </span>
+  );
+};
 
 export interface EtatSemaine {
   terminees: number;
@@ -71,6 +101,8 @@ const Carte: React.FC<{
             finie ? '' : 'saturate-[0.92]'
           }`}
         />
+      ) : aUnTrace(s.picto) ? (
+        <FondCarte encre={s.couleur.encre} vive={s.couleur.vive} fige={!!reduce} />
       ) : (
         <span aria-hidden className="absolute inset-0 transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]" style={{ background: `linear-gradient(160deg, ${s.couleur.vive} 0%, ${s.couleur.encre} 100%)` }} />
       )}
@@ -106,11 +138,14 @@ const Carte: React.FC<{
       {s.picto && PICTOS[s.picto] && (() => {
         const Icone = PICTOS[s.picto!];
         return (
-          <span aria-hidden className={`absolute flex flex-col items-center gap-2 ${s.etiquette ? 'right-5 top-1/2 -translate-y-1/2 sm:right-10' : 'inset-x-0 top-[21%]'}`}>
-            <span className="grid h-14 w-14 place-items-center rounded-full border border-[#d9a05b]/70 bg-[#0d110f]/25 text-[#EEE7DB] sm:h-[4.5rem] sm:w-[4.5rem]">
-              <Icone size={34} weight="light" />
-            </span>
-            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#EEE7DB]/85">{NOMS[s.picto!]}</span>
+          <span aria-hidden className={`absolute flex flex-col items-center gap-2 ${s.etiquette ? 'right-5 top-1/2 -translate-y-1/2 sm:right-10' : 'inset-x-0 top-[16%]'}`}>
+            {aUnTrace(s.picto) ? (
+              <PictoTrace nom={s.picto!} className={`text-[#F3E6CF] drop-shadow-[0_0_12px_rgba(217,160,91,0.35)] ${s.etiquette ? 'h-24 w-24 sm:h-32 sm:w-32' : 'h-24 w-24 sm:h-36 sm:w-36'}`} />
+            ) : (
+              <span className="grid h-14 w-14 place-items-center rounded-full border border-[#d9a05b]/70 bg-[#0d110f]/25 text-[#EEE7DB] sm:h-[4.5rem] sm:w-[4.5rem]">
+                <Icone size={34} weight="light" />
+              </span>
+            )}
           </span>
         );
       })()}
