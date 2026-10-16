@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T21:50:33.984Z",
+  "generatedAt": "2026-10-16T21:58:50.311Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2536,6 +2536,13 @@
       "size": 98924
     },
     {
+      "path": "/quiz/pictos/kapha.webp",
+      "name": "kapha.webp",
+      "folder": "quiz/pictos",
+      "kind": "image",
+      "size": 36626
+    },
+    {
       "path": "/quiz/pictos/pitta-noir.png",
       "name": "pitta-noir.png",
       "folder": "quiz/pictos",
@@ -2550,6 +2557,13 @@
       "size": 98578
     },
     {
+      "path": "/quiz/pictos/pitta.webp",
+      "name": "pitta.webp",
+      "folder": "quiz/pictos",
+      "kind": "image",
+      "size": 37336
+    },
+    {
       "path": "/quiz/pictos/vata-noir.png",
       "name": "vata-noir.png",
       "folder": "quiz/pictos",
@@ -2562,6 +2576,13 @@
       "folder": "quiz/pictos",
       "kind": "image",
       "size": 94930
+    },
+    {
+      "path": "/quiz/pictos/vata.webp",
+      "name": "vata.webp",
+      "folder": "quiz/pictos",
+      "kind": "image",
+      "size": 38710
     },
     {
       "path": "/footer-jacques-cartier.jpg",
