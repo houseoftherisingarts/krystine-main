@@ -8399,5 +8399,20 @@
       "src/pages/cours/programmes.ts",
       "src/pages/vata/semaines.ts"
     ]
+  },
+  {
+    "quand": "2026-10-16T02:18:37.645Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "67414f63",
+    "message": "Cours des Rituels essentiels : six pictos dessinés en trait fin dans un anneau gravé (lotus, goutte, souffle, arbre, pousse, livre), sans nom, sur des fonds qui respirent dans la teinte de chaque carte",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/components/cours/CheminSens.tsx",
+      "src/components/cours/PictoTrace.tsx"
+    ]
   }
 ]
