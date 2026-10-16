@@ -52,12 +52,14 @@ export interface ShopifyOrderPayload {
     tracking_company?: string | null;
   }[];
   tags: string;
+  source_name?: string;      // web, channel:…, shopify_draft_order (commande faite par l'équipe)
   customer?: {
     id: number;
     email: string | null;
     first_name: string | null;
     last_name: string | null;
     orders_count?: number;
+    tags?: string;            // « b2b, Login with Shop » : b2b = point de vente
   } | null;
   line_items: ShopifyLineItem[];
   shipping_address?: ShopifyAddress | null;

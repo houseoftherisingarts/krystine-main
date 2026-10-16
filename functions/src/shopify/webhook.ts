@@ -4,6 +4,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { getFirestore } from 'firebase-admin/firestore';
 import { normalizeOrder } from './normalize';
 import { estPayee, traiterCommandePayee, suivreAnnulation } from './commandePayee';
+import { planifierMerci } from './merciBoutique';
 import type { ShopifyOrderPayload } from './types';
 
 // Defined via `firebase functions:secrets:set SHOPIFY_API_SECRET`
@@ -55,7 +56,9 @@ export const shopifyWebhook = onRequest(
         // que Shopify réessaie; la clé order:shopify:{id} empêche tout doublon.
         if (estPayee(payload)) {
           const fait = await traiterCommandePayee(payload);
-          console.info('[shopifyWebhook] commande payée', order.name, topic, fait);
+          // Le merci de la boutique (16 oct. 2026) : une fois par cliente, 3 h après.
+          const merci = await planifierMerci(payload);
+          console.info('[shopifyWebhook] commande payée', order.name, topic, fait, merci);
         } else {
           await suivreAnnulation(payload);
         }

@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase-admin/app';
 initializeApp();
 
 export { shopifyWebhook } from './shopify/webhook';
+export { envoyerMerciBoutique } from './shopify/merciBoutique';
 export { shopifyBackfill } from './shopify/backfill';
 export { shopifyBrancherWebhooks } from './shopify/brancher';
 export { sendNewsletter } from './newsletter/send';
