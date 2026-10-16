@@ -17,8 +17,10 @@ const ORDRE = ['pas-encore', 'commence', 'quotidien'];
 
 const MiroirRituelsCard: React.FC = () => {
   const [liste, setListe] = useState<Reponse[] | null>(null);
+  const [vecus, setVecus] = useState<{ id: string; email: string; prenom?: string; reponse: string; le?: Timestamp }[]>([]);
   useEffect(() => {
     if (!db) { setListe([]); return; }
+    getDocs(collection(db, 'vecuRituels')).then(s => setVecus(s.docs.map(d => ({ id: d.id, ...(d.data() as { email: string; prenom?: string; reponse: string; le?: Timestamp }) })))).catch(() => {});
     getDocs(collection(db, 'reponsesRituels'))
       .then(s => setListe(s.docs.map(d => ({ id: d.id, ...(d.data() as Omit<Reponse, 'id'>) }))))
       .catch(() => setListe([]));
@@ -54,6 +56,27 @@ const MiroirRituelsCard: React.FC = () => {
           })}
         </div>
       )}
+      {/* Après le cours : « Comment vous sentez-vous après ces gestes ? » (étape Bonus, 15 oct. 2026). */}
+      <div className="mt-6 border-t border-[#293027]/10 pt-5 dark:border-white/10">
+        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#293027]/60 dark:text-white/60">Après les Rituels · {vecus.length} réponse{vecus.length > 1 ? 's' : ''}</p>
+        {vecus.length > 0 && (
+          <div className="mt-3 grid gap-5 sm:grid-cols-3">
+            {([['agite', 'Le mental court encore'], ['rythme', 'Pas encore son rythme'], ['calme', 'Plus calme, en veut encore']] as const).map(([r, lib]) => {
+              const gens = vecus.filter(v => v.reponse === r);
+              return (
+                <div key={r}>
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-[#BA7B39]">{lib} · {gens.length}</p>
+                  <ul className="mt-2 space-y-1.5">
+                    {gens.map(g => (
+                      <li key={g.id} className="text-[13px] text-[#293027] dark:text-white">{g.prenom || g.email}<span className="block text-[11px] text-[#293027]/55 dark:text-white/50">{g.email}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </Card>
   );
 };
