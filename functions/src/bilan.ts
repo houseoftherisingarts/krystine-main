@@ -289,7 +289,7 @@ const estMineure = (probleme: string) => /^(titre trop long|chargement lent)/.te
 /** « À optimiser aujourd'hui » : au plus 5 points classés par impact, lus dans vh_jours (VexelHotjar) et la vérification complète. Une donnée absente ne produit aucune ligne. */
 const coupe = (t: string, max: number) => { const x = t.replace(/\s+/g, ' ').trim(); return x.length > max ? `${x.slice(0, max)}…` : x; };
 const fois = (k: number) => (k > 1 ? `${k} fois` : '1 fois');
-async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points: string[]; clics: string[] }> {
+async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points: string[]; clics: string[]; accueil: string[] }> {
   const db = getFirestore();
   const docs = await db.getAll(...sept.map((j) => db.doc(`vh_jours/${SITE_VH}_${j}`)));
   const hierI = sept.length - 1;
@@ -303,6 +303,10 @@ async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points
   const erreurs = new Map<string, { msg: string; path: string; hier: number; n: number }>();
   const forms = new Map<string, { path: string; champ: string; abandons: number; soumis: number }>();
   const defil = new Map<string, { path: string; n: number; quart: number }>();
+  // L'accueil vu par les visiteuses, chaque jour (Krystine, 16 oct. 2026 : « ça devrait
+  // faire partie de l'analyse au quotidien, toujours ») : jusqu'où elles descendent,
+  // si la porte du quiz est cliquée, et ce qui prend les clics à sa place.
+  const acc = { vues: 0, n: 0, b10: 0, b25: 0, morts: 0, quiz: 0, clics: new Map<string, number>() };
   docs.forEach((d, i) => {
     if (!d.exists) return;
     const x = d.data() || {};
@@ -313,6 +317,16 @@ async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points
         a.r += Number(e.r) || 0; a.m += Number(e.m) || 0;
         if (i === hierI) { a.hierR += Number(e.r) || 0; a.hierM += Number(e.m) || 0; }
         elements.set(cle, a);
+      }
+      if (/^\/accueil\/?$/.test(String(p.path || ''))) {
+        acc.vues += Number(p.vues) || 0; acc.n += Number(p.scrollN) || 0; acc.morts += Number(p.morts) || 0;
+        acc.b10 += Number(p.scroll?.b10) || 0; acc.b25 += Number(p.scroll?.b25) || 0;
+        for (const e of Object.values((p.elements || {}) as Record<string, any>)) {
+          const tx = String(e.tx || e.s || '').replace(/\s+/g, ' ').trim();
+          const k = Number(e.n) || 0;
+          if (/besoin en ce moment/i.test(tx)) acc.quiz += k;
+          else if (k) acc.clics.set(tx, (acc.clics.get(tx) || 0) + k);
+        }
       }
       const nScroll = Number(p.scrollN) || 0;
       if (nScroll) {
@@ -372,7 +386,16 @@ async function aOptimiser(sept: string[], verif: Verif | null): Promise<{ points
     const quittent = Math.round((1 - dd.quart / dd.n) * 100);
     pts.push({ score: 40 + quittent / 10, ligne: `Sur ${dd.path}, ${quittent} % des visiteuses partent avant d’avoir vu le premier quart de la page (${dd.n} visites sur 7 jours).` });
   }
-  return { points: pts.sort((a, b) => b.score - a.score).slice(0, 5).map((p) => p.ligne), clics };
+  const accueil: string[] = [];
+  if (acc.vues || acc.n) {
+    const pc = (x: number) => (acc.n ? Math.round((x / acc.n) * 100) : 0);
+    accueil.push(`${acc.vues} visites. ${pc(acc.b10)} % descendent au-delà du premier écran, ${pc(acc.b25)} % atteignent le premier quart de la page (${acc.n} défilements mesurés).`);
+    accueil.push(`La porte du quiz (« De quoi ai-je besoin en ce moment ? ») : ${acc.quiz ? fois(acc.quiz) : 'aucun clic'}.${acc.quiz ? '' : ' La porte principale ne travaille pas.'}`);
+    const autres = [...acc.clics.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([tx, k]) => `« ${coupe(tx, 40)} » (${k})`);
+    if (autres.length) accueil.push(`Les clics vont plutôt à : ${autres.join(', ')}.`);
+    if (acc.morts) accueil.push(`${acc.morts} clics sans effet sur la page.`);
+  }
+  return { points: pts.sort((a, b) => b.score - a.score).slice(0, 5).map((p) => p.ligne), clics, accueil };
 }
 
 export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calculerFilet>>) {
@@ -466,6 +489,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     commentaires: comm,
     aOptimiser: optimiser?.points ?? null,
     clicsFrustration: optimiser?.clics ?? null,
+    lectureAccueil: optimiser?.accueil ?? null,
     conferences,
   };
 }
@@ -605,6 +629,10 @@ export function texteBilan(b: Bilan): string {
   if (b.clicsFrustration) {
     bloc5.push('Clics de frustration (au moins 1 hier ou au moins 3 sur 7 jours, VexelHotjar) :');
     bloc5.push(...(b.clicsFrustration.length ? b.clicsFrustration.map((l) => `• ${l}`) : ['• 0 élément au-dessus de ce seuil.']));
+  }
+  if (b.lectureAccueil) {
+    bloc5.push('L’accueil vu par les visiteuses (7 jours, VexelHotjar) :');
+    bloc5.push(...(b.lectureAccueil.length ? b.lectureAccueil.map((l) => `• ${l}`) : ['• Aucune visite mesurée sur l’accueil.']));
   }
   if (b.aOptimiser) {
     bloc5.push('À optimiser aujourd’hui :');
