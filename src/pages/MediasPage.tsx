@@ -319,7 +319,7 @@ const MediasPage: React.FC = () => {
                     {/* Launch date banner on the unreleased third volume. */}
                     {item.status === 'locked' && (
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#bb9a5e] text-[#2a2015] text-[10px] uppercase tracking-[0.25em] font-bold shadow-md whitespace-nowrap">
-                        {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
+                        {lang === 'FR' ? 'Parution · 3 mars 2027' : 'Release · March 3, 2027'}
                       </span>
                     )}
                   </div>
@@ -345,8 +345,8 @@ const MediasPage: React.FC = () => {
                             e.stopPropagation();
                             setWaitlistTarget({
                               id: 'parution-livre-3',
-                              labelFR: 'Parution · Titre à révéler (février 2027)',
-                              labelEN: 'Release · Title to be revealed (February 2027)',
+                              labelFR: 'Parution · Titre à révéler (3 mars 2027)',
+                              labelEN: 'Release · Title to be revealed (March 3, 2027)',
                             });
                           }}
                           className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-[0.25em] text-[11px] shadow-md hover:bg-[#bb9a5e] hover:text-[#2a2015] hover:shadow-[0_10px_24px_rgba(187, 154, 94,0.35)] transition-all"

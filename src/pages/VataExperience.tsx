@@ -1024,6 +1024,12 @@ const BarreAchat: React.FC = () => {
     window.addEventListener('scroll', maj, { passive: true });
     return () => window.removeEventListener('scroll', maj);
   }, []);
+  // La pastille d'aide se retire tant que la barre est là (Krystine, 16 oct. 2026) : AidePepin lit cet attribut.
+  useEffect(() => {
+    const h = document.documentElement;
+    if (visible) h.setAttribute('data-barre-achat', ''); else h.removeAttribute('data-barre-achat');
+    return () => h.removeAttribute('data-barre-achat');
+  }, [visible]);
   return (
     <>
     {/* L'espace sous tout le contenu, pied de page compris, pour que la barre ne cache rien. */}

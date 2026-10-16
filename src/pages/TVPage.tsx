@@ -17,8 +17,8 @@ const TVPage: React.FC = () => {
 
   return (
     <div className="min-h-screen dark:bg-[#16100a] pt-36 pb-24">
-      {/* Sticky editorial header */}
-      <div className="text-center mb-16 sticky top-20 bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur z-30 py-4 px-6 shadow-sm border-b border-[#2a2015]/5 dark:border-white/5">
+      {/* L'en-tête éditorial ne reste plus collé en haut : il coupait les cartes qui passaient dessous (la Ronde, 16 oct. 2026). */}
+      <div className="text-center mb-16 relative bg-white/95 dark:bg-[#2a2015]/95 backdrop-blur z-30 py-4 px-6 shadow-sm border-b border-[#2a2015]/5 dark:border-white/5">
         <h1 className="text-4xl md:text-6xl font-serif text-[#2a2015] dark:text-white italic mb-4">
           <EditableText fieldKey="tv.hero.title" defaultValue={t.title} />
         </h1>

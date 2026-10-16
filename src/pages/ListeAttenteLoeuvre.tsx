@@ -135,19 +135,22 @@ const isKnownProgramme = (key: string): key is ProgrammeKey =>
   || key === 'retraite' || key === 'kapha' || key === 'pitta';
 
 /* ── Planche photo du hero (par programme) ── */
-interface HeroArt { src: string; alt: string; caption: string; pos: string }
+// `ratio` : le cadre de la photo. L'enveloppe d'Origine est une photo large : en 4:5, elle était rognée des deux côtés (la Ronde, 16 oct. 2026).
+interface HeroArt { src: string; alt: string; caption: string; pos: string; ratio?: string }
 const HERO_ART: Record<ProgrammeKey | 'default', HeroArt> = {
   origine: {
     src: 'https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=1400&output=webp',
     alt: "L'enveloppe scellée de l'Expérience Origine, sceau boussole, sauge et lavande",
     caption: "L'invitation scellée · sceau boussole, sauge et lavande",
-    pos: '74% 48%',
+    pos: '97% 50%',
+    ratio: 'aspect-[16/10]',
   },
   origine2: {
     src: 'https://wsrv.nl/?url=https%3A%2F%2Fstorage.googleapis.com%2Forigine1%2Fbanner%2520origine%2520enveloppe.jpg&w=1400&output=webp',
     alt: "L'enveloppe scellée de l'Expérience Origine, sceau boussole, sauge et lavande",
     caption: "L'invitation scellée · sceau boussole, sauge et lavande",
-    pos: '74% 48%',
+    pos: '97% 50%',
+    ratio: 'aspect-[16/10]',
   },
   retraite: {
     src: '/accueil/assets/portes/retraites.webp',
@@ -200,7 +203,7 @@ const HeroPlate: React.FC<{ art: HeroArt; tab: string }> = ({ art, tab }) => {
         <span className="absolute -top-px -left-px bg-[#1c1712] text-[#f4efe6] text-[0.55rem] uppercase tracking-[0.24em] px-3 py-1.5 z-10">
           {tab}
         </span>
-        <div className="relative overflow-hidden aspect-[4/5]">
+        <div className={`relative overflow-hidden ${art.ratio || 'aspect-[4/5]'}`}>
           <motion.img
             src={art.src}
             alt={art.alt}
@@ -212,7 +215,7 @@ const HeroPlate: React.FC<{ art: HeroArt; tab: string }> = ({ art, tab }) => {
       </div>
       <figcaption className="mt-4 flex items-baseline gap-3">
         <span aria-hidden className="h-px w-9 bg-[#9c7a44]/70 translate-y-[-4px]" />
-        <span className="v2-serif italic text-[#3a2f23] text-[0.95rem] leading-snug">{art.caption}</span>
+        <span className="v2-serif text-[#3a2f23] text-[0.95rem] leading-snug">{art.caption}</span>
       </figcaption>
     </motion.figure>
   );

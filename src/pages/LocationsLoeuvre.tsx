@@ -358,11 +358,11 @@ const LocationsLoeuvre: React.FC = () => {
                 {/* Kicker région + filet qui se trace */}
                 <Reveal>
                   <div className="flex items-center gap-6 mb-2">
-                    <h3 className="text-[0.7rem] uppercase tracking-[0.34em] text-[#7d6330] whitespace-nowrap">
+                    <h3 className="min-w-0 text-[0.7rem] uppercase tracking-[0.2em] sm:tracking-[0.34em] text-[#7d6330]">
                       {region.name}
                     </h3>
-                    <DrawRule className="flex-1 opacity-40" delay={0.2} />
-                    <span className="v2-serif italic text-[#3a2f23]/70 text-[0.95rem] tabular-nums whitespace-nowrap">
+                    <DrawRule className="flex-1 min-w-[1.5rem] opacity-40" delay={0.2} />
+                    <span className="shrink-0 v2-serif text-[#3a2f23]/70 text-[0.95rem] tabular-nums whitespace-nowrap">
                       {region.spots.length}{' '}
                       {region.spots.length > 1
                         ? (isFr ? 'adresses' : 'addresses')

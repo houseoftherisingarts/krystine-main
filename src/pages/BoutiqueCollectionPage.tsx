@@ -142,7 +142,8 @@ const BoutiqueCollectionPage: React.FC = () => {
             src={manifest.bannerImage}
             alt={label}
             etiquette="INSPIRATA"
-            ratio="aspect-[5/4]"
+            /* Sérénité porte un visuel large avec des mots à droite : en 5:4 il était tranché (la Ronde, 16 oct. 2026). */
+            ratio={slug === 'serenite' ? 'aspect-[2071/1150]' : 'aspect-[5/4]'}
           />
         </div>
         <LigneDefiler libelle={fr ? 'Les produits' : 'The products'} droite={fr ? 'Fait main · Petites séries' : 'Handmade · Small batches'} />

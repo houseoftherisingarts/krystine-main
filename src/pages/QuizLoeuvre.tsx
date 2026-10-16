@@ -609,7 +609,7 @@ const CarteRituelsEssentiels: React.FC<{ dosha: DoshaType | null }> = ({ dosha }
       <p className="text-[0.62rem] uppercase tracking-[0.3em] text-[#7d6330]">Les Rituels essentiels · 27 $</p>
       <h3 className="mt-3 v2-serif font-light text-[#1c1712] leading-[1.05] text-[clamp(1.7rem,3vw,2.3rem)]">Pour commencer dès maintenant à intégrer l’Ayurveda, simplement</h3>
       <p className="mt-4 text-[0.95rem] leading-[1.75] text-[#3a2f23] max-w-[40ch] mx-auto">
-        Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.
+        Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes, et en bonus « Et après les Rituels ? » : un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble.
       </p>
       <p className="mt-5 v2-serif font-light text-[1.9rem] text-[#1c1712]">27 $</p>
       <a

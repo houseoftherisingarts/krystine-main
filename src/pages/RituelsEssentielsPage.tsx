@@ -56,10 +56,12 @@ const GX = 'px-[clamp(1.5rem,5vw,5.5rem)]';
 
 /* ════════════════════════ Contenu (mots de Krystine) ════════════════════════ */
 
-// Les 10 capsules et le bonus, dans l'ordre et avec la durée réelle des vidéos
-// (formations/rituels-vivants/lecons, dureeSecondes).
-// Les images sont des arrêts sur image des vraies capsules (public/rituels-vivants/).
-const MODULES: { etiquette: string; nom: string; capsules: [string, number][]; image?: string }[] = [
+// Les 10 capsules, dans l'ordre et avec la durée réelle des vidéos
+// (formations/rituels-vivants/lecons, dureeSecondes), puis le bonus.
+// Le bonus n'est plus une vidéo : la capsule « Plantes, stress et sagesse » est
+// masquée depuis le 15 oct. 2026 et l'étape « Et après les Rituels ? »
+// (/rituels-essentiels/la-suite) prend sa place (Krystine, 16 oct. 2026).
+const MODULES: { etiquette: string; nom: string; capsules: [string, number][]; image?: string; texte?: string }[] = [
   { etiquette: 'Module 1', nom: 'Capsules d’introduction à l’Ayurveda', image: 'lotus', capsules: [
     ['Capsule d’introduction à l’Ayurveda, partie 1', 587],
     ['Capsule d’introduction à l’Ayurveda, partie 2', 854],
@@ -78,12 +80,12 @@ const MODULES: { etiquette: string; nom: string; capsules: [string, number][]; i
   { etiquette: 'Module 4', nom: 'Capsule d’introduction aux soins des mains et des pieds', capsules: [
     ['Capsule d’introduction aux soins des mains et des pieds', 166],
   ], image: 'arbre' },
-  { etiquette: 'Bonus', nom: 'Envie d’aller plus loin ?', capsules: [
-    ['Plantes, stress et sagesse : une invitation concrète', 157],
-  ] },
+  { etiquette: 'Bonus', nom: 'Et après les Rituels ?', capsules: [], image: 'pousse',
+    texte: 'Un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble.' },
 ];
 
 const duree = (s: number) => `${Math.floor(s / 60)} min ${String(s % 60).padStart(2, '0')}`;
+// La durée totale ne compte que les 10 capsules vidéo (le bonus n'est pas une vidéo).
 const TOTAL = MODULES.reduce((t, m) => t + m.capsules.reduce((u, [, s]) => u + s, 0), 0);
 const totalLisible = `${Math.floor(TOTAL / 3600)} h ${String(Math.round((TOTAL % 3600) / 60)).padStart(2, '0')}`;
 
@@ -106,9 +108,9 @@ const TEMOIGNAGES: [string, string][] = [
 ];
 
 const QUESTIONS: [string, React.ReactNode][] = [
-  ['Quand ai-je accès aux capsules ?', <><B>L’accès est immédiat.</B> Dès le paiement confirmé, les 10 capsules et le bonus vous attendent dans votre espace, sur le site, à regarder à votre rythme.</>],
+  ['Quand ai-je accès aux capsules ?', <><B>L’accès est immédiat.</B> Dès le paiement confirmé, les 10 capsules vous attendent dans votre espace, sur le site, à regarder à votre rythme. Au bout du parcours, le bonus « Et après les Rituels ? » vous attend aussi.</>],
   ['Sous quelle forme sont les capsules ?', <>Ce sont des <B>vidéos</B>, à regarder dans votre espace sur le site, à l’ordinateur, sur tablette ou sur téléphone. Le <B>guide de 14 pages</B> se télécharge en PDF.</>],
-  ['Combien de temps demandent les capsules ?', <>Les 10 capsules et le bonus totalisent {totalLisible} de vidéo, de 2 à 16 minutes chacune. Les pratiques elles-mêmes tiennent en <B>moins de 5 minutes par jour</B>.</>],
+  ['Combien de temps demandent les capsules ?', <>Les 10 capsules totalisent {totalLisible} de vidéo, de 3 à 16 minutes chacune. Les pratiques elles-mêmes tiennent en <B>moins de 5 minutes par jour</B>.</>],
   ['Faut-il déjà connaître l’Ayurveda ?', <>Les trois premières capsules sont une <B>introduction concrète et simple</B> à l’Ayurveda (la médecine traditionnelle de l’Inde) : elles accueillent aussi celles qui la découvrent.</>],
   ['Comment se fait le paiement ?', <><B>Un seul paiement de 27 $</B>, par carte, sur le formulaire sécurisé du site. Si vous n’avez pas encore de compte, il se crée avec l’adresse courriel du paiement.</>],
   ['À qui écrire pour une question ?', 'Notre équipe est là pour vous : écrivez-nous à teamksl@inspiratanature.com.'],
@@ -195,7 +197,7 @@ const Exergue: React.FC<{ children: string; gras?: number }> = ({ children, gras
   const reduce = useReducedMotion();
   const words = children.split(' ');
   return (
-    <section className={`w-full ${GX} py-[clamp(4.5rem,10vh,7.5rem)]`}>
+    <section className={`w-full ${GX} pt-[clamp(3.5rem,8vh,6rem)] pb-[clamp(2.5rem,6vh,4.5rem)]`}>
       <DrawRule className="w-full" color="rgba(186,123,57,0.35)" />
       <motion.blockquote className="mx-auto max-w-[34ch] py-[clamp(3rem,6vh,4.5rem)] text-center v2-serif font-light leading-[1.3] text-[clamp(1.6rem,3.4vw,2.7rem)]"
         style={{ color: C.inkSoft }} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.6 }}
@@ -218,7 +220,7 @@ const Exergue: React.FC<{ children: string; gras?: number }> = ({ children, gras
 /* Le bouton noir carré de /vata, en lien vers le paiement */
 const BoutonAchat: React.FC<{ children: React.ReactNode; className?: string; clair?: boolean }> = ({ children, className = '', clair }) => (
   <Link to={PAIEMENT}
-    className={`group inline-flex min-h-[48px] max-w-full items-center justify-center gap-2.5 px-5 text-center py-4 text-[0.64rem] uppercase tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${clair ? 'bg-[#f4efe6] text-[#1c1712]' : 'bg-[#1c1712] text-[#f4efe6]'} hover:bg-[#9c7a44] hover:text-[#faf6ee] ${className}`}
+    className={`group inline-flex min-h-[48px] max-w-full items-center justify-center gap-2.5 px-5 text-center [text-wrap:balance] py-4 text-[0.68rem] uppercase tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 ${clair ? 'bg-[#f4efe6] text-[#1c1712]' : 'bg-[#1c1712] text-[#f4efe6]'} hover:bg-[#9c7a44] hover:text-[#faf6ee] ${className}`}
     style={{ outlineColor: C.accent }}>
     {children}
     <ArrowRight size={15} weight="regular" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
@@ -229,6 +231,7 @@ const BoutonAchat: React.FC<{ children: React.ReactNode; className?: string; cla
    (aucun arrêt sur image des vidéos : ils coupaient le visage, 15 oct. 2026). */
 const TEINTES: Record<string, [string, string]> = {
   lotus: ['#3B4F63', '#6A87A3'], goutte: ['#4E6349', '#7A9270'], souffle: ['#6A6B41', '#9BA067'], arbre: ['#8A4F2C', '#BA7B39'],
+  pousse: ['#28352F', '#5E7F6B'],
 };
 const Tuile: React.FC<{ picto: string; className?: string }> = ({ picto, className = '' }) => (
   <span className={`relative grid aspect-[4/5] w-full place-items-center overflow-hidden rounded-[10px] ${className}`}
@@ -254,7 +257,7 @@ const VideoFan: React.FC = () => {
   const reduce = useReducedMotion();
   return (
     <figure className="min-w-0">
-      <motion.div className="relative mx-auto w-[min(88vw,440px)] lg:w-full will-change-transform" initial={reduce ? false : { y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.3 }}>
+      <motion.div className="relative mx-auto w-[min(88vw,440px)] md:w-full will-change-transform" initial={reduce ? false : { y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.3 }}>
         <img src="/rituels-vivants/seuil.webp" alt="Une goutte d’huile, un roll-on au poignet et un pied posé sur un tricot" width={1040} height={1000} loading="eager" decoding="async"
           className="block w-full h-auto aspect-[26/25] object-cover rounded-[4px] border"
           style={{ borderColor: 'rgba(28,23,18,0.1)', boxShadow: '0 30px 60px -26px rgba(28,23,18,0.6), 0 2px 6px rgba(28,23,18,0.08)' }} />
@@ -269,7 +272,7 @@ const VideoFan: React.FC = () => {
 
 const Cover: React.FC = () => (
   <header className={`relative w-full min-h-screen flex flex-col ${GX} pt-[clamp(6.5rem,12vh,9rem)] pb-[clamp(1.5rem,4vh,3rem)]`}>
-    <div className="relative flex-1 grid items-center gap-y-12 gap-x-[clamp(2rem,4vw,4rem)] py-[clamp(2.5rem,6vh,4.5rem)] lg:grid-cols-[minmax(0,1fr)_clamp(300px,38vw,580px)]">
+    <div className="relative flex-1 grid items-center gap-y-12 gap-x-[clamp(2rem,4vw,4rem)] py-[clamp(2.5rem,6vh,4.5rem)] md:grid-cols-[minmax(0,1fr)_clamp(280px,40vw,620px)]">
       <div className="relative min-w-0">
         <p className="mb-4 text-[0.66rem] font-semibold uppercase tracking-[0.3em]" style={{ color: C.accentInk }}>Inspirés de l’Ayurveda</p>
         <div className="flex items-center gap-5 mb-8">
@@ -287,7 +290,7 @@ const Cover: React.FC = () => (
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-4">
             <BoutonAchat>{CTA}</BoutonAchat>
-            <a href="#capsules" className="v2-serif text-lg transition-opacity duration-300 hover:opacity-70" style={{ color: 'rgba(28,23,18,0.7)' }}>Voir les capsules</a>
+            <a href="#capsules" className="v2-serif text-lg underline decoration-1 underline-offset-[6px] transition-opacity duration-300 hover:opacity-70" style={{ color: 'rgba(28,23,18,0.75)', textDecorationColor: 'rgba(28,23,18,0.35)' }}>Voir les capsules</a>
           </div>
         </Reveal>
         <Reveal delay={0.55} y={16} className="mt-9">
@@ -310,9 +313,9 @@ const Cover: React.FC = () => (
 const Bande: React.FC = () => (
   <section className={`relative w-full ${GX} ${PY}`} style={{ background: VERT }}>
     <Reveal>
-      <div className="mx-auto max-w-[760px]">
+      <div className="max-w-[1040px]">
         <DrawRule className="mb-8 w-20" color={C.accent} />
-        <p className="v2-serif text-[clamp(1.2rem,2vw,1.55rem)] leading-[1.55]" style={{ color: C.paper }}>
+        <p className="v2-serif font-light text-[clamp(1.25rem,2.4vw,2.05rem)] leading-[1.5]" style={{ color: C.paper }}>
           Une <B clair>introduction concrète, simple</B>, dans le monde des rituels ancestraux prisés pour réduire la turbulence et déposer <B clair>les bases d’un équilibre</B>. Quand le chaos extérieur devient trop vif et stressant.
         </p>
       </div>
@@ -329,7 +332,7 @@ const Doshas: React.FC = () => (
       <div className="grid grid-cols-3 gap-4 sm:gap-8">
         {DOSHAS.map(([cle, nom, elements]) => (
           <div key={cle} className="flex flex-col items-center text-center">
-            <img src={`/quiz/pictos/${cle}.png`} alt="" aria-hidden className="h-[clamp(5.5rem,11vw,8.5rem)] w-auto object-contain" loading="lazy" />
+            <img src={`/quiz/pictos/${cle}.webp`} alt="" aria-hidden width={246} height={320} className="h-[clamp(5.5rem,11vw,8.5rem)] w-auto object-contain" loading="lazy" decoding="async" />
             <p className="mt-4 v2-serif font-light text-[clamp(1.1rem,1.8vw,1.45rem)]" style={{ color: C.ink }}>{nom}</p>
             <p className="mt-1 text-[0.6rem] uppercase tracking-[0.2em]" style={{ color: C.brassInk }}>{elements}</p>
           </div>
@@ -403,22 +406,23 @@ const Capsules: React.FC = () => {
             <div key={m.nom} className="relative grid lg:grid-cols-2 gap-x-[clamp(4rem,8vw,8rem)]">
               <span className="absolute left-[6px] lg:left-1/2 top-[2.9rem] h-2.5 w-2.5 -translate-x-1/2 rounded-full" style={{ background: C.accent, boxShadow: `0 0 0 5px ${C.panel}` }} aria-hidden />
               <Reveal y={26} className={`pl-9 lg:pl-0 py-[clamp(1.75rem,4vh,2.75rem)] ${gauche ? 'lg:col-start-1' : 'lg:col-start-2'}`}>
-                <div className={`flex items-start gap-[clamp(1.1rem,2.2vw,2rem)] ${gauche ? 'lg:flex-row-reverse' : ''}`}>
-                  {m.image && <div className="w-[clamp(78px,20vw,96px)] lg:w-[clamp(110px,9.5vw,140px)] shrink-0"><Tuile picto={m.image} /></div>}
-                  <div className="min-w-0 flex-1">
-                    <div className={`flex items-baseline gap-4 ${gauche ? 'lg:justify-end' : ''}`}>
+                <div className={`grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 sm:flex sm:items-start sm:gap-[clamp(1.1rem,2.2vw,2rem)] ${gauche ? 'lg:flex-row-reverse' : ''}`}>
+                  {m.image && <div className="col-start-2 row-start-1 w-[60px] sm:w-[96px] lg:w-[clamp(110px,9.5vw,140px)] shrink-0"><Tuile picto={m.image} /></div>}
+                  <div className="contents sm:block sm:min-w-0 sm:flex-1">
+                    <div className={`col-start-1 row-start-1 flex items-baseline gap-4 ${gauche ? 'lg:justify-end' : ''}`}>
                       <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: C.accent }}>{String(i + 1).padStart(2, '0')}</span>
                       <span className="text-[0.62rem] uppercase tracking-[0.26em]" style={{ color: C.accentInk }}>{m.etiquette}</span>
                     </div>
-                    <h3 className={`mt-2.5 v2-serif font-light leading-[1.12] text-[clamp(1.4rem,2.4vw,1.95rem)] ${gauche ? 'lg:text-right' : ''}`} style={{ color: C.ink }}>{m.nom}</h3>
-                    <ul className="mt-4 border-t" style={{ borderColor: hairline }}>
+                    <h3 className={`col-span-2 mt-2.5 v2-serif font-light leading-[1.12] text-[clamp(1.4rem,2.4vw,1.95rem)] ${gauche ? 'lg:text-right' : ''}`} style={{ color: C.ink }}>{m.nom}</h3>
+                    {m.texte && <p className={`col-span-2 mt-4 border-t pt-3 text-[0.95rem] leading-[1.6] ${gauche ? 'lg:text-right' : ''}`} style={{ color: C.inkSoft, borderColor: hairline }}>{m.texte}</p>}
+                    {m.capsules.length > 0 && <ul className="col-span-2 mt-4 border-t" style={{ borderColor: hairline }}>
                       {m.capsules.map(([titre, s]) => (
                         <li key={titre} className="flex items-baseline justify-between gap-5 border-b py-2.5" style={{ borderColor: hairline }}>
                           <span className="text-[0.92rem] leading-[1.5]" style={{ color: C.inkSoft }}>{titre}</span>
                           <span className="shrink-0 text-[0.72rem] tracking-[0.08em] tabular-nums" style={{ color: 'rgba(28,23,18,0.55)' }}>{duree(s)}</span>
                         </li>
                       ))}
-                    </ul>
+                    </ul>}
                   </div>
                 </div>
               </Reveal>
@@ -426,7 +430,7 @@ const Capsules: React.FC = () => {
           );
         })}
       </div>
-      <Reveal className="mt-[clamp(2.5rem,6vh,4rem)] text-center">
+      <Reveal className="mt-[clamp(2.5rem,6vh,4rem)] sm:text-center">
         <p className="inline-flex items-start gap-3 text-[1rem] leading-[1.6]" style={{ color: C.ink }}>
           <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} /><span>{GUIDE}</span>
         </p>
@@ -479,7 +483,7 @@ const Raisons: React.FC = () => (
 
 const REPERES: Array<[string, string]> = [
   ['10', `capsules vidéo · ${totalLisible} au total`],
-  ['1', 'bonus : Plantes, stress et sagesse'],
+  ['1', 'bonus : Et après les Rituels ?'],
   ['27 $', 'Un seul paiement · accès immédiat'],
 ];
 
@@ -493,7 +497,7 @@ const EnImages: React.FC = () => {
           <Reveal>
             <p className="text-[0.7rem] uppercase tracking-[0.34em]" style={{ color: C.accentInk }}>Rituels essentiels</p>
             <p className="mt-6 max-w-[46ch] text-[1rem] leading-[1.85]" style={{ color: C.inkSoft }}>
-              L’Ayurveda, <B>l’automassage</B>, les <B>soins du nez et de la bouche</B>, les soins des <B>mains et des pieds</B>, puis une invitation concrète autour des plantes et du stress.
+              L’Ayurveda, <B>l’automassage</B>, les <B>soins du nez et de la bouche</B>, les soins des <B>mains et des pieds</B>, puis un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble.
             </p>
             <DrawRule className="mt-6 w-20" />
           </Reveal>
@@ -531,7 +535,7 @@ const Offre: React.FC = () => (
     </div>
     <div className={`relative w-full ${GX} pb-[clamp(3.25rem,9vh,7rem)] -mt-[clamp(4.5rem,11vh,6.5rem)]`}>
       <Reveal>
-        <div className="relative mx-auto max-w-[1180px] border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card, boxShadow: '0 30px 60px -30px rgba(28,23,18,0.45)' }}>
+        <div className="relative w-full border" style={{ borderColor: 'rgba(156,122,68,0.45)', background: C.card, boxShadow: '0 30px 60px -30px rgba(28,23,18,0.45)' }}>
           <span className="absolute inset-x-0 top-0 h-[3px]" style={{ background: C.accent }} aria-hidden />
           <article className="grid gap-y-2 p-[clamp(1.75rem,3.5vw,3.25rem)] lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-[clamp(3rem,5vw,5rem)]">
             <div className="flex flex-col">
@@ -545,13 +549,13 @@ const Offre: React.FC = () => (
                 <span className="v2-serif font-light text-[clamp(2.8rem,4.4vw,3.8rem)] leading-none tabular-nums" style={{ color: C.ink }}>27 $</span>
               </div>
               <p className="mt-3 text-[0.9rem] leading-snug" style={{ color: C.inkSoft }}><B>Un seul paiement</B> de 27 $</p>
-              <BoutonAchat className="mt-8 w-full !px-3 sm:!px-4 !text-[0.62rem] sm:!text-[0.7rem]">{CTA}</BoutonAchat>
+              <BoutonAchat className="mt-8 w-full !px-4 !text-[0.72rem] !tracking-[0.1em] sm:!text-[0.7rem] sm:!tracking-[0.14em]">{CTA}</BoutonAchat>
               <p className="mt-4 text-[0.82rem] leading-[1.6]" style={{ color: C.inkSoft }}><span style={{ color: C.brassInk }}>Garantie cœur léger :</span> 15 jours pour changer d’avis, remboursement complet.</p>
             </div>
             <div>
               <DrawRule className="mt-7 w-full lg:mt-0" color="rgba(186,123,57,0.4)" />
               <ul className="mt-7 space-y-3.5">
-                {[<><B>10 capsules vidéo + 1 bonus</B> · {totalLisible}</>, <><B>Accès immédiat</B>, à votre rythme</>, ...MODULES.map(m => m.etiquette === 'Bonus' ? 'Bonus · Plantes, stress et sagesse' : m.nom), GUIDE].map((f, k) => (
+                {[<><B>10 capsules vidéo + 1 bonus</B> · {totalLisible}</>, <><B>Accès immédiat</B>, à votre rythme</>, ...MODULES.map(m => m.etiquette === 'Bonus' ? 'Bonus · Et après les Rituels ?' : m.nom), GUIDE].map((f, k) => (
                   <li key={k} className="flex items-start gap-3 text-[0.92rem] leading-[1.65]" style={{ color: C.inkSoft }}>
                     <Check size={16} weight="bold" className="mt-1 shrink-0" style={{ color: C.accentInk }} /><span>{f}</span>
                   </li>
@@ -575,7 +579,7 @@ const Soins: React.FC<{ produits: ShopifyProduct[] }> = ({ produits }) => (
       <h2 className="mt-4 v2-serif font-light leading-[1.02] text-[clamp(1.8rem,4.6vw,3.7rem)] max-w-[20ch]" style={{ color: C.ink }}>Les huiles utilisées dans les capsules</h2>
       <DrawRule className="mt-6 w-20" color={C.brass} />
     </Reveal>
-    <div className="mt-12 grid gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mt-12 grid gap-x-[clamp(1.5rem,3vw,3rem)] gap-y-12 sm:grid-cols-3">
       {produits.map((p, i) => {
         const soin = SOINS.find(s => s.handle === p.handle)!;
         return (
@@ -673,7 +677,7 @@ const Faq: React.FC = () => {
                 <div key={q} className="border-b" style={{ borderColor: hairline }}>
                   <button type="button" onClick={() => setOpen(ouvert ? null : i)} aria-expanded={ouvert}
                     className="w-full text-left py-6 flex items-center justify-between gap-5 min-h-[44px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4" style={{ outlineColor: C.accent }}>
-                    <h3 className="v2-serif font-light text-[1.25rem] md:text-[1.4rem] leading-[1.2] pr-4 transition-colors duration-300" style={{ color: ouvert ? C.accentInk : C.ink }}>{q}</h3>
+                    <h3 className="v2-serif font-light text-[1.25rem] md:text-[1.4rem] leading-[1.2] pr-4 transition-colors duration-300" style={{ color: ouvert ? C.accentInk : C.ink }}>{q.replace(' ?', ' ?')}</h3>
                     <CaretDown size={18} weight="light" className={`shrink-0 transition-transform duration-300 ${ouvert ? 'rotate-180' : ''}`} style={{ color: C.accentInk }} />
                   </button>
                   <AnimatePresence initial={false}>
@@ -697,7 +701,7 @@ const Faq: React.FC = () => {
 /* ════════════════════════ Quatrième de couverture ════════════════════════ */
 
 const QuatriemeCouverture: React.FC = () => (
-  <section className="relative w-full overflow-hidden" style={{ background: VERT }}>
+  <section id="fin" className="relative w-full overflow-hidden" style={{ background: VERT }}>
     <span className="absolute inset-x-0 top-0 h-px" style={{ background: C.accent }} aria-hidden />
     <div className={`relative ${GX} py-[clamp(3.75rem,11vh,9rem)] text-center`}>
       <Reveal>
@@ -710,7 +714,7 @@ const QuatriemeCouverture: React.FC = () => (
         </p>
         <div className="mt-11 flex flex-wrap items-center justify-center gap-x-9 gap-y-5">
           <BoutonAchat clair>{CTA}</BoutonAchat>
-          <a href="#capsules" className="v2-serif text-lg transition-opacity duration-300 hover:opacity-75" style={{ color: 'rgba(244,239,230,0.8)' }}>Revoir les capsules</a>
+          <a href="#capsules" className="v2-serif text-lg underline decoration-1 underline-offset-[6px] transition-opacity duration-300 hover:opacity-75" style={{ color: 'rgba(244,239,230,0.85)', textDecorationColor: 'rgba(244,239,230,0.4)' }}>Revoir les capsules</a>
         </div>
         <p className="mt-10 text-[0.7rem] uppercase tracking-[0.26em]" style={{ color: 'rgba(244,239,230,0.78)' }}>10 capsules + 1 bonus · Accès immédiat</p>
       </Reveal>
@@ -721,14 +725,29 @@ const QuatriemeCouverture: React.FC = () => (
 /* ════════════════════════ Barre d'achat mobile (comme /vata) ════════════════════════ */
 
 const BarreAchat: React.FC = () => {
-  const [visible, setVisible] = useState(false);
+  const [defile, setDefile] = useState(false);
+  // La barre s'efface lorsque la carte de l'offre ou la bande finale est à l'écran :
+  // leur propre bouton d'achat est là, jamais deux gestes identiques à la fois.
+  const [boutonVisible, setBoutonVisible] = useState(false);
+  const visible = defile && !boutonVisible;
   useEffect(() => {
-    const maj = () => setVisible(window.scrollY > window.innerHeight * 0.85);
+    const maj = () => setDefile(window.scrollY > window.innerHeight * 0.85);
     maj();
     window.addEventListener('scroll', maj, { passive: true });
     return () => window.removeEventListener('scroll', maj);
   }, []);
-  // La pastille d'aide se loge dans la barre : elle n'apparaît que lorsque la barre est là (téléphone).
+  useEffect(() => {
+    const cibles = ['offre', 'fin'].map(id => document.getElementById(id)).filter((e): e is HTMLElement => !!e);
+    if (!cibles.length || typeof IntersectionObserver === 'undefined') return;
+    const dedans = new Set<Element>();
+    const io = new IntersectionObserver((entrees) => {
+      entrees.forEach(e => (e.isIntersecting ? dedans.add(e.target) : dedans.delete(e.target)));
+      setBoutonVisible(dedans.size > 0);
+    }, { threshold: 0.35 });
+    cibles.forEach(c => io.observe(c));
+    return () => io.disconnect();
+  }, []);
+  // La pastille d'aide se retire tant que la barre est là (Krystine, 16 oct. 2026) : AidePepin lit cet attribut.
   useEffect(() => {
     const h = document.documentElement;
     if (visible) h.setAttribute('data-barre-achat', ''); else h.removeAttribute('data-barre-achat');
@@ -736,16 +755,17 @@ const BarreAchat: React.FC = () => {
   }, [visible]);
   return (
     <>
-      <style>{'@media (max-width: 767px) { body { padding-bottom: calc(84px + var(--bande-temoins, 0px)) !important; } html:not([data-barre-achat]) [data-pepin-barre] { opacity: 0; pointer-events: none; } }'}</style>
+      {/* L'espace sous le pied de page, pour que la barre ne cache rien; le bas du fond reprend le vert du pied de page, pour qu'aucune bande blanche n'apparaisse. */}
+      <style>{'@media (max-width: 767px) { body { padding-bottom: calc(84px + var(--bande-temoins, 0px)) !important; background: linear-gradient(to bottom, #f4efe6 50%, #28352F 50%) !important; } }'}</style>
       <div aria-hidden={!visible}
         className={`fixed inset-x-0 bottom-0 z-50 border-t px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden transition-transform duration-500 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
         style={{ bottom: 'var(--bande-temoins, 0px)', background: C.cream, borderColor: hairline, transitionTimingFunction: 'cubic-bezier(.16,.8,.24,1)' }}>
         <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0 pl-12">
+          <div className="min-w-0">
             <p className="v2-serif text-[1.35rem] leading-none tabular-nums" style={{ color: C.ink }}>27 $</p>
-            <p className="mt-1 text-[0.58rem] uppercase tracking-[0.16em]" style={{ color: 'rgba(28,23,18,0.6)' }}>Rituels essentiels · accès immédiat</p>
+            <p className="mt-1.5 text-[0.6rem] uppercase leading-[1.45] tracking-[0.06em] min-[380px]:tracking-[0.12em]" style={{ color: 'rgba(28,23,18,0.66)' }}><span className="block whitespace-nowrap">Rituels essentiels</span><span className="block whitespace-nowrap">Accès immédiat</span></p>
           </div>
-          <Link to={PAIEMENT} tabIndex={visible ? 0 : -1} className="inline-flex min-h-[48px] shrink-0 items-center gap-2 px-5 text-[0.64rem] uppercase tracking-[0.14em]" style={{ background: C.ink, color: C.cream }}>
+          <Link to={PAIEMENT} tabIndex={visible ? 0 : -1} className="inline-flex min-h-[48px] shrink-0 items-center gap-2 px-4 min-[380px]:px-5 text-[0.64rem] uppercase tracking-[0.14em]" style={{ background: C.ink, color: C.cream }}>
             J’accède <ArrowRight size={14} weight="regular" />
           </Link>
         </div>

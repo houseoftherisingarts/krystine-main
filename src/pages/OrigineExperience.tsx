@@ -336,7 +336,8 @@ const OrigineExperience: React.FC = () => {
 
       {/* ─────────── FEUILLE 2 · CURRICULUM ─────────── */}
       <Feuille z={2}>
-        <section id="curriculum" className="relative bg-cream py-24 md:py-36">
+        {/* Un peu de défilement sous le dernier pilier : la feuille suivante l'avalait avant qu'il soit lu (la Ronde, 16 oct. 2026). */}
+        <section id="curriculum" className="relative bg-cream pt-24 pb-28 md:pt-36 md:pb-[min(42vh,22rem)]">
           <div className={`w-full ${GUT}`}>
             <div className={`${G12} gap-y-8 items-end`}>
               <Reveal className="col-span-12 md:col-span-6">

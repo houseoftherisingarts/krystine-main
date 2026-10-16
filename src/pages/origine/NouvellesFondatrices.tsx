@@ -90,6 +90,9 @@ const NouvellesFondatrices: React.FC = () => {
             src="/origine/logo-origine.webp"
             alt="Origine"
             className="-mt-1 w-[min(100%,340px)] h-auto"
+            /* Le fichier du logo est coupé net à gauche et à droite : un fondu doux sur les bords
+               cache la coupure en attendant un logo complet (la Ronde, 16 oct. 2026). */
+            style={{ WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%)', maskImage: 'linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%)' }}
           />
           <p className="mt-3 text-[0.66rem] uppercase tracking-[0.3em] text-[#5f5c50]">Groupe fondateur</p>
         </header>

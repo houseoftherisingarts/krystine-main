@@ -3,7 +3,28 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useApp } from '../contexts/AppContext';
 import { getLiveEvents, type LiveEvent } from '../firebase/firestore';
 import NewsletterSignup from './NewsletterSignup';
-import LecteurVideoEmbarque from './LecteurVideoEmbarque';
+import LecteurVideoEmbarque, { extraireIdYouTube } from './LecteurVideoEmbarque';
+
+// La rediffusion avant le clic (la Ronde, 16 oct. 2026) : au téléphone, le titre
+// et le gros bouton rouge de YouTube cachaient le visage de Krystine. L'image de
+// la vidéo s'affiche entière, ancrée en haut, avec un petit bouton de lecture dans
+// le coin; au clic, la vidéo joue ici même, dans la carte (jamais un nouvel onglet).
+const Rediffusion: React.FC<{ url: string; titre: string; fr: boolean }> = ({ url, titre, fr }) => {
+  const [joue, setJoue] = useState(false);
+  const [image, setImage] = useState(0);
+  const id = extraireIdYouTube(url);
+  if (!id) return null;
+  if (joue) return <LecteurVideoEmbarque videoId={id} titre={titre} className="absolute inset-0 h-full w-full" />;
+  const images = [`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`, `https://i.ytimg.com/vi/${id}/hqdefault.jpg`];
+  return (
+    <button type="button" onClick={() => setJoue(true)} className="group absolute inset-0 block h-full w-full" aria-label={`${fr ? 'Regarder' : 'Watch'} : ${titre}`}>
+      <img src={images[image]} alt="" loading="lazy" onError={() => setImage(1)} onLoad={(e) => { if (image === 0 && e.currentTarget.naturalWidth <= 120) setImage(1); }} className="h-full w-full object-cover object-top" />
+      <span className="absolute bottom-3 left-3 inline-flex items-center gap-2 bg-[#1c1712]/85 px-3.5 py-2 text-[0.64rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors group-hover:bg-[#1c1712]">
+        <span aria-hidden>▶</span> {fr ? 'Regarder' : 'Watch'}
+      </span>
+    </button>
+  );
+};
 import { fetchYouTubeVideos, type YTVideo } from '../lib/youtube';
 
 // Le dernier épisode paru sur YouTube (Krystine, 27 sept. 2026) : la vidéo au
@@ -178,7 +199,7 @@ const LiveSignup: React.FC<{ compact?: boolean; sansEpisode?: boolean }> = ({ co
           <motion.div {...fade(0.35)} className={isPast ? 'overflow-hidden rounded-[15px] border border-[#EEE7DB]/12 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.5)]' : 'rounded-[15px] border border-[#EEE7DB]/12 bg-[#211c18]/60 p-[clamp(1.5rem,3.5vw,3rem)] backdrop-blur-sm max-sm:[&_form]:grid-cols-[minmax(0,1fr)] [&_input]:min-w-0 max-sm:[&_button]:whitespace-normal max-sm:[&_button]:tracking-[0.12em]'}>
             {isPast ? (
               // La rediffusion se regarde ici même, embarquée dans la carte : jamais un bouton, jamais un nouvel onglet (Alex, 6 sept. 2026).
-              <div className="relative aspect-video w-full"><LecteurVideoEmbarque url={episode ? `https://www.youtube.com/watch?v=${episode.id}` : (ev?.replayUrl || ev?.youtubeUrl || '')} titre={episode ? titreEpisode(episode.title) : t.title} className="absolute inset-0 h-full w-full" /></div>
+              <div className="relative aspect-video w-full"><Rediffusion url={episode ? `https://www.youtube.com/watch?v=${episode.id}` : (ev?.replayUrl || ev?.youtubeUrl || '')} titre={episode ? titreEpisode(episode.title) : t.title} fr={fr} /></div>
             ) : (
               <NewsletterSignup
                 source="podcast-live"

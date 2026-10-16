@@ -31,7 +31,7 @@ const ICONE = `
 </svg>`;
 
 const CSS = `
-.ab-bouton{position:fixed;right:1.15rem;bottom:calc(5.1rem + 78px);z-index:1900;width:56px;height:56px;border-radius:50%;border:1px solid rgba(187,154,94,.55);background:rgba(246,243,238,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px -10px rgba(163,130,63,.7),0 0 0 6px rgba(187,154,94,.12);cursor:pointer;color:#7d6330;display:flex;align-items:center;justify-content:center;padding:14px;transition:box-shadow .3s,transform .3s cubic-bezier(.2,.7,.2,1),opacity .4s}
+.ab-bouton{position:fixed;right:1.15rem;bottom:5.1rem;z-index:1900;width:56px;height:56px;border-radius:50%;border:1px solid rgba(187,154,94,.55);background:rgba(246,243,238,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px -10px rgba(163,130,63,.7),0 0 0 6px rgba(187,154,94,.12);cursor:pointer;color:#7d6330;display:flex;align-items:center;justify-content:center;padding:14px;transition:box-shadow .3s,transform .3s cubic-bezier(.2,.7,.2,1),opacity .4s}
 .ab-bouton svg{width:100%;height:100%;display:block}
 .ab-bouton:hover{transform:translateY(-2px);box-shadow:0 14px 34px -10px rgba(163,130,63,.85),0 0 0 9px rgba(187,154,94,.16)}
 .ab-bouton:focus-visible{outline:2px solid #bb9a5e;outline-offset:4px}
@@ -39,7 +39,7 @@ const CSS = `
 .ab-badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#b06a3f;color:#f6f3ee;font:700 11px/20px Inter,system-ui,sans-serif;letter-spacing:.04em;border:2px solid #f6f3ee}
 @keyframes ab-onde{0%{box-shadow:0 10px 30px -10px rgba(163,130,63,.7),0 0 0 6px rgba(187,154,94,.12)}60%{box-shadow:0 10px 30px -10px rgba(163,130,63,.7),0 0 0 14px rgba(176,106,63,0)}100%{box-shadow:0 10px 30px -10px rgba(163,130,63,.7),0 0 0 6px rgba(187,154,94,.12)}}
 @media(prefers-reduced-motion:no-preference){.ab-bouton.ab-vivant{animation:ab-onde 2.8s ease-out infinite}}
-.ab-bulle{position:fixed;right:1.15rem;bottom:calc(5.1rem + 78px + 68px);z-index:1903;width:min(340px,calc(100vw - 2.3rem));border-radius:15px;background:rgba(250,247,240,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(187,154,94,.5);box-shadow:0 30px 70px -24px rgba(22,31,26,.5),0 0 0 1px rgba(255,255,255,.5) inset;padding:1.3rem 1.3rem 1.2rem;color:#3a3126;transform-origin:calc(100% - 28px) calc(100% + 20px)}
+.ab-bulle{position:fixed;right:1.15rem;bottom:calc(5.1rem + 68px);z-index:1903;width:min(340px,calc(100vw - 2.3rem));border-radius:15px;background:rgba(250,247,240,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(187,154,94,.5);box-shadow:0 30px 70px -24px rgba(22,31,26,.5),0 0 0 1px rgba(255,255,255,.5) inset;padding:1.3rem 1.3rem 1.2rem;color:#3a3126;transform-origin:calc(100% - 28px) calc(100% + 20px)}
 .ab-bulle::after{content:"";position:absolute;right:20px;bottom:-9px;width:16px;height:16px;background:rgba(250,247,240,.96);border-right:1px solid rgba(187,154,94,.5);border-bottom:1px solid rgba(187,154,94,.5);transform:rotate(45deg)}
 @keyframes ab-in{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes ab-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(10px) scale(.94)}}
@@ -58,7 +58,8 @@ const CSS = `
 .ab-tard{background:none;border:0;color:#7d6330;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:.75rem .4rem}
 .ab-tard:hover{text-decoration:underline;text-underline-offset:3px}
 .ab-compte{margin-left:auto;font:500 11px/1 Inter,system-ui,sans-serif;color:#665746}
-@media(max-width:640px){.ab-bouton{right:.9rem;bottom:calc(4.2rem + 46px + 8px);width:44px;height:44px;padding:10px}.ab-bulle{right:.75rem;bottom:calc(4.2rem + 46px + 8px + 56px);padding:1.15rem 1.1rem 1.05rem}}
+body.ab-actif .fo-fleur,body.ab-actif .fo-panneau,body.ab-actif .fo-voile{display:none!important}
+@media(max-width:640px){.ab-bouton{right:.9rem;bottom:4.2rem;width:44px;height:44px;padding:10px}.ab-bulle{right:.75rem;bottom:calc(4.2rem + 56px);padding:1.15rem 1.1rem 1.05rem}}
 `;
 
 const lireLocal = () => { try { return new Set(JSON.parse(localStorage.getItem(CLE_LOCAL) || '[]')); } catch { return new Set(); } };
@@ -92,6 +93,9 @@ function monter() {
   const rendre = () => {
     const liste = nonLus();
     const badge = bouton.querySelector('.ab-badge');
+    // Une seule pastille flottante à la fois sur l'accueil (Krystine, 16 oct. 2026) : tant qu'un avis
+    // attend, il prend la place de la fleur des offres, plus bas, loin du visage de la photo.
+    document.body.classList.toggle('ab-actif', liste.length > 0);
     if (liste.length === 0) {
       bouton.classList.add('ab-parti');
       bouton.classList.remove('ab-vivant');

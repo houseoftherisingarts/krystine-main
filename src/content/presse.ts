@@ -152,13 +152,13 @@ const CARTES_DEFAUT: CartePresse[] = [
     nu: { fichier: 'accueil/assets/trilogy-books.png', focus: 0.55, focusX: 0.55 },
     qrCible: '/medias', cibleAffiche: 'krystinestlaurent.ca/medias',
     kickerFR: 'Édition', titreFR: 'Trois livres',
-    corpsFR: "Nature & Ayurveda et Féminité & Ayurveda ont tous deux été consacrés best-sellers en francophonie, aux Éditions de l'Homme. Le troisième titre, encore gardé secret, paraît en février 2027 chez le même éditeur.",
+    corpsFR: "Nature & Ayurveda et Féminité & Ayurveda ont tous deux été consacrés best-sellers en francophonie, aux Éditions de l'Homme. Le troisième titre, encore gardé secret, paraît le 3 mars 2027 chez le même éditeur.",
     metaFR: 'krystinestlaurent.ca/medias',
     kickerEN: 'Publishing', titreEN: 'Three books',
-    corpsEN: 'Nature & Ayurveda and Féminité & Ayurveda both became best-sellers across the French-speaking world, published by Éditions de l’Homme. The third title, still under wraps, comes out in February 2027 with the same house.',
+    corpsEN: 'Nature & Ayurveda and Féminité & Ayurveda both became best-sellers across the French-speaking world, published by Éditions de l’Homme. The third title, still under wraps, comes out on March 3, 2027 with the same house.',
     metaEN: 'krystinestlaurent.ca/medias',
-    legendeFR: 'Les deux best-sellers, et le titre attendu en février 2027.',
-    legendeEN: 'The two best-sellers and the February 2027 title.',
+    legendeFR: 'Les deux best-sellers, et le titre attendu le 3 mars 2027.',
+    legendeEN: 'The two best-sellers and the March 3, 2027 title.',
   },
   {
     key: 'origine', n: '04', cote: 'droite',
@@ -268,10 +268,10 @@ const PLANCHES_DEFAUT: PlanchePresse[] = [
   {
     key: 'les-livres', n: '05', chemin: '/presse',
     photo: { fichier: 'accueil/assets/trilogy-books.png', focus: 0.55, focusX: 0.55 },
-    texteFR: 'Nature & Ayurveda, Féminité & Ayurveda et le troisième titre, à paraître en février 2027.',
-    texteEN: 'Nature & Ayurveda, Féminité & Ayurveda and the third title, due in February 2027.',
+    texteFR: 'Nature & Ayurveda, Féminité & Ayurveda et le troisième titre, à paraître le 3 mars 2027.',
+    texteEN: 'Nature & Ayurveda, Féminité & Ayurveda and the third title, due on March 3, 2027.',
     labelFR: 'Les trois livres', labelEN: 'The three books',
-    legendeFR: 'Les trois titres ensemble, dont celui de février 2027.', legendeEN: 'Including the title due in February 2027.',
+    legendeFR: 'Les trois titres ensemble, dont celui du 3 mars 2027.', legendeEN: 'Including the title due on March 3, 2027.',
   },
   {
     key: 'sante-la-vie', n: '06', chemin: '/presse',
@@ -351,7 +351,7 @@ Parcours        Près de 40 ans d'expérience
 Avant           Soins intensifs, recherche clinique
 Livres          Nature & Ayurveda (34,99 $ CA)
                 Féminité & Ayurveda (39,99 $ CA)
-                Troisième titre à paraître en février 2027
+                Troisième titre à paraître le 3 mars 2027
 Éditeur         Éditions de l'Homme
 Télévision      Santé la vie, trois saisons
 Podcast         Au-delà des tendances, deux saisons sur Spotify
@@ -372,7 +372,7 @@ Background      Nearly 40 years of experience
 Before          Intensive care, clinical research
 Books           Nature & Ayurveda (CAD 34.99)
                 Féminité & Ayurveda (CAD 39.99)
-                Third title due February 2027
+                Third title due March 3, 2027
 Publisher       Éditions de l'Homme
 Television      Santé la vie, three seasons
 Podcast         Beyond Trends, two seasons on Spotify

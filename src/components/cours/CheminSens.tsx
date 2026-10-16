@@ -112,7 +112,8 @@ const Carte: React.FC<{
         style={{ background: 'linear-gradient(to top, rgba(13,17,15,0.96) 2%, rgba(13,17,15,0.88) 30%, rgba(13,17,15,0.42) 58%, rgba(13,17,15,0.06) 86%)' }}
       />
 
-      <span className="absolute left-4 top-4 flex items-center gap-2">
+      {/* Le cadenas passe sous la pastille lorsque la carte est étroite, jamais coupé par le bord (la Ronde, 16 oct. 2026). */}
+      <span className="absolute left-4 right-3 top-4 flex flex-wrap items-center gap-2">
         <span className="flex h-9 items-center justify-center whitespace-nowrap rounded-full border border-[#BA7B39]/50 bg-[#0d110f]/80 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#d9a05b] backdrop-blur-sm">
           {s.pastille
             ? (lang === 'FR' ? s.pastille.fr : s.pastille.en)

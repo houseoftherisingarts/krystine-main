@@ -4,6 +4,7 @@ import { getLiveEvents, addLiveQuestion, type LiveEvent } from '../../firebase/f
 import { useAuth } from '../../contexts/AppContext';
 import { points } from '../../firebase/points';
 import CompteUpsell from '../../components/CompteUpsell';
+import { CollantVexel } from '../../vexel/CollantVexel';
 
 // /podcast/question — la page que Krystine donne en ondes. Chaque question
 // envoyée d'ici se pose en direct à la fin du paquet de cartes de l'admin,
@@ -100,7 +101,7 @@ const QuestionLive: React.FC = () => {
     : '';
 
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-hidden px-5 py-14 md:py-20 flex items-center justify-center"
+    <main className="relative min-h-[100dvh] w-full overflow-hidden px-5 py-14 md:py-20 flex flex-col items-center justify-center gap-8"
           style={{ backgroundColor: PARCH.ivoire }}>
       <div aria-hidden className="absolute inset-0 pointer-events-none"
            style={{ background: 'radial-gradient(58% 55% at 20% 14%, rgba(186,123,57,0.30) 0%, rgba(238,231,219,0) 68%), radial-gradient(60% 58% at 84% 88%, rgba(120,128,113,0.28) 0%, rgba(238,231,219,0) 70%)' }} />
@@ -128,7 +129,7 @@ const QuestionLive: React.FC = () => {
              style={{ background: 'linear-gradient(90deg, transparent, #c8a86a, transparent)' }} />
 
         <div className="relative p-8 md:p-12">
-          <div className="flex items-center gap-3 mb-7">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-7">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] sm:tracking-[0.22em] border whitespace-nowrap"
                   style={{ color: PARCH.cuivre, borderColor: 'rgba(186,123,57,0.55)', background: PARCH.soft }}>
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: PARCH.ambre }} />
@@ -211,6 +212,8 @@ const QuestionLive: React.FC = () => {
           </div>
         </div>
       </motion.section>
+      {/* Le collant Vexel posé ici, sous la carte : sans pied de page, le garde le posait par-dessus le champ « Votre question » (la Ronde, 16 oct. 2026). */}
+      <div className="bg-[#28352F] px-3 py-2"><CollantVexel className="relative" /></div>
     </main>
   );
 };

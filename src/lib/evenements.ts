@@ -152,7 +152,10 @@ export function fondre(firestore: EventDoc[], admin = false): { aVenir: RendezVo
   const fs = firestore.map(e => depuisFirestore(e, admin));
   const cles = new Set(firestore.flatMap(e => [e.slug, e.id].filter(Boolean) as string[]));
   const cure = LIVE_EVENTS.filter(ev => !cles.has(ev.id)).map(depuisCure);
-  const tous = [...fs, ...cure];
+  // Le lancement du tome 3 à L'Anglicane n'est pas confirmé (Krystine, 16 oct. 2026) : ni date ni
+  // bouton « réserver mon billet » au public tant qu'il ne l'est pas. Il revient dès que ce filtre est retiré.
+  const aConfirmer = (r: RendezVous) => /anglicane/i.test(`${r.cle} ${r.titre.fr} ${r.lieu?.fr || ''} ${r.sousTitre?.fr || ''}`);
+  const tous = [...fs, ...cure].filter(r => admin || !aConfirmer(r));
   const estPasse = (r: RendezVous) => !!r.iso && (r.fin || r.iso) < jour;
   const aVenir = tous.filter(r => !estPasse(r)).sort((a, b) => {
     if (a.iso && b.iso) return a.iso.localeCompare(b.iso);

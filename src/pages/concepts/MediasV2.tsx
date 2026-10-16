@@ -423,7 +423,7 @@ export default function MediasV2() {
                   )}
                   {isLocked && (
                     <span className="absolute top-[19%] left-1/2 -translate-x-1/2 z-20 bg-[#9c7a44] text-[#1c1712] px-3 py-1 text-[0.56rem] uppercase tracking-[0.18em] whitespace-nowrap">
-                      {lang === 'FR' ? 'Parution · février 2027' : 'Release · February 2027'}
+                      {lang === 'FR' ? 'Parution · 3 mars 2027' : 'Release · March 3, 2027'}
                     </span>
                   )}
                 </motion.div>
@@ -443,8 +443,8 @@ export default function MediasV2() {
                         type="button"
                         onClick={() => setWaitlistTarget({
                           id: 'parution-livre-3',
-                          labelFR: 'Parution · Titre à révéler (février 2027)',
-                          labelEN: 'Release · Title to be revealed (February 2027)',
+                          labelFR: 'Parution · Titre à révéler (3 mars 2027)',
+                          labelEN: 'Release · Title to be revealed (March 3, 2027)',
                         })}
                         className="mt-1 inline-flex items-center justify-center gap-2 bg-[#1c1712] py-3 px-5 text-[0.66rem] uppercase tracking-[0.18em] text-[#f4efe6] transition-colors hover:bg-[#9c7a44]"
                       >

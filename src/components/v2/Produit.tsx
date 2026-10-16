@@ -172,8 +172,9 @@ export const CarteProduit: React.FC<{
         {dosha && <PictoDosha dosha={dosha} className="absolute right-2.5 top-2.5 h-9 w-9 sm:h-10 sm:w-10" />}
       </Link>
       <div className="flex flex-1 flex-col pt-6">
-        <p className="truncate text-[0.58rem] uppercase tracking-[0.26em] text-[#7d6330]">{dosha ? NOM_DOSHA[dosha][lang] : (type || 'INSPIRATA')}</p>
-        <h3 className="mt-2.5 v2-serif font-light text-[clamp(1.1rem,1.5vw,1.25rem)] leading-[1.2] text-[#1c1712] line-clamp-2">
+        {/* Rien de tronqué (la Ronde, 16 oct. 2026) : la nomenclature et le nom passent à la ligne au lieu d'être coupés. */}
+        <p className="text-[0.58rem] uppercase leading-[1.6] tracking-[0.14em] sm:tracking-[0.26em] text-[#7d6330] [overflow-wrap:break-word]">{dosha ? NOM_DOSHA[dosha][lang] : (type || 'INSPIRATA')}</p>
+        <h3 className="mt-2.5 v2-serif font-light text-[clamp(1.1rem,1.5vw,1.25rem)] leading-[1.2] text-[#1c1712] [overflow-wrap:break-word]">
           <Link to={fiche} className="hover:text-[#7d6330] transition-colors duration-300">{p.title}</Link>
         </h3>
         <p className="mt-2 v2-serif font-light text-[1.1rem] text-[#7d6330] tabular-nums">

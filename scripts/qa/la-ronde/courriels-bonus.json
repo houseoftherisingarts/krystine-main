@@ -1,0 +1,42 @@
+{
+  "_note": "Le bonus des Rituels essentiels devient « Et après les Rituels ? » (décision de Krystine, nuit du 16 oct. 2026). Les documents Firestore ne sont PAS modifiés : chaque entrée donne l'ancien et le nouveau texte, à poser dans l'admin (ou avec scripts/sequences/installer.mjs --ecrire) après la relecture de Krystine. Les entrées « code » sont déjà changées dans le dépôt.",
+  "firestore": [
+    {
+      "document": "newsletters/seq-rituels-vivants-bienvenue",
+      "bloc": "preheader",
+      "avant": "Vos 10 capsules et votre bonus sont ouverts dans votre espace.",
+      "apres": "Vos 10 capsules sont ouvertes dans votre espace."
+    },
+    {
+      "document": "newsletters/seq-rituels-vivants-bienvenue",
+      "bloc": "blocks[2] (paragraphe)",
+      "avant": "Vos 10 capsules et votre bonus sont ouverts dans votre espace. Ne cherchez pas à tout voir ce soir : commencez par la première capsule, « Introduction à l'Ayurveda », une dizaine de minutes, le temps d'une tisane.",
+      "apres": "Vos 10 capsules sont ouvertes dans votre espace. Au bout du parcours, le bonus « Et après les Rituels ? » vous attend : un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble. Ne cherchez pas à tout voir ce soir : commencez par la première capsule, « Introduction à l'Ayurveda », une dizaine de minutes, le temps d'une tisane."
+    }
+  ],
+  "code": [
+    {
+      "fichier": "scripts/sequences/accueil-rituels-vivants.json",
+      "bloc": "lettres[bienvenue].preheader et blocs[2]",
+      "avant": "Vos 10 capsules et votre bonus sont ouverts dans votre espace.",
+      "apres": "Mêmes textes que les deux entrées Firestore ci-dessus (source de la séquence)."
+    },
+    {
+      "fichier": "functions/src/quizCourriel.ts",
+      "bloc": "RITUELS_VIVANTS.phrase (la carte des Rituels dans les 6 courriels du résultat du quiz : Vata, Pitta, Kapha, avec et sans la suite)",
+      "avant": "Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.",
+      "apres": "Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes, et en bonus « Et après les Rituels ? » : un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble.",
+      "attention": "Prend effet seulement au prochain déploiement des fonctions (non fait)."
+    },
+    {
+      "fichier": "src/pages/QuizLoeuvre.tsx",
+      "bloc": "carte des Rituels à l'écran du résultat (miroir du courriel)",
+      "avant": "… 10 capsules courtes et un bonus.",
+      "apres": "… 10 capsules courtes, et en bonus « Et après les Rituels ? » : un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble."
+    }
+  ],
+  "verifies_sans_bonus": [
+    "newsletters/seq-rituels-vivants-suite (« Et ensuite ? ») : aucune promesse de bonus",
+    "newsletters/seq-suite-vent-1 à 4, seq-suite-feu-*, seq-suite-terre-* : aucune promesse de bonus (« aller plus loin » vise VATA Essentiel)"
+  ]
+}

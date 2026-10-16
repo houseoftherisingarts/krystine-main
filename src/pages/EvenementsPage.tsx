@@ -177,7 +177,7 @@ const EvenementsPage: React.FC = () => {
                       {vedette.brouillon && <span className="border border-[#EEE7DB]/30 px-2.5 py-1 text-[0.58rem] uppercase tracking-[0.2em] text-[#EEE7DB]/70">{fr ? 'Non publié' : 'Unpublished'}</span>}
                     </div>
                   </div>
-                  <p className="mt-8 text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">{fr ? 'La soirée' : 'The evening'}</p>
+                  <p className="mt-8 text-[0.62rem] uppercase tracking-[0.28em] text-[#BA7B39]">{vedette.nature === 'livre' ? (fr ? 'La parution' : 'The release') : (fr ? 'La soirée' : 'The evening')}</p>
                   <p className="mt-3 v2-serif font-light text-[clamp(1.5rem,2.4vw,2.1rem)] leading-[1.12]">{titre(vedette)}</p>
                   <p className="mt-3 text-[0.92rem] leading-[1.7] text-[#EEE7DB]/75">
                     {quand(vedette)}{lieu(vedette) ? <> &middot; {lieu(vedette)}</> : null}

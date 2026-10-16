@@ -127,7 +127,7 @@ export const REPERE: Record<Dosha, { libelle: string; titre: string; moment: str
 export const RITUELS_VIVANTS = {
   libelle: 'Les Rituels essentiels · 27 $',
   titre: 'Pour commencer dès maintenant à intégrer l’Ayurveda, simplement',
-  phrase: 'Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes et un bonus.',
+  phrase: 'Votre lecture vous dit quoi équilibrer; les Rituels essentiels vous montrent comment, en moins de 5 minutes par jour. Des gestes pratiqués depuis près de 40 ans : l’automassage, les soins du nez, de la bouche, des mains et des pieds. 10 capsules courtes, et en bonus « Et après les Rituels ? » : un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble.',
   prix: '27 $',
   bouton: 'Je commence ce soir',
   lien: `${SITE}/rituels-essentiels?via=courriel-resultat`,

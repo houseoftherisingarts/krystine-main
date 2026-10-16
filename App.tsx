@@ -250,7 +250,7 @@ const CalculOffre: React.FC = () => {
 // (accueil, communauté) dont la pastille mène ici avec ?de=<page d'origine>.
 const PageAide: React.FC = () => {
   const [q] = useSearchParams();
-  return <AidePepin autonome pageDe={q.get('de') || '/'} />;
+  return <AidePepin autonome pageDe={q.get('de') || '/'} sujetDepart={q.get('sujet') === 'probleme' ? 'probleme' : 'commentaire'} />;
 };
 
 const Flottants: React.FC = () => {

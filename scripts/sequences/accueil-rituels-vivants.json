@@ -14,7 +14,7 @@
       "titre": "Étape 1 · Bienvenue (tout de suite)",
       "delaiHeures": 0,
       "subject": "Vos Rituels essentiels vous attendent",
-      "preheader": "Vos 10 capsules et votre bonus sont ouverts dans votre espace.",
+      "preheader": "Vos 10 capsules sont ouvertes dans votre espace.",
       "bandeau": {
         "fond": "#141311",
         "texte": "#EEE7DB",
@@ -31,7 +31,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Vos 10 capsules et votre bonus sont ouverts dans votre espace. Ne cherchez pas à tout voir ce soir : commencez par la première capsule, « Introduction à l'Ayurveda », une dizaine de minutes, le temps d'une tisane."
+          "text": "Vos 10 capsules sont ouvertes dans votre espace. Au bout du parcours, le bonus « Et après les Rituels ? » vous attend : un petit miroir de ce que vous avez vécu, et la suite qui vous ressemble. Ne cherchez pas à tout voir ce soir : commencez par la première capsule, « Introduction à l'Ayurveda », une dizaine de minutes, le temps d'une tisane."
         },
         {
           "type": "button",

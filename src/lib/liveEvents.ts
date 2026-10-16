@@ -139,12 +139,14 @@ export const LIVE_EVENTS: LiveEvent[] = [
     titleEN: 'Third book release',
     subtitleFR: 'Aux Éditions de l\'Homme',
     subtitleEN: 'Éditions de l\'Homme',
-    dateFR: '4 février 2027',
-    dateEN: 'February 4, 2027',
-    startDate: '2027-02-04',
+    dateFR: '3 mars 2027',
+    dateEN: 'March 3, 2027',
+    startDate: '2027-03-03',
     bodyFR: 'Troisième volet de la trilogie. Titre dévoilé à la parution. Une tournée de conférences suit la parution.',
     bodyEN: 'Third volume of the trilogy. Title revealed at release. A conference tour follows the launch.',
     triggersTourRequest: true,
+    // Le grand rendez-vous en tête du calendrier, tant que le lancement n'est pas confirmé (16 oct. 2026).
+    featured: true,
     ctaLabelFR: 'Me tenir au courant de la tournée',
     ctaLabelEN: 'Keep me posted on the tour',
   },
@@ -266,9 +268,13 @@ export const LIVE_EVENTS: LiveEvent[] = [
  * TEDx event regardless of `includeOpenEnded` — used by the visibility
  * flag system so admins can toggle TEDx mentions without a redeploy.
  */
+/** Les rendez-vous annoncés mais pas encore confirmés : jamais montrés au public. */
+export const LANCEMENT_A_CONFIRMER = new Set(['lancement-anglicane']);
+
 export function getUpcomingEvents(opts: { includeOpenEnded?: boolean; hideTedx?: boolean; now?: Date } = {}): LiveEvent[] {
   const { includeOpenEnded = true, hideTedx = false, now = new Date() } = opts;
-  const allowed = LIVE_EVENTS.filter(ev => !hideTedx || ev.id !== 'tedx');
+  // Le lancement à L'Anglicane reste hors de la liste publique tant qu'il n'est pas confirmé (Krystine, 16 oct. 2026).
+  const allowed = LIVE_EVENTS.filter(ev => (!hideTedx || ev.id !== 'tedx') && !LANCEMENT_A_CONFIRMER.has(ev.id));
   const dated = allowed
     .filter(ev => !!ev.startDate)
     .map(ev => ({ ev, t: new Date(ev.startDate as string).getTime() }))

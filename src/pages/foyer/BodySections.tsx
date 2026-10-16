@@ -694,7 +694,8 @@ export default function BodySections({ overlap = false }: { overlap?: boolean })
               alt="Une femme assise devant un feu de camp, le regard pris par l'écran de son téléphone"
               width={1920}
               height={1072}
-              className="h-full w-full scale-105 object-cover"
+              /* Ancrée en haut (la Ronde, 16 oct. 2026) : le visage de la femme est au bord supérieur de la photo; centrée, elle était coupée sous les yeux. */
+              className="h-full w-full origin-top scale-105 object-cover object-[50%_0%]"
               loading="lazy"
             />
           </Parallax>
