@@ -8364,5 +8364,23 @@
       "public/assets-manifest.json",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T01:57:53.674Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "259b748f",
+    "message": "Cours des Rituels essentiels (/cours/rituels-vivants) : parcours calqué sur VATA (Module 1 à 4, Bonus, À télécharger, carte « Par où commencer », « Dans cette capsule » et « Le geste d'aujourd'hui » sous chaque capsule, porte vers VATA Essentiel sous le bonus et le guide), haut du cours sans titre fantôme, cartes en teinte avec le picto de chaque promesse en attendant les visuels",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/rituels-vivants/seuil.webp",
+      "src/components/cours/CheminSens.tsx",
+      "src/pages/CoursDetailPage.tsx",
+      "src/pages/cours/programmes.ts",
+      "src/pages/vata/semaines.ts"
+    ]
   }
 ]
