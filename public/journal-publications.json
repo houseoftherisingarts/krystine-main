@@ -8533,5 +8533,21 @@
       "src/components/layout/AidePepin.tsx",
       "src/components/layout/Footer.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T21:18:45.725Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cfecc138",
+    "message": "Bilan du matin : nouvelle rubrique « L'accueil vu par les visiteuses » (défilement, clics sur la porte du quiz, ce qui prend les clics), chaque jour",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json",
+      "public/iris/iris_terminal.md"
+    ]
   }
 ]
