@@ -161,6 +161,26 @@ export const vhCollecter = onRequest(
       return;
     }
 
+    // Le compte anonyme des visites (16 oct. 2026) : toutes les visiteuses, avant tout choix
+    // sur la bannière. Seuls des compteurs du jour sont écrits : source, appareil, page d'entrée.
+    if (d.t === 'visite') {
+      const SOURCES = ['pub', 'infolettre', 'recherche', 'reseaux', 'boutique', 'direct', 'autre-lien', 'autre-site'];
+      const src = SOURCES.includes(d.src) ? String(d.src) : 'autre-site';
+      const dev = ['telephone', 'tablette', 'ordinateur'].includes(d.dev) ? String(d.dev) : 'ordinateur';
+      const entree = texte(d.entree, 40).toLowerCase().replace(/[^a-z0-9-]/g, '') || 'accueil';
+      if (cheminIgnore(`/${entree}`, r.exclure)) { res.status(204).send(''); return; }
+      await db.collection('vh_visites').doc(`${site}_${jourDe(recu)}`).set({
+        jour: jourDe(recu),
+        total: FieldValue.increment(1),
+        source: { [src]: FieldValue.increment(1) },
+        appareil: { [dev]: FieldValue.increment(1) },
+        entree: { [entree]: FieldValue.increment(1) },
+        ...(pays ? { pays: { [pays]: FieldValue.increment(1) } } : {}),
+      }, { merge: true });
+      res.status(204).send('');
+      return;
+    }
+
     try {
       if (d.t === 'replay') {
         await recevoirReplay(db, site, sid, d, recu);

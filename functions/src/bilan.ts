@@ -64,13 +64,17 @@ async function inscriptions(de: Date, a: Date): Promise<Inscriptions> {
   return r;
 }
 
-interface Journee { sessions: number; nouveaux: number; quizCommence: number; quizFini: number; pub: number; infolettre: number; campagnes: Record<string, number>; affiche: number; accepte: number; refuse: number }
+interface Journee { toutes: number; sourcesToutes: Record<string, number>; appareils: Record<string, number>; sessions: number; nouveaux: number; quizCommence: number; quizFini: number; pub: number; infolettre: number; campagnes: Record<string, number>; affiche: number; accepte: number; refuse: number }
 async function journees(jours: string[]): Promise<Journee> {
   const db = getFirestore();
-  const r: Journee = { sessions: 0, nouveaux: 0, quizCommence: 0, quizFini: 0, pub: 0, infolettre: 0, campagnes: {}, affiche: 0, accepte: 0, refuse: 0 };
+  const r: Journee = { toutes: 0, sourcesToutes: {}, appareils: {}, sessions: 0, nouveaux: 0, quizCommence: 0, quizFini: 0, pub: 0, infolettre: 0, campagnes: {}, affiche: 0, accepte: 0, refuse: 0 };
   // Les choix faits sur la bannière des témoins (vh_consentement, compteur anonyme posé le 13 oct. 2026).
   const choix = await db.getAll(...jours.map((j) => db.doc(`vh_consentement/${SITE_VH}_${j}`)));
   for (const d of choix) { r.affiche += Number(d.get('affiche')) || 0; r.accepte += Number(d.get('accepte')) || 0; r.refuse += Number(d.get('refuse')) || 0; }
+  // Toutes les visites, comptées de façon anonyme avant tout choix sur la bannière (vh_visites, 16 oct. 2026).
+  const toutes = await db.getAll(...jours.map((j) => db.doc(`vh_visites/${SITE_VH}_${j}`)));
+  const ajouter = (cible: Record<string, number>, x: unknown) => { for (const [k, v] of Object.entries((x || {}) as Record<string, number>)) cible[k] = (cible[k] || 0) + (Number(v) || 0); };
+  for (const d of toutes) { if (!d.exists) continue; r.toutes += Number(d.get('total')) || 0; ajouter(r.sourcesToutes, d.get('source')); ajouter(r.appareils, d.get('appareil')); }
   const docs = await db.getAll(...jours.map((j) => db.doc(`vh_jours/${SITE_VH}_${j}`)));
   for (const d of docs) {
     if (!d.exists) continue;
@@ -541,6 +545,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     verdict: alertes.length || (verif?.anomalies.some((a) => !estMineure(a.probleme)) ?? false) ? 'alerte' : 'ok',
     toutFonctionne: { alertes, pepinsHier: pepinsH, pepinsOuverts, quizARattraper: aRattraper, controles: filet?.controles.length ?? 0 },
     veilleChiffres: {
+      visitesToutes: jH?.toutes ?? null, sourcesToutes: jH?.sourcesToutes ?? {}, appareils: jH?.appareils ?? {},
       visites: jH?.sessions ?? null, nouveauxNavigateurs: jH?.nouveaux ?? null,
       quizCommences: jH?.quizCommence ?? null, quizFinis: jH?.quizFini ?? null, resultatsEnregistres: resH,
       inscriptions: insH?.total ?? null, vraimentNouvelles: insH?.nouvelles ?? null, dejaConnues: insH?.connues ?? null, parSource: insH?.parSource ?? {},
@@ -548,6 +553,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
       shopify: shopH, visitesPub: jH?.pub ?? null, visitesInfolettre: jH?.infolettre ?? null, affiche: jH?.affiche ?? null, accepte: jH?.accepte ?? null, refuse: jH?.refuse ?? null, campagnes: jH?.campagnes ?? {}, desabonnements: desH,
     },
     septJours: {
+      visitesToutes: j7?.toutes ?? null, sourcesToutes: j7?.sourcesToutes ?? {}, appareils: j7?.appareils ?? {},
       visites: j7?.sessions ?? null, quizCommences: j7?.quizCommence ?? null, quizFinis: j7?.quizFini ?? null, resultatsEnregistres: res7,
       inscriptions: ins7?.total ?? null, vraimentNouvelles: ins7?.nouvelles ?? null, ventes: ven7?.n ?? null, montantVentes: ven7?.montant ?? null, titresVentes: ven7?.titres ?? [], detailVentes: ven7?.detail ?? [],
       nouveauxNavigateurs: j7?.nouveaux ?? null, campagnes: j7?.campagnes ?? {}, parSource: ins7?.parSource ?? {},
@@ -609,6 +615,10 @@ const BASE = 'base du site, tout le monde';
  * et le quiz, ce qui est à améliorer, les occasions de conférences. Chaque point
  * n'apparaît qu'une fois; chaque chiffre a une seule source, nommée entre parenthèses.
  */
+const NOMS_SOURCES: Record<string, string> = { pub: 'publicité', infolettre: 'lettres', recherche: 'recherche (Google)', reseaux: 'réseaux sociaux', boutique: 'boutique inspiratanature.com', direct: 'adresse tapée ou favori', 'autre-lien': 'autre lien suivi', 'autre-site': 'autre site' };
+const repartition = (x: Record<string, number> | undefined, noms: Record<string, string>) =>
+  Object.entries(x || {}).filter(([, k]) => k > 0).sort((a, c) => c[1] - a[1]).map(([cle, k]) => `${noms[cle] || cle} ${n(k)}`).join(', ');
+
 export function texteBilan(b: Bilan): string {
   const v = b.veilleChiffres;
   const s = b.septJours;
@@ -698,6 +708,11 @@ export function texteBilan(b: Bilan): string {
   if (v.quizCommences != null && v.quizFinis != null && v.quizCommences >= 10 && v.quizFinis < v.quizCommences * 0.3) aNoter.push(`Beaucoup de quiz commencés (${v.quizCommences}) pour peu de résultats vus (${v.quizFinis}) hier, chez les personnes ayant accepté les témoins.`);
   const bloc4: string[] = [
     `Chaque ligne : ${hierTxt}, puis les ${septTxt}.`,
+    ...(v.visitesToutes || s.visitesToutes ? [
+      `• Visites, toutes les visiteuses : ${paire(v.visitesToutes, s.visitesToutes)} (compte anonyme du site, sans témoins)`,
+      `   D’où elles viennent, 7 jours : ${repartition(s.sourcesToutes, NOMS_SOURCES) || 'rien encore'}`,
+      `   Appareils, 7 jours : ${repartition(s.appareils, { telephone: 'téléphone', tablette: 'tablette', ordinateur: 'ordinateur' }) || 'rien encore'}`,
+    ] : []),
     `• Quiz terminés (résultat rangé) : ${paire(v.resultatsEnregistres, s.resultatsEnregistres)} (${BASE})`,
     `• Inscriptions à l’infolettre : hier ${n(v.inscriptions)}, dont ${pluriel(v.vraimentNouvelles, 'vraiment nouvelle', 'vraiment nouvelles')}${sources ? ` (${sources})` : ''} · 7 jours ${n(s.inscriptions)}, dont ${pluriel(s.vraimentNouvelles, 'nouvelle')} (${BASE})`,
     `• Désabonnements : ${paire(v.desabonnements, s.desabonnements)} (${BASE})`,

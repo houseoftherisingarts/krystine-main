@@ -9,6 +9,7 @@
 // puisque settings/vexelhotjar est en lecture publique.
 
 import { demarrerVexelHotjar } from './tracker';
+import { compterVisiteAnonyme } from './compte';
 
 const SITE = 'krystine';
 const PROJET = 'krystinestlaurent-87566';
@@ -41,6 +42,9 @@ async function lancer() {
   if (!r.actif) return;
   demarrerVexelHotjar({ site: SITE, exclure: r.exclure, echantillonReplay: r.echantillonReplay, chargerReplay: () => import('./replay') });
 }
+
+// Le compte anonyme part pour toutes, avant tout choix (16 oct. 2026).
+compterVisiteAnonyme(SITE);
 
 if (consenti()) {
   lancer();

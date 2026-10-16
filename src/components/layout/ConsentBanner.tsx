@@ -4,6 +4,7 @@ import { useApp, useAuth } from '../../contexts/AppContext';
 import { enableAnalytics } from '../../firebase';
 import { activerVexelHotjar } from '../../vexelhotjar';
 import { mesureExclue } from '../../vexelhotjar/tracker';
+import { compterVisiteAnonyme } from '../../vexelhotjar/compte';
 
 const STORAGE_KEY = 'inspirata.consent.v1';
 type ConsentValue = 'accepted' | 'rejected';
@@ -87,9 +88,23 @@ const ConsentBanner: React.FC = () => {
     }
   }, [choice, authReady]);
 
+  // Toutes les visites se comptent, de façon anonyme, quel que soit le choix (16 oct. 2026).
+  useEffect(() => { if (authReady) compterVisiteAnonyme(); }, [authReady]);
+
+  // La bannière attend que la visiteuse commence à lire : un premier défilement, ou 8 secondes sur la page.
+  const [prete, setPrete] = useState(false);
   useEffect(() => {
-    if (!choice && authReady) signalerAffichage();
-  }, [choice, authReady]);
+    if (choice || prete) return;
+    const ouvrir = () => setPrete(true);
+    const surDefil = () => { if (window.scrollY > 120) ouvrir(); };
+    const minuterie = window.setTimeout(ouvrir, 8000);
+    window.addEventListener('scroll', surDefil, { passive: true });
+    return () => { window.clearTimeout(minuterie); window.removeEventListener('scroll', surDefil); };
+  }, [choice, prete]);
+
+  useEffect(() => {
+    if (!choice && authReady && prete) signalerAffichage();
+  }, [choice, authReady, prete]);
 
   const decide = (value: ConsentValue) => {
     window.localStorage.setItem(STORAGE_KEY, value);
@@ -102,7 +117,7 @@ const ConsentBanner: React.FC = () => {
   // qu'on est en train de lire (salle de presse, 22 septembre 2026).
   useEffect(() => {
     const bande = ref.current;
-    if (choice || !bande) return;
+    if (choice || !prete || !bande) return;
     // --bande-temoins laisse les barres fixes d'une page (barre d'achat de
     // /vata) se poser au-dessus de la bande au lieu d'être cachées dessous.
     const poser = () => {
@@ -119,32 +134,23 @@ const ConsentBanner: React.FC = () => {
       document.body.style.paddingBottom = '';
       document.documentElement.style.removeProperty('--bande-temoins');
     };
-  }, [choice, lang]);
+  }, [choice, lang, prete]);
 
-  if (choice) return null;
+  if (choice || !prete) return null;
 
   // Une bande fine ancrée au bas de l'écran, sur toute la largeur, au canon
   // du Festival Médiéval : la carte flottante d'avant se posait au tiers droit
   // de l'écran et recouvrait les tuiles de la salle de presse. Tout tient sur
   // une seule rangée, l'étiquette et le lien de la politique coulant dans la
   // phrase pour que la bande reste basse.
+  // La question, refaite avec Krystine le 16 oct. 2026 (« je suis tannée de ça ») : une phrase
+  // courte, vraie (le pixel de Meta sert aux annonces, d'où « faire connaître »), une seule porte
+  // forte. Le refus reste à un clic, comme l'exige le RGPD pour la France et la Belgique.
   const texte = (
     <>
-      <span className="hidden sm:inline uppercase tracking-[0.28em] font-bold text-[#7d6330] mr-2">
-        {lang === 'FR' ? 'En toute transparence' : 'With full transparency'}
-      </span>
-      {/* Mobile: une ligne. Le détail complet reste sur sm+ (recette
-          bandeau compact, improvements-ledger 2026-07-04). */}
-      <span className="sm:hidden">
-        {lang === 'FR'
-          ? 'Quelques témoins discrets, vous gardez le contrôle (Loi 25 et RGPD).'
-          : 'A few discreet cookies; you stay in control (Law 25 and GDPR).'}
-      </span>
-      <span className="hidden sm:inline">
-        {lang === 'FR'
-          ? "Quelques témoins discrets nous aident à améliorer votre expérience, et si vous êtes connectée, les pages que vous consultez servent aussi à vous proposer une offre qui vous ressemble. Vous gardez le contrôle, comme le veulent la Loi 25 et le RGPD."
-          : "A few discreet cookies help us improve your experience, and if you're signed in, the pages you visit also help us suggest offers that fit you. You stay in control, as Quebec's Law 25 and the GDPR intend."}
-      </span>
+      {lang === 'FR'
+        ? 'Pouvons-nous compter votre passage ? Cela nous aide à mieux vous accueillir et à faire connaître le travail de Krystine. Nous ne vendons rien de vous.'
+        : 'May we count your visit? It helps us welcome you better and share Krystine’s work. We never sell anything about you.'}
       <Link
         to="/politique-de-confidentialite"
         className="ml-2 whitespace-nowrap underline text-[#2a2015]/55 dark:text-white/55 hover:text-[#7d6330]"
@@ -167,16 +173,16 @@ const ConsentBanner: React.FC = () => {
           <i className="fa-solid fa-cookie-bite text-[#7d6330] mr-2.5" aria-hidden />
           {texte}
         </p>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 items-center gap-3">
           <button
             onClick={() => decide('accepted')}
-            className="min-h-[40px] bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[13px] px-5 py-2 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
+            className="min-h-[40px] bg-[#2a2015] dark:bg-[#bb9a5e] text-white dark:text-[#2a2015] font-bold uppercase tracking-widest text-[13px] px-6 py-2 rounded-full hover:bg-[#bb9a5e] hover:text-[#2a2015] transition-colors"
           >
-            {lang === 'FR' ? "J'accepte" : 'I accept'}
+            {lang === 'FR' ? 'Oui, avec plaisir' : 'Yes, gladly'}
           </button>
           <button
             onClick={() => decide('rejected')}
-            className="min-h-[40px] border border-[#2a2015]/20 dark:border-white/20 text-[#2a2015] dark:text-white font-bold uppercase tracking-widest text-[13px] px-5 py-2 rounded-full hover:border-[#bb9a5e] hover:text-[#7d6330] transition-colors"
+            className="min-h-[40px] px-2 text-[12px] underline underline-offset-4 text-[#2a2015]/60 dark:text-white/60 hover:text-[#7d6330]"
           >
             {lang === 'FR' ? 'Non merci' : 'No thanks'}
           </button>
