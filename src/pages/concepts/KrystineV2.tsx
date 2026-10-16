@@ -654,8 +654,6 @@ const EventsSection: React.FC = () => {
   const dejaAffiches = new Set(upcoming.map((e) => e.id));
   const jourLocal = (iso: string) => new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T12:00:00` : iso);
   const extraUpcoming = extraEvents
-    // Le lancement à L'Anglicane reste caché tant qu'il n'est pas confirmé (Krystine, 16 oct. 2026).
-    .filter((ev) => !/anglicane/i.test(`${ev.slug || ''} ${ev.id || ''} ${ev.title} ${ev.location || ''}`))
     .filter((ev) => !dejaAffiches.has(ev.slug || ev.id) && jourLocal(ev.date) >= new Date())
     .slice(0, 6);
 
@@ -957,36 +955,25 @@ export default function KrystineV2() {
 
       {/* Menu unifié du site = NavBar global (affiché par App.tsx) */}
 
-      {/* ─────────── HERO · le nom, puis le film (refonte du 9 octobre 2026, recadrée le 16 octobre) ─────────── */}
-      {/* Le film de la conférence de 2026 tourne en boucle muette. Depuis le 16 oct. 2026 (la Ronde) :
-          le titre ne se pose plus jamais sur le visage de Krystine. Le film a son propre cadre, entier
-          (16:9, rien de rogné, jamais sous l'en-tête) : à droite du texte sur ordinateur et sur la
-          tablette à l'horizontale, au-dessus du texte au téléphone et sur la tablette debout.
-          « Voir le film, avec le son » relance le même film avec le son, dans son cadre. */}
+      {/* ─────────── HERO · le nom, puis le film en grand (refonte du 9 octobre 2026) ─────────── */}
+      {/* Le haut de page reprend le film en fondu de l'accueil (Krystine, 9 oct. 2026) :
+          la conférence de 2026 tourne en boucle muette derrière un voile vert profond,
+          le texte en ivoire à gauche; « Voir le film, avec le son » relance avec le son. */}
       <section data-hero className="relative w-full overflow-hidden bg-[#1b2622] text-[#EEE7DB]">
-        <div className="pointer-events-none absolute -left-[18vw] -top-[24vw] h-[70vw] max-h-[900px] w-[70vw] max-w-[900px] rounded-full blur-[30px]" style={{ background: 'radial-gradient(circle,rgba(224,161,115,.32) 0%,rgba(139,74,47,.16) 32%,rgba(40,53,47,0) 68%)' }} aria-hidden />
-        <div className="relative grid items-center gap-x-[clamp(2rem,4vw,4.5rem)] gap-y-10 px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(6.5rem,13vh,9rem)] pb-[clamp(3.5rem,9vh,6rem)] lg:min-h-[min(88vh,780px)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <div className="lg:order-2 min-w-0">
-            <div className="relative">
-              <span className="pointer-events-none absolute -inset-2 border border-[#EEE7DB]/20" aria-hidden />
-              <div className="relative aspect-video w-full overflow-hidden bg-[#141c19]">
-                <video
-                  ref={filmFondu}
-                  className="h-full w-full object-cover"
-                  src="/accueil/assets/film/conference-2026-1080.mp4"
-                  poster="/accueil/assets/film/conference-2026-poster.jpg"
-                  autoPlay muted loop playsInline preload="metadata"
-                  aria-label="Krystine St-Laurent en conférence"
-                />
-              </div>
-            </div>
-            {avecSon && (
-              <button type="button" onClick={couperSon} className="mt-5 inline-flex items-center gap-2 border border-[#EEE7DB]/45 px-4 py-2.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#EEE7DB] transition-colors hover:border-[#EEE7DB]">
-                Fermer le film
-              </button>
-            )}
-          </div>
-          <div className="lg:order-1 min-w-0 max-w-[40rem]">
+        <div className="absolute inset-0">
+          <video
+            ref={filmFondu}
+            className="h-full w-full object-cover object-[80%_45%]"
+            src="/accueil/assets/film/conference-2026-1080.mp4"
+            poster="/accueil/assets/film/conference-2026-poster.jpg"
+            autoPlay muted loop playsInline preload="metadata"
+            aria-label="Krystine St-Laurent en conférence"
+          />
+        </div>
+        {!avecSon && <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(27,38,34,.96) 0%,rgba(27,38,34,.86) 34%,rgba(27,38,34,.3) 60%,rgba(27,38,34,0) 100%),linear-gradient(180deg,rgba(27,38,34,.35) 0%,rgba(27,38,34,0) 25%,rgba(27,38,34,0) 70%,rgba(27,38,34,.6) 100%)' }} aria-hidden />}
+        {!avecSon && <div className="pointer-events-none absolute -left-[18vw] -top-[24vw] h-[70vw] max-h-[900px] w-[70vw] max-w-[900px] rounded-full blur-[30px]" style={{ background: 'radial-gradient(circle,rgba(224,161,115,.32) 0%,rgba(139,74,47,.16) 32%,rgba(40,53,47,0) 68%)' }} aria-hidden />}
+        <div className={`relative min-h-[min(88vh,780px)] flex items-center px-[clamp(1.5rem,5vw,5.5rem)] pt-[clamp(7rem,15vh,10rem)] pb-[clamp(3.5rem,9vh,6rem)] transition-opacity duration-700 ${avecSon ? 'pointer-events-none opacity-0' : 'opacity-100'}`}>
+          <div className="max-w-[40rem]">
             <p data-fade className="mb-5 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-[#f2c39c]">
               Conférencière &middot; Autrice best-seller
             </p>
@@ -1002,15 +989,18 @@ export default function KrystineV2() {
               <a href="#reserver" className="inline-flex items-center gap-2.5 bg-[#EEE7DB] px-7 py-3.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] transition-opacity hover:opacity-90">Inviter Krystine <span aria-hidden>→</span></a>
               <a href="#conferences" className="inline-flex items-center gap-2.5 border border-[#EEE7DB]/45 px-7 py-3.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#EEE7DB] transition-colors hover:border-[#EEE7DB]">Découvrir la conférence</a>
             </div>
-            {!avecSon && (
-              <button type="button" onClick={jouerAvecSon} className="mt-7 inline-flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#EEE7DB]">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#EEE7DB]/50" aria-hidden>▶</span>
-                Voir le film, avec le son
-              </button>
-            )}
+            <button type="button" onClick={jouerAvecSon} className="mt-7 inline-flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#EEE7DB]">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#EEE7DB]/50" aria-hidden>▶</span>
+              Voir le film, avec le son
+            </button>
             <p className="mt-6 text-[0.72rem] uppercase tracking-[0.18em] text-[#EEE7DB]/70">Français principalement, anglais sur demande, bilingue possible</p>
           </div>
         </div>
+        {avecSon && (
+          <button type="button" onClick={couperSon} className="absolute right-5 top-[clamp(5.5rem,10vh,7rem)] z-10 bg-[#1b2622]/80 px-4 py-2.5 text-[0.68rem] uppercase tracking-[0.2em] text-[#EEE7DB] backdrop-blur">
+            Fermer le film
+          </button>
+        )}
       </section>
 
       <BandePreuve lang={lang} />
