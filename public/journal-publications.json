@@ -8503,5 +8503,19 @@
       "functions/src/shopify/webhook.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-16T20:57:55.438Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "2aaed74d",
+    "message": "Médias (/medias) : signe d'attente pendant que les vidéos Santé la vie et Bien se chargent après le clic (clics sans effet)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
