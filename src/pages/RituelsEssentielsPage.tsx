@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, CaretDown, FlowerLotus, Heartbeat, Wind, HandPalm, Compass } from '@phosphor-icons/react';
 import { getProducts, type ShopifyProduct } from '../shopify';
+import PictoTrace from '../components/cours/PictoTrace';
 
 /**
  * Rituels essentiels : la page de vente de la petite offre d'entrée (27 $),
@@ -59,7 +60,7 @@ const GX = 'px-[clamp(1.5rem,5vw,5.5rem)]';
 // (formations/rituels-vivants/lecons, dureeSecondes).
 // Les images sont des arrêts sur image des vraies capsules (public/rituels-vivants/).
 const MODULES: { etiquette: string; nom: string; capsules: [string, number][]; image?: string }[] = [
-  { etiquette: 'Module 1', nom: 'Capsules d’introduction à l’Ayurveda', capsules: [
+  { etiquette: 'Module 1', nom: 'Capsules d’introduction à l’Ayurveda', image: 'lotus', capsules: [
     ['Capsule d’introduction à l’Ayurveda, partie 1', 587],
     ['Capsule d’introduction à l’Ayurveda, partie 2', 854],
     ['Capsule d’introduction à l’Ayurveda, partie 3', 806],
@@ -69,14 +70,14 @@ const MODULES: { etiquette: string; nom: string; capsules: [string, number][]; i
     ['Capsule d’introduction à l’automassage, partie 2', 316],
     ['Capsule d’introduction à l’automassage, partie 3', 267],
     ['Capsule d’introduction à l’automassage, partie 4', 200],
-  ], image: '/rituels-vivants/automassage-bras.webp' },
+  ], image: 'goutte' },
   { etiquette: 'Module 3', nom: 'Capsules d’introduction aux soins du nez et de la bouche', capsules: [
     ['Capsule d’introduction aux soins du nez', 681],
     ['Capsule d’introduction aux soins de la bouche', 950],
-  ], image: '/rituels-vivants/soin-du-nez.webp' },
+  ], image: 'souffle' },
   { etiquette: 'Module 4', nom: 'Capsule d’introduction aux soins des mains et des pieds', capsules: [
     ['Capsule d’introduction aux soins des mains et des pieds', 166],
-  ], image: '/rituels-vivants/mains.webp' },
+  ], image: 'arbre' },
   { etiquette: 'Bonus', nom: 'Envie d’aller plus loin ?', capsules: [
     ['Plantes, stress et sagesse : une invitation concrète', 157],
   ] },
@@ -222,6 +223,18 @@ const BoutonAchat: React.FC<{ children: React.ReactNode; className?: string; cla
     {children}
     <ArrowRight size={15} weight="regular" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
   </Link>
+);
+
+/* Une tuile du cours : la teinte du module et son picto gravé, comme à l'intérieur
+   (aucun arrêt sur image des vidéos : ils coupaient le visage, 15 oct. 2026). */
+const TEINTES: Record<string, [string, string]> = {
+  lotus: ['#3B4F63', '#6A87A3'], goutte: ['#4E6349', '#7A9270'], souffle: ['#6A6B41', '#9BA067'], arbre: ['#8A4F2C', '#BA7B39'],
+};
+const Tuile: React.FC<{ picto: string; className?: string }> = ({ picto, className = '' }) => (
+  <span className={`relative grid aspect-[4/5] w-full place-items-center overflow-hidden rounded-[10px] ${className}`}
+    style={{ background: `linear-gradient(160deg, ${TEINTES[picto][1]} 0%, ${TEINTES[picto][0]} 100%)`, boxShadow: '0 22px 44px -22px rgba(28,23,18,0.5)' }}>
+    <PictoTrace nom={picto} className="w-[72%] text-[#F3E6CF] drop-shadow-[0_0_10px_rgba(217,160,91,0.35)]" />
+  </span>
 );
 
 /* Un arrêt sur image posé comme une photo sur la table */
@@ -391,7 +404,7 @@ const Capsules: React.FC = () => {
               <span className="absolute left-[6px] lg:left-1/2 top-[2.9rem] h-2.5 w-2.5 -translate-x-1/2 rounded-full" style={{ background: C.accent, boxShadow: `0 0 0 5px ${C.panel}` }} aria-hidden />
               <Reveal y={26} className={`pl-9 lg:pl-0 py-[clamp(1.75rem,4vh,2.75rem)] ${gauche ? 'lg:col-start-1' : 'lg:col-start-2'}`}>
                 <div className={`flex items-start gap-[clamp(1.1rem,2.2vw,2rem)] ${gauche ? 'lg:flex-row-reverse' : ''}`}>
-                  {m.image && <div className="w-[clamp(78px,20vw,96px)] lg:w-[clamp(110px,9.5vw,140px)] shrink-0"><Still src={m.image} /></div>}
+                  {m.image && <div className="w-[clamp(78px,20vw,96px)] lg:w-[clamp(110px,9.5vw,140px)] shrink-0"><Tuile picto={m.image} /></div>}
                   <div className="min-w-0 flex-1">
                     <div className={`flex items-baseline gap-4 ${gauche ? 'lg:justify-end' : ''}`}>
                       <span aria-hidden className="v2-serif font-light text-[clamp(1.9rem,3.2vw,2.8rem)] leading-none tabular-nums" style={{ color: C.accent }}>{String(i + 1).padStart(2, '0')}</span>
@@ -470,12 +483,6 @@ const REPERES: Array<[string, string]> = [
   ['27 $', 'Un seul paiement · accès immédiat'],
 ];
 
-const FAN_RECU: Array<[string, number, string, string]> = [
-  ['automassage-bras', -15, '-100%', '8%'],
-  ['soin-du-nez', -8, '-52%', '2%'],
-  ['soin-de-la-bouche', 8, '52%', '2%'],
-  ['mains', 15, '100%', '8%'],
-];
 
 const EnImages: React.FC = () => {
   const reduce = useReducedMotion();
@@ -503,21 +510,11 @@ const EnImages: React.FC = () => {
         </div>
         <Reveal delay={0.12} className="w-full min-w-0">
           <figure>
-            <motion.div aria-hidden className="relative mx-auto w-full max-w-[520px] aspect-[1/0.72] select-none" initial={reduce ? false : 'hidden'} whileInView="show" viewport={{ once: true, amount: 0.35 }}>
-              {FAN_RECU.map(([id, rot, x, y], i) => (
-                <div key={id} className="absolute bottom-[4%] left-1/2 w-[30%] -ml-[15%]" style={{ zIndex: i === 1 || i === 2 ? 4 : 2 }}>
-                  <motion.div className="origin-bottom will-change-transform" style={reduce ? { rotate: rot, x, y } : undefined}
-                    variants={{ hidden: { rotate: 0, x: '0%', y: 24, opacity: 0 }, show: { rotate: rot, x, y, opacity: 1, transition: { duration: APPEAR, ease, delay: 0.1 + (i === 1 || i === 2 ? 0 : 0.08) } } }}>
-                    <Still src={img(id)} />
-                  </motion.div>
-                </div>
+            <div aria-hidden className="mx-auto grid w-full max-w-[460px] grid-cols-2 gap-4 select-none">
+              {['lotus', 'goutte', 'souffle', 'arbre'].map((p, i) => (
+                <Reveal key={p} delay={0.08 * i}><Tuile picto={p} /></Reveal>
               ))}
-              <div className="absolute bottom-[4%] left-1/2 w-[36%] -ml-[18%]" style={{ zIndex: 10 }}>
-                <motion.div className="will-change-transform" variants={{ hidden: { y: 24, opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: APPEAR, ease } } }}>
-                  <Still src={img('automassage-oreilles')} />
-                </motion.div>
-              </div>
-            </motion.div>
+            </div>
           </figure>
         </Reveal>
       </div>
