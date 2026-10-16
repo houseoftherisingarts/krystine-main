@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-16T02:36:19.266Z",
+  "generatedAt": "2026-10-16T03:01:17.480Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -2659,7 +2659,7 @@
       "name": "automassage-bras.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 15702
+      "size": 11302
     },
     {
       "path": "/rituels-vivants/automassage-oreilles.webp",
@@ -2757,7 +2757,7 @@
       "name": "soin-du-nez.webp",
       "folder": "rituels-vivants",
       "kind": "image",
-      "size": 22970
+      "size": 15450
     },
     {
       "path": "/salon/alex.jpg",

@@ -233,44 +233,20 @@ const Still: React.FC<{ src: string; className?: string; eager?: boolean }> = ({
 
 /* ════════════════════════ Couverture : l'extrait vidéo au centre de l'éventail ════════════════════════ */
 
-const FAN: Array<[string, number, string, number]> = [
-  ['automassage-oreilles', -13, '-50%', 1],
-  ['soin-du-nez', -6.5, '-25%', 2],
-  ['soin-de-la-bouche', 6.5, '25%', 2],
-  ['mains', 13, '50%', 1],
-];
 
+// Le haut de page : la photo professionnelle « Le fondu » (la goutte, le
+// roll-on, le pied sur le tricot), sans aucun visage. L'éventail d'arrêts sur
+// image coupait le visage de Krystine (« c'est l'horreur », 15 oct. 2026).
 const VideoFan: React.FC = () => {
   const reduce = useReducedMotion();
-  // React ne pose pas l'attribut muted : sans lui, les téléphones refusent la lecture automatique.
-  const video = useRef<HTMLVideoElement>(null);
-  useEffect(() => {
-    const v = video.current;
-    if (!v || reduce) return;
-    v.muted = true;
-    v.play().catch(() => {});
-  }, [reduce]);
   return (
     <figure className="min-w-0">
-      <div className="relative mx-auto w-[min(84vw,380px)] lg:w-full aspect-[1/0.86] select-none">
-        {FAN.map(([id, rot, x, z], i) => (
-          <div key={id} aria-hidden className="absolute bottom-[3%] left-1/2 w-[38%] -ml-[19%]" style={{ zIndex: z }}>
-            <motion.div className="origin-bottom will-change-transform" initial={reduce ? false : { rotate: 0, x: '0%', y: 30, opacity: 0 }}
-              animate={{ rotate: rot, x, y: z === 1 ? '5%' : '1.5%', opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.35 + i * 0.08 }}>
-              <Still src={img(id)} eager />
-            </motion.div>
-          </div>
-        ))}
-        <div className="absolute bottom-[3%] left-1/2 w-[46%] -ml-[23%]" style={{ zIndex: 3 }}>
-          <motion.div className="will-change-transform" initial={reduce ? false : { y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.3 }}>
-            <video ref={video} src="/rituels-vivants/extrait-krystine-parle.mp4" poster="/rituels-vivants/extrait-krystine-parle-poster.webp"
-              autoPlay={!reduce} muted loop playsInline preload="auto" aria-label="Krystine présente les Rituels essentiels"
-              className="block w-full aspect-[4/5] object-cover rounded-[4px] border"
-              style={{ borderColor: 'rgba(28,23,18,0.1)', boxShadow: '0 30px 60px -26px rgba(28,23,18,0.6), 0 2px 6px rgba(28,23,18,0.08)' }} />
-            <span aria-hidden className="absolute inset-x-0 -bottom-[10px] mx-auto block h-[2px] w-12" style={{ background: C.accent }} />
-          </motion.div>
-        </div>
-      </div>
+      <motion.div className="relative mx-auto w-[min(88vw,440px)] lg:w-full will-change-transform" initial={reduce ? false : { y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.3 }}>
+        <img src="/rituels-vivants/seuil.webp" alt="Une goutte d’huile, un roll-on au poignet et un pied posé sur un tricot" width={1040} height={1000} loading="eager" decoding="async"
+          className="block w-full h-auto aspect-[26/25] object-cover rounded-[4px] border"
+          style={{ borderColor: 'rgba(28,23,18,0.1)', boxShadow: '0 30px 60px -26px rgba(28,23,18,0.6), 0 2px 6px rgba(28,23,18,0.08)' }} />
+        <span aria-hidden className="absolute inset-x-0 -bottom-[10px] mx-auto block h-[2px] w-12" style={{ background: C.accent }} />
+      </motion.div>
       <figcaption className="mt-7 text-center text-[0.58rem] sm:text-[0.62rem] uppercase tracking-[0.16em] sm:tracking-[0.24em]" style={{ color: 'rgba(28,23,18,0.62)' }}>
         Les gestes, pas à pas
       </figcaption>
