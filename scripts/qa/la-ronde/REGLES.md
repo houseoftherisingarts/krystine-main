@@ -7,6 +7,10 @@ Compilé le 15 octobre 2026 au soir par la Ronde (agent de nuit d'Iris).
 ## 0. Priorité de la nuit : les « moitiés » (consigne de Krystine relayée par Iris, 15 oct. 2026)
 - Rien de coupé : visage (front, menton, yeux hors cadre, tranché par un bord, une carte, un recadrage), bouton à moitié hors de l'écran ou caché par un autre élément (barre d'achat, bannière, bulle « ? », pied de page), texte tronqué, image rognée au mauvais endroit.
 
+## 0 bis. Le filet (Krystine, 16 oct. 2026)
+- Une vidéo, une animation ou un mouvement au défilement ne se juge jamais sur une capture figée : au moins trois instants ou une courte vidéo; défaut seulement s'il persiste. Un visage qui passe sous un titre dans un film, ou qui glisse sous une carte au défilement, est voulu. Source : `filet-mouvement-et-permission.md`.
+- Hero, films d'ouverture et mouvements de Krystine : jamais retouchés sans qu'elle les ait vus et demandés. Corriger le problème précis, au plus petit geste.
+
 ## 1. Vérification visuelle (CLAUDE.md du dépôt)
 - Capture à 1440 et 390 au minimum, regardée; trois appareils (téléphone, tablette, ordinateur) chaque matin. Source : CLAUDE.md « Vérification visuelle obligatoire »; `verif-matin-site-entier.md`.
 - Pleine largeur, jamais un bloc centré avec du vide sur les côtés; rien ne cache rien; vidéos embarquées (jamais bouton ni nouvel onglet); texte lisible sur chaque fond. Source : CLAUDE.md.
