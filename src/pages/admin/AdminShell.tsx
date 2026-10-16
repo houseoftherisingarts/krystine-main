@@ -39,6 +39,7 @@ export type AdminSectionId =
   | 'groups'
   | 'bookings'
   | 'demande'
+  | 'plusParVexel'
   | 'partenaireVexel'
   | 'bugs'
   | 'changelog'
@@ -89,6 +90,7 @@ export const SECTION_SLUGS: Record<AdminSectionId, string> = {
   foyer:      'foyer',
   bookings:   'demandes',
   demande:    'demander-un-changement',
+  plusParVexel: 'plus-par-vexel',
   partenaireVexel: 'partenaire-vexel',
   bugs:       'problemes-techniques',
   changelog:  'journal-des-changements',
@@ -176,6 +178,7 @@ const NAV: (NavItem & { groupe?: GroupeId })[] = [
   { id: 'enPreparation', label: 'En préparation', icon: 'fa-eye-slash',       groupe: 'reglages' },
   { id: 'settings',   label: 'Paramètres',       icon: 'fa-gear',             groupe: 'reglages' },
   { id: 'demande',    label: 'Demander un changement', icon: 'fa-bolt',       groupe: 'reglages' },
+  { id: 'plusParVexel', label: 'Plus par Vexel', icon: 'fa-gift', groupe: 'reglages' },
   { id: 'partenaireVexel', label: 'Devenir partenaire Vexel', icon: 'fa-handshake', groupe: 'reglages' },
   { id: 'bugs',       label: 'Commentaires des visiteuses', icon: 'fa-comment-dots', groupe: 'reglages' },
   { id: 'changelog',  label: 'Journal des changements', icon: 'fa-clock-rotate-left', groupe: 'reglages' },

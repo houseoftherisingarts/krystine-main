@@ -57,6 +57,7 @@ import SubmissionsSection from './admin/sections/SubmissionsSection';
 import GroupsSection from './admin/sections/GroupsSection';
 import BookingsSection from './admin/sections/BookingsSection';
 import DemandeSection from './admin/sections/DemandeSection';
+import PlusParVexelSection from './admin/sections/PlusParVexelSection';
 import PartenaireVexelSection from './admin/sections/PartenaireVexelSection';
 import ChangelogSection from './admin/sections/ChangelogSection';
 import PublicationsSection from './admin/sections/PublicationsSection';
@@ -129,6 +130,7 @@ const AdminDashboard: React.FC = () => {
       case 'groups':      return <GroupsSection />;
       case 'bookings':    return <BookingsSection />;
       case 'demande':     return <DemandeSection user={u} />;
+      case 'plusParVexel': return <PlusParVexelSection />;
       case 'partenaireVexel': return <PartenaireVexelSection />;
       case 'bugs':        return <BugsSection />;
       case 'changelog':   return <ChangelogSection />;
