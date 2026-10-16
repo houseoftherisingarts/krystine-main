@@ -8350,5 +8350,19 @@
       "public/assets-manifest.json",
       "src/pages/CoursDetailPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T00:52:04.501Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ba1ab567",
+    "message": "Page de cours : « Connectez-vous pour retrouver vos capsules » ouvre la fenêtre sur la connexion, et non sur la création de compte",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/CoursDetailPage.tsx"
+    ]
   }
 ]
