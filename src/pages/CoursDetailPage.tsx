@@ -1007,7 +1007,7 @@ const CoursDetailPage: React.FC = () => {
                         ) : (
                           <i className={`fa-solid ${verrou ? 'fa-lock' : terminees[l.id] ? 'fa-circle-check text-green-700' : ICONES[l.type] || 'fa-file'} w-4 ${courante?.id === l.id ? '' : verrou ? 'opacity-50' : 'text-[#8B4A2F]/70'}`} />
                         )}
-                        <span className="min-w-0 flex-1 truncate">{l.titre}</span>
+                        <span className="min-w-0 flex-1 line-clamp-2 leading-snug">{l.titre}</span>
                         {verrou ? <span className="shrink-0 text-[10px] uppercase tracking-wider opacity-60">{l.mois || (ouvertureSemaine(rangModuleVata(l.moduleNom)) ? (lang === 'FR' ? `S'ouvre le ${ouvertureSemaine(rangModuleVata(l.moduleNom))}` : `Opens ${ouvertureSemaine(rangModuleVata(l.moduleNom))}`) : '')}</span>
                                 : l.duree && <span className="text-[11px] opacity-60">{l.duree}</span>}
                       </button>

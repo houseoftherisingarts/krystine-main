@@ -360,7 +360,7 @@ const Cover: React.FC = () => {
             <button
               type="button"
               onClick={go}
-              className="group inline-flex min-h-[48px] items-center justify-center gap-2.5 whitespace-nowrap px-5 py-4 text-[0.64rem] uppercase tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+              className="group inline-flex min-h-[48px] max-w-full items-center justify-center gap-2.5 whitespace-nowrap px-4 py-4 text-[0.64rem] uppercase tracking-[0.03em] min-[380px]:px-5 min-[380px]:tracking-[0.08em] sm:px-8 sm:text-[0.72rem] sm:tracking-[0.18em] transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
               style={{ background: C.ink, color: C.cream, outlineColor: C.sage }}
               onMouseEnter={(e) => { e.currentTarget.style.background = C.sage; e.currentTarget.style.color = C.card; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = C.ink; e.currentTarget.style.color = C.cream; }}

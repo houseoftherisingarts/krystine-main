@@ -117,7 +117,7 @@ const BoutiqueCollectionPage: React.FC = () => {
 
   const fr = lang === 'FR';
   const garanties = fr
-    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Formules maison', 'Conçues par Krystine'], ['Livraison', 'Au Canada et aux États-Unis, offerte dès 135 $ avant taxes'], ['Près de 40 ans', 'D’expérience en ayurveda']]
+    ? [['Paiement sécurisé', 'Par Shopify, en dollars canadiens'], ['Formules maison', 'Conçues par Krystine'], ['Livraison', 'Au Canada et aux États-Unis, offerte dès 135 $ avant taxes'], ['Près de 40 ans', 'D’expérience en Ayurveda']]
     : [['Secure checkout', 'By Shopify, in Canadian dollars'], ['House formulas', 'Crafted by Krystine'], ['Shipping', 'To Canada and the United States, included from $135 before taxes'], ['Nearly 40 years', 'Of Ayurvedic practice']];
 
   return (

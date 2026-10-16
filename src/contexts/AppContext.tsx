@@ -133,8 +133,11 @@ const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   if (!audioRef.current && typeof Audio !== 'undefined') {
-    const a = new Audio(AUDIO_URL);
-    a.loop = true; a.preload = 'auto'; a.volume = 0.4;
+    const a = new Audio();
+    // « none » : la musique (8,4 Mo) ne se télécharge qu'au clic sur le bouton du son,
+    // plus à chaque page pour chaque visiteuse (la Ronde, 15 oct. 2026).
+    a.preload = 'none'; a.src = AUDIO_URL;
+    a.loop = true; a.volume = 0.4;
     audioRef.current = a;
   }
   useEffect(() => {

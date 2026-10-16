@@ -496,7 +496,7 @@ const OrigineDeuxPage: React.FC = () => {
                 {TESTIMONIALS.map((t) => (
                   <p key={t.who} className="text-ink">
                     <span className="font-serif text-[1.05rem] leading-snug">« {t.quote} »</span>
-                    <span className="block mt-1 text-inkSoft/80 text-sm">— {t.who}</span>
+                    <span className="block mt-1 text-inkSoft/80 text-sm">{t.who}</span>
                   </p>
                 ))}
               </div>

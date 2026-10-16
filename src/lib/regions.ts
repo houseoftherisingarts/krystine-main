@@ -212,7 +212,7 @@ const CA_OTHER_PROVINCES = [
 
 export const COUNTRIES: CountryConfig[] = [
   { code: 'QC',    label: 'Québec',                            regions: QC_REGIONS },
-  { code: 'CA',    label: 'Canada — autres provinces',         regions: CA_OTHER_PROVINCES },
+  { code: 'CA',    label: 'Canada, autres provinces',         regions: CA_OTHER_PROVINCES },
   { code: 'FR',    label: 'France',                            regions: FR_DEPARTEMENTS },
   { code: 'BE',    label: 'Belgique',                          regions: BE_PROVINCES },
   { code: 'CH',    label: 'Suisse',                            regions: CH_CANTONS },

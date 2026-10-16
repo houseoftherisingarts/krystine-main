@@ -574,7 +574,7 @@ export default function MediasV2() {
               <span className="v2-serif text-[clamp(2rem,4vw,2.8rem)] font-light leading-none text-[#BA7B39] tabular-nums">27&nbsp;$</span>
               <a
                 href="/rituels-essentiels"
-                className="inline-flex items-center gap-2.5 whitespace-nowrap bg-[#EEE7DB] px-5 py-3.5 sm:px-7 text-[0.7rem] uppercase tracking-[0.2em] text-[#1c1712] transition-colors duration-300 hover:bg-[#f4efe6]"
+                className="inline-flex items-center gap-2.5 whitespace-nowrap bg-[#EEE7DB] px-4 py-3.5 sm:px-7 text-[0.7rem] uppercase tracking-[0.12em] sm:tracking-[0.2em] text-[#1c1712] transition-colors duration-300 hover:bg-[#f4efe6]"
               >
                 {lang === 'FR' ? 'Commencer ce soir' : 'Start tonight'}
                 <ArrowRight size={14} weight="regular" />

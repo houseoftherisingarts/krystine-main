@@ -74,7 +74,7 @@ const CartDrawer: React.FC = () => {
       <aside
         aria-label={fr ? 'Panier' : 'Cart'}
         inert={!cartOpen}
-        className={`fixed right-0 top-0 z-[101] flex h-full w-full max-w-md flex-col bg-[#f4efe6] text-[#1c1712] shadow-[-30px_0_80px_-40px_rgba(28,23,18,0.45)] transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed right-0 top-0 z-[101] flex h-full w-full max-w-md flex-col bg-[#f4efe6] text-[#1c1712] transform transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${cartOpen ? 'translate-x-0 shadow-[-30px_0_80px_-40px_rgba(28,23,18,0.45)]' : 'translate-x-full shadow-none'}`}
         style={{ fontFamily: '"Inter", system-ui, sans-serif' }}
       >
         {/* Tête */}

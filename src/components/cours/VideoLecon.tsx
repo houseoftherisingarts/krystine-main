@@ -10,9 +10,12 @@ import React, { useState } from 'react';
 // les leçons venues de Kajabi. On les ignore partout.
 const ARRET_SUR_IMAGE = /(^|\/\/|\.)wistia\.(com|net)\//i;
 
-/** La vignette propre d'une leçon (déposée par l'admin ou dessinée), jamais un arrêt sur image. */
+/** La vignette propre d'une leçon (déposée par l'admin ou dessinée), jamais un arrêt sur image.
+ *  Un chemin de Storage nu (« formations-contenu/…/vignette.jpg », image tirée d'une capsule
+ *  venue de Kajabi) n'est pas une adresse d'image : le navigateur le lisait comme une page
+ *  du site et montrait une image cassée. On l'écarte, le visuel dessiné prend sa place. */
 export const vignetteDeLecon = (l: { imageUrl?: string; vignette?: string; image?: string } | null | undefined): string | undefined =>
-  [l?.imageUrl, l?.vignette, l?.image].find(u => !!u && !ARRET_SUR_IMAGE.test(u)) || undefined;
+  [l?.imageUrl, l?.vignette, l?.image].find(u => !!u && /^(https?:|\/|data:)/.test(u) && !ARRET_SUR_IMAGE.test(u)) || undefined;
 
 interface Props {
   url: string;
