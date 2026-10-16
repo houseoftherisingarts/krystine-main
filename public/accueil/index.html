@@ -1095,7 +1095,28 @@
 .saison-etiq{font-variant-numeric:oldstyle-nums}
 @media(prefers-reduced-motion:reduce){ .saison-btn,.saison-btn svg,.tmform button{transition:none} .saison-btn:active,.tmform button:active{transform:none} }
 </style>
-</head>
+<style id="porte-quiz">
+/* La porte du quiz au premier écran (16 oct. 2026) */
+.qz{margin-top:1.4rem;text-align:center}
+.qz-q{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(1.35rem,2.4vw,1.75rem);letter-spacing:.02em;color:#f1e6cf;margin:0 0 .9rem}
+.qz-vid{display:block;max-width:30rem;margin:0 auto .2rem;border:1px solid rgba(187,154,94,.45);border-radius:14px;overflow:hidden;aspect-ratio:16/9;background:#0e0c0a;transition:border-color .4s,transform .6s cubic-bezier(.16,.8,.24,1)}
+.qz-vid:hover{border-color:rgba(224,176,96,.85);transform:translateY(-2px)}
+.qz-vid video{width:100%;height:100%;object-fit:cover;display:block}
+.qz-lien{display:inline-block;margin-top:.9rem;font-family:Inter,sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#e9dcc0;text-decoration:underline;text-underline-offset:.35em;text-decoration-color:rgba(224,176,96,.6)}
+.qz-lien-or{font-size:.74rem;color:#e0b060;font-weight:600}
+@media (max-width:900px){
+  .hero .copy{display:flex;flex-direction:column}
+  .hero .qz{order:3;margin-top:.2rem}
+  .hero .sub{order:4;font-size:.98rem;margin-top:1.1rem}
+  .hero .h-rule{display:none}
+  /* le visage entier au-dessus de la carte */
+  .hero .scene video{top:-9rem!important}
+  .hero-inner{padding-top:12.5rem!important}
+  /* le bas de l'écran dégagé : la fleur et le son quittent le téléphone, l'avis prend la place de la fleur */
+  .fo-fleur,.fo-panneau,.fo-voile,.amb-toggle{display:none!important}
+  .ab-bouton{bottom:1rem!important}
+}
+</style></head>
 <body>
 
   <nav>
@@ -1133,7 +1154,14 @@
         <div class="h-rule reveal d2" aria-hidden="true"><span></span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg><span></span></div>
         <div class="sub reveal d2">Nous avons appris à chercher les réponses à l'extérieur. Pourtant, le corps et la nature parlent un langage que nous avons simplement oublié de lire.</div>
         <div class="h-rule plain reveal d3" aria-hidden="true"><span></span></div>
-        <div class="cta-row reveal d4"><a class="cta" href="/quiz"><span class="cta-txt"><span class="cta-main">De quoi ai-je besoin en ce moment&nbsp;?</span><span class="cta-pt"> · </span><span class="cta-sub">Le quiz · 3 minutes</span></span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a><a class="cta cta-ligne" href="#portes"><span class="cta-txt">Par où commencer&nbsp;?</span> <svg viewBox="0 0 18 10"><path d="M0 5h16M12 1l4 4-4 4"/></svg></a></div>
+        <div class="qz reveal d4">
+          <!-- La porte du quiz au premier écran (16 oct. 2026) : 0 clic en 8 jours sur l'ancien bouton doré,
+               plus de la moitié des visiteuses parties après un écran et demi. Krystine a choisi la vidéo du quiz. -->
+          <p class="qz-q">De quoi ai-je besoin en ce moment&nbsp;?</p>
+          <a class="qz-vid" href="/quiz?via=accueil-video" aria-label="Faire le quiz : de quoi ai-je besoin en ce moment ?"><video autoplay muted loop playsinline preload="metadata" poster="/quiz/quiz-dosha-revisee-poster.jpg" aria-hidden="true"><source src="/quiz/quiz-dosha-revisee.mp4" type="video/mp4"/></video></a>
+          <a class="qz-lien qz-lien-or" href="/quiz?via=accueil">Faire le quiz · 3 minutes&nbsp;→</a><br/>
+          <a class="qz-lien" href="#portes">Par où commencer&nbsp;?</a>
+        </div>
       </div>
     </div>
   </section>
