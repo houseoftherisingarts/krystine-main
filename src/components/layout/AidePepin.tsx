@@ -26,9 +26,12 @@ const COTE_MAX = 1600;
 const T = {
   FR: {
     pastille: 'Un commentaire ? Écrivez-nous',
-    infobulle: 'Un commentaire sur votre expérience de navigation ? Écrivez-nous',
+    infobulle: 'Un commentaire, un problème ou une question ? Écrivez-nous',
+    choixCommentaire: 'Un commentaire',
+    choixProbleme: 'Un problème ou une question',
     titre: 'Aidez-nous à vous offrir une expérience à 1000 %',
     intro: 'Un commentaire sur votre expérience de navigation ? Chaque message est lu par notre équipe.',
+    introProbleme: 'Un problème ou une question ? Dites-nous ce qui se passe. Chaque message est lu par notre équipe.',
     aime: 'J’aime ce que je vois',
     idee: 'Une idée',
     technique: 'Quelque chose bloque',
@@ -54,9 +57,12 @@ const T = {
   },
   EN: {
     pastille: 'Any feedback? Write to us',
-    infobulle: 'Any feedback on your browsing experience? Write to us',
+    infobulle: 'Feedback, a problem or a question? Write to us',
+    choixCommentaire: 'Some feedback',
+    choixProbleme: 'A problem or a question',
     titre: 'Help us make your experience 1000 %',
     intro: 'Any feedback on your browsing experience? Every message is read by our team.',
+    introProbleme: 'A problem or a question? Tell us what is happening. Every message is read by our team.',
     aime: 'I like what I see',
     idee: 'An idea',
     technique: 'Something is blocking me',
@@ -132,23 +138,65 @@ async function enBase64Reduit(blob: Blob): Promise<string> {
 }
 
 const CACHEE = (p: string) => p.startsWith('/admin') || p === '/compte' || p.startsWith('/compte/');
-// Pages où une barre d'achat fixe occupe le bas de l'écran au téléphone.
-const AVEC_BARRE = (p: string) => p.startsWith('/vata') || p.startsWith('/rituels-essentiels');
-// Sur /rituels-essentiels, la pastille ne flotte jamais sur le texte : au téléphone elle se loge à gauche dans la barre d'achat (cachée tant que la barre l'est), dès la tablette elle reste dans la marge de droite.
-const RITUELS = (p: string) => p.startsWith('/rituels-essentiels');
-// Pages de cours, de paiement et de vente avec barre d'achat (5 oct. 2026) : la pastille se réduit à un
-// petit rond « ? » à droite, monté d'un cran, pour ne couvrir ni l'avis de
-// semaine fermée, ni la liste des leçons, ni le texte sous le bouton de la
-// caisse. Son nom complet reste dans l'info-bulle et pour les lecteurs d'écran.
-const COMPACTE = (p: string) => p === '/formations' || p === '/formations/' || p.startsWith('/dimanches') || p.startsWith('/cours/') || p.startsWith('/paiement/') || AVEC_BARRE(p);
+
+type Sujet = 'commentaire' | 'probleme';
+// Les deux portes du petit choix (Krystine, 16 oct. 2026) : chacune ouvre le
+// même formulaire, avec les types qui lui répondent.
+const TYPES_DU_SUJET: Record<Sujet, Type[]> = {
+  commentaire: ['aime', 'idee'],
+  probleme: ['technique', 'introuvable'],
+};
+
+/* La pastille ne se pose jamais sur du texte ni sur un bouton (« rien ne cache
+   rien », la Ronde du 16 oct. 2026) : on regarde ce qui se trouve sous elle,
+   marge de 8 px comprise (56 px en tout), et elle s'efface s'il y a quelque
+   chose à lire ou à toucher. Elle s'efface aussi pendant le défilement et tant
+   qu'une barre d'achat est à l'écran (html[data-barre-achat]). */
+const INTERACTIFS = new Set(['A', 'BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'LABEL', 'IFRAME', 'SUMMARY']);
+export function quelqueChoseDessous(pastille: HTMLElement, marge = 8): boolean {
+  const r = pastille.getBoundingClientRect();
+  if (!r.width) return false;
+  const boite = { g: r.left - marge, d: r.right + marge, h: r.top - marge, b: r.bottom + marge };
+  const croise = (q: DOMRect) => q.width > 0 && q.height > 0 && q.left < boite.d && q.right > boite.g && q.top < boite.b && q.bottom > boite.h;
+  const vus = new Set<Element>();
+  const ancien = pastille.style.pointerEvents;
+  pastille.style.pointerEvents = 'none';
+  try {
+    for (let i = 0; i <= 4; i++) for (let j = 0; j <= 4; j++) {
+      const x = boite.g + ((boite.d - boite.g) * i) / 4;
+      const y = boite.h + ((boite.b - boite.h) * j) / 4;
+      for (const el of document.elementsFromPoint(Math.min(Math.max(x, 0), innerWidth - 1), Math.min(Math.max(y, 0), innerHeight - 1))) {
+        if (pastille.contains(el) || el.closest('[data-pepin]')) continue;
+        if (vus.has(el)) break;
+        vus.add(el);
+        const proche = el.closest('a,button,input,textarea,select,label,iframe,summary');
+        if (proche && INTERACTIFS.has(proche.tagName) && croise(proche.getBoundingClientRect())) return true;
+        for (const n of Array.from(el.childNodes)) {
+          if (n.nodeType !== 3 || !(n.textContent || '').trim()) continue;
+          const rg = document.createRange();
+          rg.selectNodeContents(n);
+          if (Array.from(rg.getClientRects()).some(croise)) return true;
+        }
+        break; // seul l'élément du dessus compte
+      }
+    }
+  } finally {
+    pastille.style.pointerEvents = ancien;
+  }
+  return false;
+}
 
 // `autonome` : la page /aide, où mène la pastille des pages statiques
 // (accueil, communauté). Le panneau y est déjà ouvert, sans pastille, et
 // `pageDe` dit de quelle page la personne vient.
-const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome = false, pageDe }) => {
+const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string; sujetDepart?: Sujet }> = ({ autonome = false, pageDe, sujetDepart = 'commentaire' }) => {
   const { pathname } = useLocation();
   const { user } = useAuth();
   const t = T[getLang() === 'en' ? 'EN' : 'FR'];
+  const [sujet, setSujet] = useState<Sujet>(sujetDepart);
+  const [menu, setMenu] = useState(false);
+  const [libre, setLibre] = useState(true);
+  const pastilleRef = useRef<HTMLDivElement>(null);
   const [ouvert, setOuvert] = useState(autonome);
   const [dejaOuvert, setDejaOuvert] = useState(autonome);
   const [type, setType] = useState<Type | null>(null);
@@ -180,9 +228,55 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
     return () => window.removeEventListener('keydown', onKey);
   }, [ouvert]);
 
+  // La pastille se retire pendant le défilement, tant qu'une barre d'achat est
+  // là, et lorsqu'il y a du texte ou un bouton sous elle.
+  useEffect(() => {
+    if (autonome) return;
+    let minuterie = 0;
+    const verifier = () => {
+      const el = pastilleRef.current;
+      const barre = document.documentElement.hasAttribute('data-barre-achat');
+      setLibre(!!el && !barre && !quelqueChoseDessous(el));
+    };
+    const surDefilement = () => {
+      setLibre(false);
+      setMenu(false);
+      window.clearTimeout(minuterie);
+      minuterie = window.setTimeout(verifier, 450);
+    };
+    const premier = window.setTimeout(verifier, 900);
+    const obs = new MutationObserver(() => { window.clearTimeout(minuterie); minuterie = window.setTimeout(verifier, 300); });
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-barre-achat'] });
+    window.addEventListener('scroll', surDefilement, { passive: true });
+    window.addEventListener('resize', surDefilement);
+    return () => { window.clearTimeout(minuterie); window.clearTimeout(premier); obs.disconnect(); window.removeEventListener('scroll', surDefilement); window.removeEventListener('resize', surDefilement); };
+  }, [autonome, pathname]);
+
+  // Le lien « Un commentaire ? Écrivez-nous » du pied de page ouvre le même panneau.
+  useEffect(() => {
+    if (autonome) return;
+    const surDemande = (e: Event) => {
+      const s = (e as CustomEvent<Sujet>).detail;
+      setSujet(s === 'probleme' ? 'probleme' : 'commentaire');
+      setType(null); setDejaOuvert(true); setOuvert(true);
+    };
+    window.addEventListener('ouvrir-pepin', surDemande);
+    return () => window.removeEventListener('ouvrir-pepin', surDemande);
+  }, [autonome]);
+
+  // Le petit choix se ferme d'un clic ailleurs ou avec Échap.
+  useEffect(() => {
+    if (!menu) return;
+    const dehors = (e: PointerEvent) => { if (!pastilleRef.current?.contains(e.target as Node)) setMenu(false); };
+    const touche = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenu(false); };
+    window.addEventListener('pointerdown', dehors);
+    window.addEventListener('keydown', touche);
+    return () => { window.removeEventListener('pointerdown', dehors); window.removeEventListener('keydown', touche); };
+  }, [menu]);
+
   if (!autonome && (CACHEE(pathname) || pathname === '/aide')) return null;
 
-  const ouvrir = () => { setDejaOuvert(true); setOuvert(true); };
+  const ouvrirSujet = (s: Sujet) => { setSujet(s); setType(null); setMenu(false); setDejaOuvert(true); setOuvert(true); };
   const fermer = () => {
     if (autonome) {
       let sur = '/';
@@ -260,28 +354,43 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
 
   return (
     <>
-      {!autonome && <button
-        type="button"
-        data-bug-ignore
-        onClick={ouvrir}
-        aria-label={t.infobulle}
-        title={t.infobulle}
-        data-pepin-barre={RITUELS(pathname) ? '' : undefined}
-        className={RITUELS(pathname)
-          ? 'fixed left-3 bottom-[calc(var(--bande-temoins,0px)+1.4rem)] z-[55] inline-flex h-10 w-10 items-center justify-center rounded-full border text-[1.05rem] transition-colors hover:bg-white md:left-auto md:right-0.5 md:h-9 md:w-9 md:bottom-[calc(var(--bande-temoins,0px)+0.75rem)] shadow-[0_8px_20px_-12px_rgba(28,23,18,0.6)]'
-          : COMPACTE(pathname)
-          ? `fixed right-3 z-[55] inline-flex h-10 w-10 items-center justify-center rounded-full border text-[1.05rem] shadow-[0_8px_20px_-12px_rgba(28,23,18,0.6)] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6.5rem)] md:bottom-[calc(var(--bande-temoins,0px)+5.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+5.5rem)]'} sm:right-5`
-          : `fixed right-3 sm:right-auto left-auto sm:left-5 z-[55] inline-flex h-9 w-9 justify-center rounded-full sm:h-auto sm:w-auto sm:justify-start sm:rounded-none sm:min-h-[40px] items-center border sm:px-3.5 text-[1.05rem] sm:text-[0.62rem] shadow-[0_8px_20px_-12px_rgba(28,23,18,0.6)] sm:shadow-none uppercase tracking-[0.14em] transition-colors hover:bg-white ${AVEC_BARRE(pathname) ? 'bottom-[calc(var(--bande-temoins,0px)+6rem)] md:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]' : 'bottom-[calc(var(--bande-temoins,0px)+0.75rem)] sm:bottom-[calc(var(--bande-temoins,0px)+4.5rem)]'} `}
-        style={{ background: CREME, color: ENCRE, borderColor: `${FILET}99`, fontFamily: '"Inter", system-ui, sans-serif' }}
-      >
-        {COMPACTE(pathname)
-          ? <span aria-hidden style={{ fontFamily: '"Fraunces", Georgia, serif' }}>?</span>
-          : <>
-              {/* Au téléphone, une pastille ronde « ? » : le libellé complet cachait du texte (9 oct. 2026). */}
-              <span aria-hidden className="sm:hidden" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>?</span>
-              <span className="hidden sm:inline">{t.pastille}</span>
-            </>}
-      </button>}
+      {/* Une seule petite pastille ronde, à droite, sur toutes les pages (Krystine, 16 oct. 2026) :
+          elle réunit l'ancien bouton « Un commentaire ? Écrivez-nous » et la bulle « ? ».
+          Un clic ouvre un petit choix; chaque choix ouvre le formulaire. */}
+      {!autonome && (
+        <div
+          ref={pastilleRef}
+          data-bug-ignore
+          data-pepin
+          className={`fixed right-3 sm:right-4 bottom-[calc(var(--bande-temoins,0px)+0.9rem)] z-[55] transition-opacity duration-300 ${libre || menu ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+          style={{ fontFamily: '"Inter", system-ui, sans-serif' }}
+        >
+          {menu && (
+            <div role="menu" aria-label={t.infobulle} className="absolute bottom-[calc(100%+0.6rem)] right-0 w-[min(15.5rem,calc(100vw-1.5rem))] border shadow-[0_18px_40px_-20px_rgba(28,23,18,0.55)]" style={{ background: CREME, borderColor: `${FILET}99` }}>
+              {([['commentaire', t.choixCommentaire], ['probleme', t.choixProbleme]] as const).map(([s, libelle], i) => (
+                <button key={s} type="button" role="menuitem" onClick={() => ouvrirSujet(s)}
+                  className={`flex min-h-[48px] w-full items-center px-4 text-left text-[0.9rem] leading-snug transition-colors hover:bg-white ${i ? 'border-t' : ''}`}
+                  style={{ color: ENCRE, borderColor: `${FILET}55` }}>
+                  {libelle}
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => setMenu(m => !m)}
+            aria-label={t.infobulle}
+            aria-haspopup="menu"
+            aria-expanded={menu}
+            tabIndex={libre || menu ? 0 : -1}
+            title={t.infobulle}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border text-[1.05rem] shadow-[0_8px_20px_-12px_rgba(28,23,18,0.6)] transition-colors hover:bg-white"
+            style={{ background: CREME, color: ENCRE, borderColor: `${FILET}99` }}
+          >
+            <span aria-hidden style={{ fontFamily: '"Fraunces", Georgia, serif' }}>?</span>
+          </button>
+        </div>
+      )}
 
       {dejaOuvert && (
         <Portail>
@@ -314,9 +423,9 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
                 </div>
               ) : (
                 <>
-                  <p className="-mt-2 mb-4 text-[0.88rem] leading-[1.7]" style={{ color: 'rgba(28,23,18,0.75)' }}>{t.intro}</p>
+                  <p className="-mt-2 mb-4 text-[0.88rem] leading-[1.7]" style={{ color: 'rgba(28,23,18,0.75)' }}>{sujet === 'probleme' ? t.introProbleme : t.intro}</p>
                   <div className="mb-5 grid gap-2 sm:grid-cols-2" role="radiogroup" aria-labelledby="pepin-titre">
-                    {([['aime', t.aime], ['idee', t.idee], ['technique', t.technique], ['introuvable', t.introuvable]] as const).map(([id, label], i) => (
+                    {TYPES_DU_SUJET[sujet].map((id) => [id, t[id]] as const).map(([id, label], i) => (
                       <button
                         key={id}
                         ref={i === 0 ? premierRef : undefined}
@@ -383,7 +492,8 @@ const AidePepin: React.FC<{ autonome?: boolean; pageDe?: string }> = ({ autonome
                     </p>
                   )}
 
-                  <div className="mt-6 flex items-center justify-end gap-5">
+                  {/* Les boutons restent toujours visibles au bas de la fenêtre, même lorsque le contenu défile (la Ronde, 15 oct. 2026). */}
+                  <div className="sticky -bottom-6 md:-bottom-8 -mx-6 -mb-6 mt-6 flex items-center justify-end gap-5 border-t px-6 py-4 md:-mx-8 md:-mb-8 md:px-8" style={{ background: CREME, borderColor: FILET }}>
                     <button type="button" onClick={fermer} className="text-[0.64rem] uppercase tracking-[0.14em]" style={{ color: 'rgba(28,23,18,0.6)' }}>{t.fermer}</button>
                     <button type="button" onClick={envoyer} disabled={!pret} className={bouton} style={{ background: ENCRE, color: CREME }}>
                       {etat === 'envoi' ? t.envoi : t.envoyer}

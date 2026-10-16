@@ -104,7 +104,7 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-sans text-brass font-semibold uppercase tracking-[0.2em] text-[0.68rem] mb-6">{foot.contact}</h4>
             <ul className="space-y-3 text-sm">
-              <li><a href="mailto:teamksl@inspiratanature.com" className="text-ctextSoft hover:text-brassBright transition-colors [overflow-wrap:anywhere]">teamksl@inspiratanature.com</a></li>
+              <li><a href="mailto:teamksl@inspiratanature.com" className="text-ctextSoft hover:text-brassBright transition-colors [overflow-wrap:break-word]">teamksl@<wbr />inspiratanature.com</a></li>
               <li><a href="https://www.instagram.com/krystinesaintlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-instagram" aria-hidden /> Instagram</a></li>
               <li><a href="https://www.facebook.com/Krystinestlaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-facebook" aria-hidden /> Facebook</a></li>
               <li><a href="https://www.youtube.com/@KrystineStLaurent" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ctextSoft hover:text-brassBright transition-colors"><i className="fa-brands fa-youtube" aria-hidden /> YouTube</a></li>
@@ -118,7 +118,9 @@ const Footer: React.FC = () => {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-[0.18em] text-ctextSoft/45">
           <p>© {new Date().getFullYear()} Krystine St-Laurent. {lang === 'FR' ? 'Tous droits réservés.' : 'All rights reserved.'}</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {/* La porte du formulaire, toujours atteignable même lorsque la pastille s'est retirée (16 oct. 2026). */}
+            <button type="button" onClick={() => window.dispatchEvent(new CustomEvent('ouvrir-pepin', { detail: 'commentaire' }))} className="uppercase tracking-[0.18em] hover:text-brassBright transition-colors">{lang === 'FR' ? 'Un commentaire ? Écrivez-nous' : 'Feedback? Write to us'}</button>
             <Link to="/politique-de-confidentialite" className="hover:text-brassBright transition-colors">{foot.privacy}</Link>
           </div>
           {db && (
