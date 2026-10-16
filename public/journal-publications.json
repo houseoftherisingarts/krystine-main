@@ -8311,5 +8311,30 @@
       "src/pages/QuizLoeuvre.tsx",
       "src/pages/client/ClientTelechargements.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T00:27:21.797Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "10aed076",
+    "message": "Rituels essentiels : le miroir du jour 7 (« Où en êtes-vous avec vos Rituels ? », trois réponses, page /rituels-reponse, carte « Le miroir des Rituels » au tableau de bord de l'admin)",
+    "cibles": [
+      "hosting",
+      "functions",
+      "firestore"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firestore.rules",
+      "functions/src/index.ts",
+      "functions/src/newsletter/renderer.ts",
+      "functions/src/newsletter/rituelsReponse.ts",
+      "functions/src/newsletter/sequences.ts",
+      "public/assets-manifest.json",
+      "scripts/sequences/accueil-rituels-vivants.json",
+      "src/pages/RituelsReponse.tsx",
+      "src/pages/admin/sections/DashboardSection.tsx",
+      "src/pages/admin/sections/dashboard/MiroirRituelsCard.tsx"
+    ]
   }
 ]
