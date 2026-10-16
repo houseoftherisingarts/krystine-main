@@ -8724,5 +8724,25 @@
       "public/assets-manifest.json",
       "src/pages/podcast/QuestionLive.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-16T23:45:38.162Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ff52dfe9",
+    "message": "Bannière des témoins : nouvelle question (« Pouvons-nous compter votre passage ? »), un seul bouton fort « Oui, avec plaisir » et « Non merci » en petit lien, affichée au premier défilement ou après 8 secondes; compte anonyme de toutes les visites (sans témoins, source, appareil, page d'entrée), accueil compris; le Bilan du matin montre ces visites et d'où elles viennent",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/vexelhotjar/collecte.ts",
+      "public/assets-manifest.json",
+      "public/vh/vexelhotjar.js",
+      "src/components/layout/ConsentBanner.tsx",
+      "src/vexelhotjar/compte.ts",
+      "src/vexelhotjar/statique.ts"
+    ]
   }
 ]
