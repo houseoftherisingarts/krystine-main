@@ -27,12 +27,13 @@ const PARCH = {
   glass: 'linear-gradient(148deg, rgba(252,248,240,0.82) 0%, rgba(240,232,218,0.70) 48%, rgba(228,216,197,0.66) 100%)',
 };
 
-// Le direct visé : celui dont l'heure est la plus proche du moment présent.
+// Le direct visé : celui du podcast en cours (commencé depuis moins de 4 h) ou le prochain.
+// Un direct passé ne s'affiche plus (Krystine, 16 oct. 2026 : le direct du 18 septembre restait),
+// et les Dimanches d'Origine, une série à part, n'ont pas leur place ici.
 const choisirDirect = (events: LiveEvent[]): LiveEvent | null => {
-  if (!events.length) return null;
-  const now = Date.now();
-  return [...events].sort((a, b) =>
-    Math.abs(a.startsAt.toMillis() - now) - Math.abs(b.startsAt.toMillis() - now))[0];
+  const depuis = Date.now() - 4 * 3600 * 1000;
+  const possibles = events.filter(e => !e.serie && e.startsAt.toMillis() >= depuis);
+  return possibles.sort((a, b) => a.startsAt.toMillis() - b.startsAt.toMillis())[0] ?? null;
 };
 
 const Champ: React.FC<{
