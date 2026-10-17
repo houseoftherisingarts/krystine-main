@@ -8981,5 +8981,20 @@
       "public/assets-manifest.json",
       "public/telechargements/observer.pdf"
     ]
+  },
+  {
+    "quand": "2026-10-17T15:43:13.490Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "86a464fc",
+    "message": "Cadeau du quiz « Observer », dernière page : les Rituels essentiels expliqués (27 $, 10 capsules et un guide, moins de 5 minutes par jour) et bouton avec la pipette et sa goutte d'huile",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "docs/pdf-cadeau/observer.html",
+      "public/assets-manifest.json",
+      "public/telechargements/observer.pdf"
+    ]
   }
 ]
