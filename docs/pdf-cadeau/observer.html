@@ -94,10 +94,10 @@
   .trio span { font-size: 6.2pt; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; }
   .ico { width: 15mm; height: 15mm; margin-bottom: 4mm; display: block; }
   .ico * { fill: none; stroke: var(--or); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
-  .t-vert .accroche, .t-vert .tete { color: #4f6a3a; } .t-vert .ico * { stroke: #4f6a3a; } .t-vert .gestes li::before { color: #4f6a3a; }
-  .t-rouge .accroche, .t-rouge .tete { color: #8a3a2e; } .t-rouge .ico * { stroke: #8a3a2e; }
-  .t-bleu .accroche, .t-bleu .tete { color: #3e5a73; } .t-bleu .ico * { stroke: #3e5a73; } .t-bleu ol.gestes li::before { color: #3e5a73; }
-  .t-bleu { background: #e9ece9 !important; } .t-vert.alt { background: #eceadb !important; }
+  .t-vert .accroche, .t-vert .tete { color: #4f5a2e; } .t-vert .ico * { stroke: #4f5a2e; } .t-vert .gestes li::before { color: #4f5a2e; }
+  .t-rouge .accroche, .t-rouge .tete { color: #83322b; } .t-rouge .ico * { stroke: #83322b; }
+  .t-bleu .accroche, .t-bleu .tete { color: #2c4670; } .t-bleu .ico * { stroke: #2c4670; } .t-bleu ol.gestes li::before { color: #2c4670; }
+  .t-bleu, .t-vert.alt { background: #efe6d7 !important; }
 </style>
 </head>
 <body>
@@ -107,9 +107,9 @@
 <section class="page couv">
   <div class="tete" style="width:100%"><span>Votre lecture</span><span>Québec · MMXXVI</span></div>
   <div class="trio">
-    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/vata.png" alt=""><span style="color:#4f6a3a">Vata</span></div>
-    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/kapha.png" alt=""><span style="color:#3e5a73">Kapha</span></div>
-    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/pitta.png" alt=""><span style="color:#8a3a2e">Pitta</span></div>
+    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/vata.png" alt=""><span style="color:#4f5a2e">Vata</span></div>
+    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/kapha.png" alt=""><span style="color:#2c4670">Kapha</span></div>
+    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/pitta.png" alt=""><span style="color:#83322b">Pitta</span></div>
   </div>
   <div>
     <h1>Observer</h1>
@@ -198,13 +198,17 @@
 
 
 <!-- 11. Quatrième de couverture -->
-<section class="page quatrieme">
-  <div class="accroche" style="color:var(--cuivre)">Et après sept jours ?</div>
-  <div class="trou" style="border-color:#BA7B39;color:#EEE7DB">La phrase de Krystine, à écrire : ce que la grille a fait voir, et la porte vers les Rituels essentiels (le réveil de 3 h reste à VATA).</div>
-  <a class="bouton" style="background:#BA7B39;color:#1c1712" href="https://www.krystinestlaurent.ca/rituels-essentiels?via=pdf-observer">Les Rituels essentiels</a>
-  <div class="ref" style="margin-top:7mm">Le podcast Au-delà des tendances · krystinestlaurent.ca/podcast<br>La boutique INSPIRATA AYURVEDA · krystinestlaurent.ca/boutique</div>
-  <div class="ref" style="margin-top:5mm">Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018.<br>Krystine St-Laurent, Féminité &amp; Ayurveda, Éditions de l’Homme, 2022.</div>
-  <div class="site">krystinestlaurent.ca</div>
+<section class="page alt" style="justify-content:flex-end">
+  <div class="trio" style="margin:0 0 auto;padding-top:22mm"><div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/vata.png" alt="" style="height:20mm"></div><div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/kapha.png" alt="" style="height:20mm"></div><div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/pitta.png" alt="" style="height:20mm"></div></div>
+  <div class="accroche">Et après sept jours ?</div>
+  <div style="background:#28352F;padding:8mm 8mm 7mm;margin:2mm 0 6mm">
+    <div class="serif" style="font-size:17pt;line-height:1.3;color:#EEE7DB">« Le corps porte le même langage que la nature, il ne demande qu’à être écouté. »</div>
+    <div style="margin-top:4mm;font-size:6.8pt;letter-spacing:.2em;text-transform:uppercase;color:#EEE7DB;opacity:.8">Krystine St-Laurent</div>
+  </div>
+  <a class="bouton" href="https://www.krystinestlaurent.ca/rituels-essentiels?via=pdf-observer">Les Rituels essentiels</a>
+  <div style="font-size:7.6pt;line-height:1.7;color:var(--texte);margin-top:7mm" class="ref3" style="margin-top:7mm">Le podcast Au-delà des tendances · krystinestlaurent.ca/podcast<br>La boutique INSPIRATA AYURVEDA · krystinestlaurent.ca/boutique</div>
+  <div style="font-size:7.6pt;line-height:1.7;color:var(--texte);margin-top:4mm" class="ref3" style="margin-top:5mm">Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018.<br>Krystine St-Laurent, Féminité &amp; Ayurveda, Éditions de l’Homme, 2022.</div>
+  <div class="site serif" style="font-size:15pt;margin-top:6mm;color:var(--encre)">krystinestlaurent.ca</div>
   <div class="pied"><span>Krystine St-Laurent</span><span>INSPIRATA AYURVEDA</span></div>
 </section>
 
