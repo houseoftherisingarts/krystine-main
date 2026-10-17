@@ -19,7 +19,7 @@
       { "source": "/rituels-vivants/", "destination": "/rituels-essentiels", "type": 301 },
       {
         "source": "/",
-        "destination": "/accueil",
+        "destination": "/accueil/",
         "type": 302
       }
     ],
