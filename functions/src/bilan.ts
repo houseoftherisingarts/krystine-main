@@ -159,7 +159,13 @@ async function ventes(de: Date, a: Date): Promise<{ n: number; montant: number; 
   };
 }
 
-interface CommandeShopify { nom: string; numero: number; montant: number; cree: Date }
+// canal (17 oct. 2026, analyse Shopify) : Order.app.name vaut « Headless » pour une commande venue du
+// site krystinestlaurent.ca, « Online Store » pour inspiratanature.com, « Draft Orders » pour le B2B et
+// les commandes manuelles. Les commandes du connecteur Claude sont des tests.
+type Canal = 'site' | 'boutique' | 'b2b' | 'autre';
+interface CommandeShopify { nom: string; numero: number; montant: number; cree: Date; canal: Canal }
+const canalDe = (app: string | null | undefined): Canal =>
+  app === 'Headless' ? 'site' : app === 'Online Store' ? 'boutique' : app === 'Draft Orders' ? 'b2b' : 'autre';
 /**
  * Les commandes lues directement dans Shopify (16 oct. 2026, Krystine : « tes stats
  * de Shopify ne sont pas à jour ») : le webhook en manquait. Montant = total actuel
@@ -176,21 +182,21 @@ async function commandesShopifyEntre(de: Date, a: Date): Promise<CommandeShopify
       headers: { 'X-Shopify-Access-Token': token, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: `query($q: String!, $apres: String) { orders(first: 250, after: $apres, query: $q, sortKey: CREATED_AT) {
-          nodes { name number createdAt cancelledAt test currentTotalPriceSet { shopMoney { amount } } }
+          nodes { name number createdAt cancelledAt test app { name } currentTotalPriceSet { shopMoney { amount } } }
           pageInfo { hasNextPage endCursor } } }`,
         variables: { q, apres },
       }),
     });
     if (!resp.ok) throw new Error(`Shopify ${resp.status}: ${(await resp.text()).slice(0, 200)}`);
     const json = (await resp.json()) as {
-      data?: { orders: { nodes: { name: string; number: number; createdAt: string; cancelledAt: string | null; test: boolean; currentTotalPriceSet: { shopMoney: { amount: string } } }[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } } };
+      data?: { orders: { nodes: { name: string; number: number; createdAt: string; cancelledAt: string | null; test: boolean; app: { name: string } | null; currentTotalPriceSet: { shopMoney: { amount: string } } }[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } } };
       errors?: { message: string }[];
     };
     if (json.errors?.length || !json.data) throw new Error(`Shopify : ${(json.errors || []).map((e) => e.message).join('; ').slice(0, 300)}`);
     for (const o of json.data.orders.nodes) {
       const montant = Number(o.currentTotalPriceSet.shopMoney.amount) || 0;
-      if (o.cancelledAt || o.test || montant <= 1) continue;
-      toutes.push({ nom: o.name, numero: o.number, montant, cree: new Date(o.createdAt) });
+      if (o.cancelledAt || o.test || montant <= 1 || /claude/i.test(o.app?.name || '')) continue;
+      toutes.push({ nom: o.name, numero: o.number, montant, cree: new Date(o.createdAt), canal: canalDe(o.app?.name) });
     }
     if (!json.data.orders.pageInfo.hasNextPage) break;
     apres = json.data.orders.pageInfo.endCursor;
@@ -216,9 +222,14 @@ function shopifyDans(liste: CommandeShopify[], de: Date, a: Date) {
   return {
     n: vraies.length,
     montant: Math.round(vraies.reduce((s, o) => s + o.montant, 0) * 100) / 100,
-    commandes: vraies.map((o) => ({ nom: o.nom, montant: o.montant })),
+    commandes: vraies.map((o) => ({ nom: o.nom, montant: o.montant, canal: o.canal })),
+    parCanal: (['site', 'boutique', 'b2b', 'autre'] as Canal[]).map((c) => {
+      const l = vraies.filter((o) => o.canal === c);
+      return { canal: c, n: l.length, montant: Math.round(l.reduce((t, o) => t + o.montant, 0) * 100) / 100 };
+    }).filter((x) => x.n),
   };
 }
+const NOM_CANAL: Record<string, string> = { site: 'venues du site krystinestlaurent.ca', boutique: 'sur inspiratanature.com', b2b: 'B2B et commandes manuelles', autre: 'autres (application Shop, etc.)' };
 
 /** Shopify par le webhook (secours) : seulement si le webhook a rangé au moins une commande dans les 30 derniers jours. */
 async function shopify(de: Date, a: Date, il30: Date): Promise<{ n: number; montant: number; commandes: { nom: string; montant: number }[] } | null> {
@@ -697,7 +708,9 @@ export function texteBilan(b: Bilan): string {
 
   // ── 3. L'argent ──
   const ventesSite = (k: number | null, montant: number | null) => (k ? `${pluriel(k, 'vente')}, ${argent(montant)}` : `${pluriel(k, 'vente')}`);
-  const shop = (x: { n: number; montant: number } | null | undefined) => (x ? (x.n ? `${pluriel(x.n, 'commande')}, ${argent(x.montant)}` : '0 commande') : null);
+  const shop = (x: { n: number; montant: number; parCanal?: { canal: string; n: number; montant: number }[] } | null | undefined) => (x ? (x.n
+    ? `${pluriel(x.n, 'commande')}, ${argent(x.montant)}${x.parCanal?.length ? ` (${x.parCanal.map((c) => `${NOM_CANAL[c.canal]} : ${c.n}, ${argent(c.montant)}`).join(' · ')})` : ''}`
+    : '0 commande') : null);
   const ligneVente = (l: { jour: string; montant: number; titre: string }) => `   • ${l.jour ? `${jourCourt(l.jour)} : ` : ''}${l.titre} : ${argent(l.montant)}`;
   const avant7 = (m?.detailVentes ?? []).filter((l) => l.jour && l.jour < b.septDebut);
   const nomMois = new Date(`${m?.debut ?? b.veille}T12:00:00Z`).toLocaleDateString('fr-CA', { month: 'long', timeZone: 'UTC' });
@@ -706,7 +719,7 @@ export function texteBilan(b: Bilan): string {
     `${hierTxt[0].toUpperCase()}${hierTxt.slice(1)}`,
     `• Site : ${ventesSite(v.ventes, v.montantVentes)}`,
     ...(v.detailVentes ?? []).map(ligneVente),
-    ...(shop(v.shopify) ? [`• Boutique : ${shop(v.shopify)}`, ...(v.shopify?.commandes ?? []).map((o) => `   • commande ${o.nom} : ${argent(o.montant)}`)] : []),
+    ...(shop(v.shopify) ? [`• Boutique : ${shop(v.shopify)}`, ...(v.shopify?.commandes ?? []).map((o) => `   • commande ${o.nom} : ${argent(o.montant)}${(o as { canal?: string }).canal === 'site' ? ' (venue du site .ca)' : ''}`)] : []),
     `${septTxt[0].toUpperCase()}${septTxt.slice(1)}`,
     `• Site : ${ventesSite(s.ventes, s.montantVentes)}`,
     ...(s.detailVentes ?? []).map(ligneVente),
