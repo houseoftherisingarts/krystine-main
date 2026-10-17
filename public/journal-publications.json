@@ -8812,5 +8812,19 @@
       "public/assets-manifest.json",
       "public/llms.txt"
     ]
+  },
+  {
+    "quand": "2026-10-17T01:53:54.113Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "6d05addd",
+    "message": "/medias : nouvelle section « Dans la presse et en ondes », neuf parutions vérifiées écrites en texte (Journal de Montréal, La Voix du Sud, Alternative Santé, Coup de Pouce, MAtv, Salut Bonjour, Radio Pleine Conscience, balado de Madeleine Arcand, 98,5 FM), lisibles par Google et les IA",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/concepts/MediasV2.tsx"
+    ]
   }
 ]
