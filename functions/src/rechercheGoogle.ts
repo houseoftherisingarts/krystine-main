@@ -1,5 +1,6 @@
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { GoogleAuth } from 'google-auth-library';
+import { onRequest } from 'firebase-functions/v2/https';
 
 // ─── Ce que l'on cherche sur Krystine dans Google (17 oct. 2026) ─────────────
 // Krystine : « continue à voir quelles questions sont demandées pour moi, et
@@ -38,7 +39,7 @@ async function suggestions(q: string): Promise<string[]> {
   return Array.isArray(j?.[1]) ? j[1] : [];
 }
 
-async function searchConsole() {
+export async function searchConsole() {
   const auth = new GoogleAuth({ scopes: ['https://www.googleapis.com/auth/webmasters'] });
   const client = await auth.getClient();
   const fin = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
@@ -87,3 +88,9 @@ export async function lireRechercheGoogle() {
     sc,
   };
 }
+
+/** Vérifie le branchement à Search Console sans rien révéler : seulement « branché » ou l'erreur, et le nombre de recherches lues. */
+export const etatSearchConsole = onRequest({ region: 'us-central1', maxInstances: 1 }, async (_req, res) => {
+  const sc = await searchConsole().catch((e) => ({ erreur: (e as Error).message.slice(0, 160) }));
+  res.json('erreur' in sc ? { branche: false, erreur: sc.erreur } : { branche: true, propriete: sc.propriete, recherches: sc.requetes.length, sitemap: sc.sitemap });
+});
