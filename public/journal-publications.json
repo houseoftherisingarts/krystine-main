@@ -9010,5 +9010,26 @@
       "public/assets-manifest.json",
       "public/telechargements/observer.pdf"
     ]
+  },
+  {
+    "quand": "2026-10-17T16:14:20.300Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "fce9048d",
+    "message": "Nouvelle page /nouveau-livre : le troisième tome de la Trilogie d'Origine (février 2027, Éditions de l'Homme, titre à révéler), inscription « Être prévenue de la sortie » (étiquette tome3-sortie), les deux premiers tomes, quatre questions-réponses pour Google et les IA; ajoutée au plan du site",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "App.tsx",
+      "firebase.json",
+      "public/assets-manifest.json",
+      "public/sitemap.xml",
+      "scripts/og/instantanes.mjs",
+      "scripts/og/pages-statiques.mjs",
+      "src/content/nouveauLivre.ts",
+      "src/lib/pageMeta.ts",
+      "src/pages/NouveauLivre.tsx"
+    ]
   }
 ]
