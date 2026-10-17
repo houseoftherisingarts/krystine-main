@@ -8778,5 +8778,25 @@
       "scripts/og/instantanes.mjs",
       "src/pages/podcast/App.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T01:41:30.453Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "7c3ddd15",
+    "message": "Google et les IA : la fiche cachée de Krystine porte sa vraie photo (au lieu d'une image générée par IA) et sa bio scellée mot pour mot, ses deux livres, ses prix et l'article du Journal de Montréal; étiquettes propres au quiz, à VATA, aux Rituels (27 $), à EXPÉRIENCE ORIGINE, au podcast et à /medias; /evenements devient lisible par Google; llms.txt et la description de /krystine portent la bio scellée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "index.html",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/llms.txt",
+      "scripts/og/instantanes.mjs",
+      "scripts/og/pages-statiques.mjs",
+      "src/lib/pageMeta.ts"
+    ]
   }
 ]
