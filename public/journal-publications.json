@@ -8842,5 +8842,19 @@
       "public/assets-manifest.json",
       "public/llms.txt"
     ]
+  },
+  {
+    "quand": "2026-10-17T02:20:00.126Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "bbef7ec8",
+    "message": "Google et les IA : les six questions fréquentes de VATA Essentiel deviennent des étiquettes de questions-réponses (lues dans la page elle-même, même texte que la visiteuse)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/og/pages-statiques.mjs"
+    ]
   }
 ]
