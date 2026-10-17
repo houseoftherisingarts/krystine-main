@@ -9047,5 +9047,19 @@
       "functions/src/rechercheGoogle.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-17T16:29:28.090Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "754ecd65",
+    "message": "Google : l'adresse krystinestlaurent.ca/ renvoie maintenant à l'accueil de façon permanente (301 au lieu de 302), pour que Google range l'accueil comme LA page principale au lieu de le classer en doublon",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "public/assets-manifest.json"
+    ]
   }
 ]
