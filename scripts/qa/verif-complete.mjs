@@ -323,7 +323,9 @@ async function parcours(navigateur, app) {
       await page.waitForURL(/paiement/, { timeout: 20000 });
       await page.waitForTimeout(1500);
       const prix = /\d{2,3}\s?\$/.test(await page.locator('body').innerText());
-      await cliquer(page.getByRole('button', { name: /continuer vers le paiement/i }).first());
+      // Une formation à un seul paiement (Rituels) ouvre la caisse d'elle-même, sans ce bouton.
+      const suite = page.getByRole('button', { name: /continuer vers le paiement/i }).first();
+      if (await suite.count()) await cliquer(suite);
       const stripe = await page.waitForSelector('iframe[src*="stripe.com"]', { timeout: 30000 }).then(() => true).catch(() => false);
       // Présent ne suffit pas : le formulaire doit être rempli par Stripe (la
       // case du courriel) et visible à l'écran sans avoir à le chercher.
