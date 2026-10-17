@@ -16,7 +16,11 @@ const ROUTES: Record<string, PageMeta> = {
   },
   '/krystine': {
     title: `${SITE} · Conférencière et auteure en ayurveda`,
-    description: 'Krystine St-Laurent, infirmière de formation, auteure et conférencière: Près de 40 ans à traverser les milieux de la santé avant de choisir l’herboristerie, l’Ayurveda et l’aromathérapie.',
+    description: `Près de 40 ans d'expérience, soins intensifs, recherche clinique, les coulisses du système, avant de choisir l'herboristerie, l'Ayurveda et l'aromathérapie. Auteure de trois livres aux Éditions de l'Homme. Créatrice de Santé la vie et du podcast Au-delà des tendances.`,
+  },
+  '/evenements': {
+    title: `Les rendez-vous · ${SITE}`,
+    description: 'Les rendez-vous de Krystine St-Laurent : conférences, directs, les Dimanches d’Origine et EXPÉRIENCE ORIGINE, avec la liste d’attente de chacun.',
   },
   '/conferenciere': {
     title: 'Krystine St-Laurent | Conférencière, keynote speaker et autrice best-seller',

@@ -21,7 +21,7 @@ const PORT = 5197;
 const ROUTES = [
   '/krystine', '/conferenciere', '/formations', '/medias', '/medias/tv', '/5elements',
   '/podcast', '/boutique', '/blogue', '/points-de-vente', '/quiz', '/origine', '/vata',
-  '/rituels-essentiels', '/politique-de-confidentialite',
+  '/rituels-essentiels', '/evenements', '/politique-de-confidentialite',
 ];
 
 if (process.env.SANS_INSTANTANES === '1') { console.log('instantanés : sautés (SANS_INSTANTANES=1)'); process.exit(0); }

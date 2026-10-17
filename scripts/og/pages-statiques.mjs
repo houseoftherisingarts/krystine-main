@@ -26,6 +26,41 @@ const meta = (page, cle, valeur) => {
   return page.replace(re, `$1${html(valeur)}$2`);
 };
 
+// Les étiquettes cachées propres à chaque page (16 oct. 2026, pour Google et les IA) :
+// ce qu'est la page, dans le langage de schema.org. Jamais de prix qui change bientôt
+// (VATA passe de 397 $ à 497 $ le 1er novembre) : seul le prix stable des Rituels est écrit.
+const PERSONNE = { '@id': `${ORIGIN}/#person` };
+const DONNEES = {
+  '/krystine': { '@type': 'ProfilePage', mainEntity: PERSONNE },
+  '/quiz': {
+    '@type': 'WebPage', name: 'De quoi ai-je besoin en ce moment ? Le quiz de Krystine St-Laurent', inLanguage: 'fr',
+    about: { '@type': 'Thing', name: 'Ayurveda' }, author: PERSONNE,
+    mainEntity: { '@type': 'Quiz', name: 'De quoi ai-je besoin en ce moment ?', educationalUse: 'auto-évaluation', timeRequired: 'PT3M', inLanguage: 'fr',
+      about: ['Vata (Vent et Espace)', 'Pitta (Feu et Eau)', 'Kapha (Eau et Terre)'], provider: PERSONNE },
+  },
+  '/vata': {
+    '@type': 'Course', name: 'VATA Essentiel', inLanguage: 'fr', provider: PERSONNE,
+    description: "Une expérience audio de sept semaines, plus une semaine d'introduction, pour apaiser le mental, un sens à la fois : 16 capsules, 7 méditations, un guide de 204 pages.",
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'P8W' },
+  },
+  '/rituels-essentiels': {
+    '@type': 'Course', name: "Rituels essentiels inspirés de l'Ayurveda", inLanguage: 'fr', provider: PERSONNE,
+    description: "10 capsules vidéo et un guide à télécharger : des gestes de moins de 5 minutes par jour (automassage, soins du nez, de la bouche, des mains et des pieds).",
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
+    offers: { '@type': 'Offer', price: '27', priceCurrency: 'CAD', availability: 'https://schema.org/InStock', url: `${ORIGIN}/rituels-essentiels`, category: 'Paid' },
+  },
+  '/origine': {
+    '@type': 'Course', name: 'EXPÉRIENCE ORIGINE', inLanguage: 'fr', provider: PERSONNE,
+    description: 'Le parcours signature de douze semaines avec Krystine St-Laurent, en direct. Une seule ouverture par année.',
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'P12W' },
+  },
+  '/podcast': { '@type': 'PodcastSeries', name: 'Au-delà des tendances', inLanguage: 'fr', author: PERSONNE, url: `${ORIGIN}/podcast` },
+  '/medias': { '@type': 'CollectionPage', name: 'Médias et livres de Krystine St-Laurent', about: PERSONNE },
+};
+const jsonLd = (route) => DONNEES[route]
+  ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', url: ORIGIN + route, ...DONNEES[route] }).replace(/</g, '\\u003c')}</script>\n</head>`
+  : '</head>';
+
 const routes = [...src.matchAll(/^  '(\/[^']+)': \{([\s\S]*?)^  \},/gm)];
 mkdirSync(resolve(racine, 'dist/og'), { recursive: true });
 const faites = [];
@@ -41,6 +76,7 @@ for (const [, route, bloc] of routes) {
     ['og:image', image], ['og:image:alt', alt], ['twitter:title', titre], ['twitter:description', description], ['twitter:image', image], ['twitter:image:alt', alt]]) {
     page = meta(page, cle, val);
   }
+  page = page.replace('</head>', jsonLd(route));
   const nom = route.slice(1).replace(/\//g, '-') + '.html';
   writeFileSync(resolve(racine, 'dist/og', nom), page);
   faites.push(`${route} → /og/${nom}`);

@@ -88,6 +88,10 @@
         "destination": "/og/krystine.html"
       },
       {
+        "source": "/evenements",
+        "destination": "/og/evenements.html"
+      },
+      {
         "source": "/conferenciere",
         "destination": "/og/conferenciere.html"
       },
