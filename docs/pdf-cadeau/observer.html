@@ -98,6 +98,16 @@
   .t-rouge .accroche, .t-rouge .tete { color: #83322b; } .t-rouge .ico { color: #83322b; }
   .t-bleu .accroche, .t-bleu .tete { color: #2c4670; } .t-bleu .ico { color: #2c4670; } .t-bleu ol.gestes li::before { color: #2c4670; }
   .t-bleu, .t-vert.alt { background: #efe6d7 !important; }
+
+  /* Carnet refait (17 oct.) : toutes les lignes visibles, cadre fermé, en-tête teinté */
+  table.carnet { width: 100%; border-collapse: collapse; margin-top: 3mm; border: .7pt solid var(--filet); }
+  table.carnet th { background: #e4d8c1; font-size: 5.8pt; letter-spacing: .12em; text-transform: uppercase; color: var(--encre); font-weight: 600; text-align: center; padding: 2.4mm 1.2mm; vertical-align: middle; border: .5pt solid rgba(156,122,68,.55); line-height: 1.35; }
+  table.carnet td { border: .5pt solid rgba(156,122,68,.55); height: 12.5mm; padding: 0; background: #f8f3ea; }
+  table.carnet tr:nth-child(odd) td { background: #f2eadc; }
+  table.carnet td.jour { width: 13mm; text-align: center; vertical-align: middle; background: #e4d8c1 !important; font-family: Inter, sans-serif; font-size: 5.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--encre); font-weight: 600; }
+  table.carnet td.jour b { display: block; font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 13pt; letter-spacing: 0; color: #4f5a2e; margin-top: .5mm; }
+  .legende { display: flex; gap: 5mm; margin-top: 3mm; font-size: 6.4pt; color: var(--texte); }
+  .legende b { color: var(--or); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -184,15 +194,16 @@
   <h2>Ce que vous remarquez</h2>
   <p style="font-size:8.2pt">Une ligne par jour, de 0 à 5. Il suffit de noter, sans juger.</p>
   <table class="carnet">
-    <tr><th></th><th>Ventre au réveil</th><th>Langue au miroir</th><th>Peau, chaleur</th><th>Réveil la nuit ?</th><th>Ce que je remarque</th></tr>
-    <tr><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>4</td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>5</td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>6</td><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr><td>7</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><th></th><th>Ventre<br>au réveil</th><th>Langue<br>au miroir</th><th>Peau,<br>chaleur</th><th>Réveil<br>la nuit ?</th><th style="width:30%">Ce que<br>je remarque</th></tr>
+    <tr><td class="jour">Jour<b>1</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="jour">Jour<b>2</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="jour">Jour<b>3</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="jour">Jour<b>4</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="jour">Jour<b>5</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="jour">Jour<b>6</b></td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td class="jour">Jour<b>7</b></td><td></td><td></td><td></td><td></td><td></td></tr>
   </table>
+  <div class="legende"><span><b>0</b> rien à signaler</span><span><b>5</b> très présent</span></div>
   <div class="pied" style="align-items:flex-end"><span>krystinestlaurent.ca<span style="display:block;width:46mm;height:0;border-top:.5pt solid var(--filet);margin:1.6mm 0 1.4mm"></span><span style="opacity:.75;letter-spacing:.12em">© 2026 Krystine St-Laurent · Tous droits réservés</span></span><span>5</span></div>
 </section>
 
@@ -209,7 +220,7 @@
   <div class="accroche" style="margin-top:2mm">Les Rituels essentiels · 27 $</div>
   <div class="serif" style="font-size:13pt;line-height:1.3;color:var(--encre)">Pour commencer dès maintenant à intégrer l’Ayurveda, simplement</div>
   <p style="margin-top:2.5mm;font-size:8.4pt">10 capsules vidéo et un guide à télécharger : l’automassage, les soins du nez, de la bouche, des mains et des pieds, en moins de 5 minutes par jour.</p>
-  <a class="bouton" href="https://www.krystinestlaurent.ca/rituels-essentiels?via=pdf-observer"><img src="pipette.png" alt="" style="height:11mm;vertical-align:middle;margin:-3mm 3.5mm -3mm -2mm">Découvrir les Rituels essentiels</a>
+  <a class="bouton" href="https://www.krystinestlaurent.ca/rituels-essentiels?via=pdf-observer">Découvrir les Rituels essentiels<img src="pipette.png" alt="" style="height:11mm;vertical-align:middle;margin:-3mm -2mm -3mm 4mm"></a>
   <div style="font-size:7.6pt;line-height:1.7;color:var(--texte);margin-top:7mm" class="ref3" style="margin-top:7mm">Le podcast Au-delà des tendances · krystinestlaurent.ca/podcast<br>La boutique INSPIRATA AYURVEDA · krystinestlaurent.ca/boutique</div>
   <div style="font-size:7.6pt;line-height:1.7;color:var(--texte);margin-top:4mm" class="ref3" style="margin-top:5mm">Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018.<br>Krystine St-Laurent, Féminité &amp; Ayurveda, Éditions de l’Homme, 2022.</div>
   <div style="height:20mm"></div>
