@@ -85,6 +85,18 @@ try {
   }
 } catch (e) { console.warn('questions du quiz non lues :', e.message); }
 
+// La routine du matin des Rituels, lue dans src/content/routineMatin.ts (même source que la page).
+try {
+  const rm = readFileSync(resolve(racine, 'src/content/routineMatin.ts'), 'utf8');
+  const paires = [...rm.matchAll(/\[\s*'([^']+)',\s*'([^']+)',\s*\]/g)].map((m) => [m[1], m[2]]);
+  if (paires.length >= 3) {
+    DONNEES['/rituels-essentiels'] = { '@graph': [
+      { ...DONNEES['/rituels-essentiels'] },
+      { '@type': 'FAQPage', mainEntity: paires.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) },
+    ] };
+  }
+} catch (e) { console.warn('routine du matin non lue :', e.message); }
+
 const jsonLd = (route) => DONNEES[route]
   ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', url: ORIGIN + route, ...DONNEES[route] }).replace(/</g, '\\u003c')}</script>\n</head>`
   : '</head>';

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ROUTINE_MATIN } from '../content/routineMatin';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check, CaretDown, FlowerLotus, Heartbeat, Wind, HandPalm, Compass } from '@phosphor-icons/react';
@@ -658,6 +659,21 @@ const Bio: React.FC = () => (
   </section>
 );
 
+/* ════════════════════════ La routine du matin (16 oct. 2026, mots des livres de Krystine) ════════════════════════ */
+const RoutineMatin: React.FC = () => (
+  <section id="routine-du-matin" className={`w-full ${GX} ${PY} scroll-mt-24`} style={{ background: C.cream }}>
+    <ChapterHead no="V" kicker="Le matin" title="Une routine du matin en moins de 5 minutes" className="mb-[clamp(2.5rem,6vh,4rem)]" />
+    <dl className="border-t max-w-[1100px]" style={{ borderColor: hairline }}>
+      {ROUTINE_MATIN.map(([q, r]) => (
+        <div key={q} className="grid gap-x-10 gap-y-2 py-7 border-b md:grid-cols-[minmax(14rem,22rem)_1fr]" style={{ borderColor: hairline }}>
+          <dt className="v2-serif font-light text-[1.3rem] leading-snug" style={{ color: C.ink }}>{q}</dt>
+          <dd className="text-[0.98rem] leading-[1.85] max-w-[66ch]" style={{ color: C.inkSoft }}>{r}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+);
+
 /* ════════════════════════ V · Bon à savoir (FAQ deux colonnes) ════════════════════════ */
 
 const Faq: React.FC = () => {
@@ -666,7 +682,7 @@ const Faq: React.FC = () => {
   const colonnes = [QUESTIONS.slice(0, mid), QUESTIONS.slice(mid)];
   return (
     <section id="questions" className={`w-full ${GX} ${PY} scroll-mt-24`} style={{ background: C.panel }}>
-      <ChapterHead no="V" kicker="Questions" title="Bon à savoir" className="mb-[clamp(2.5rem,6vh,4rem)]" />
+      <ChapterHead no="VI" kicker="Questions" title="Bon à savoir" className="mb-[clamp(2.5rem,6vh,4rem)]" />
       <div className="grid lg:grid-cols-2 gap-x-[clamp(3rem,6vw,6rem)] items-start border-t" style={{ borderColor: hairline }}>
         {colonnes.map((col, c) => (
           <Reveal key={c} delay={c * 0.08}>
@@ -812,6 +828,7 @@ const RituelsEssentielsPage: React.FC = () => {
       {produits.length > 0 && <Soins produits={produits} />}
       <Temoignages />
       <Bio />
+      <RoutineMatin />
       <Faq />
       <QuatriemeCouverture />
       <BarreAchat />
