@@ -21,9 +21,7 @@ export const FAQ_QUIZ: [string, string][] = [
   ],
   [
     'À quoi sert de le savoir ?',
-    '« Comprendre quelle est sa signature doshique, ou son dosha dominant, permet de mieux comprendre ses besoins et de faire des choix conscients au quotidien en personnalisant les rituels bien-être. C’est une façon de se reconnecter avec sa propre nature, et avec la nature et ses cycles. » (St-Laurent, 2018, p. 108-109)',
+    '« Comprendre quelle est sa signature doshique, ou son dosha dominant, permet de mieux comprendre ses besoins et de faire des choix conscients au quotidien en personnalisant les rituels bien-être. C’est une façon de se reconnecter avec sa propre nature, et avec la nature et ses cycles. » (Nature & Ayurveda, Krystine St-Laurent, Les Éditions de l’Homme, 2018, p. 108-109)',
   ],
 ];
 
-// La référence en format APA, en note au bas de la section (Krystine, 16 oct. 2026 : « tu cites comme APA »).
-export const REFERENCE_QUIZ = 'St-Laurent, K. (2018). Nature & Ayurveda : plantes, épices, recettes, rituels bien-être. Les Éditions de l’Homme.';

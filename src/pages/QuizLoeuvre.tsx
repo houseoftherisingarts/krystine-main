@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FAQ_QUIZ, REFERENCE_QUIZ } from '../content/quizFaq';
+import { FAQ_QUIZ } from '../content/quizFaq';
 import {
   motion, AnimatePresence, useReducedMotion, useScroll, useTransform,
 } from 'framer-motion';
@@ -1539,7 +1539,6 @@ const QuizLoeuvre: React.FC = () => {
                 </div>
               ))}
             </dl>
-            <p className="mt-8 text-[0.8rem] leading-[1.7] text-[#3a2f23]/75">Référence : {REFERENCE_QUIZ}</p>
           </div>
         </section>
       )}
