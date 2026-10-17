@@ -8903,5 +8903,20 @@
       "src/content/routineMatin.ts",
       "src/pages/RituelsEssentielsPage.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T02:56:57.958Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "85f58ee9",
+    "message": "Paiement : quand une formation n'a qu'un seul paiement (Rituels essentiels), la caisse sécurisée s'ouvre directement, sans l'étape « Choisissez votre façon de payer » à une seule option (une acheteuse sur iPad y avait bloqué); version anglaise (/en) retirée de l'index de Google pour ne plus doubler l'accueil",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "public/assets-manifest.json",
+      "src/pages/PaiementFormation.tsx"
+    ]
   }
 ]
