@@ -8826,5 +8826,21 @@
       "public/assets-manifest.json",
       "src/pages/concepts/MediasV2.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T02:13:28.598Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "a98c3dd3",
+    "message": "Google et les IA : la fiche cachée de Krystine et llms.txt pointent vers sa nouvelle fiche Wikidata (Q141752496)",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "index.html",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/llms.txt"
+    ]
   }
 ]
