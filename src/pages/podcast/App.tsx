@@ -1059,23 +1059,7 @@ const App: React.FC = () => {
                       style={{ color: '#B8532F' }}
                     >Quiz Boussole</a> aide à reconnaître la sienne) et
                     grands chapitres : alimentation, cycle féminin,
-                    ménopause, sommeil, transmission générationnelle. La
-                    lecture s'inscrit dans le cadre reconnu par la{' '}
-                    <a
-                      href="https://www.ayurvedanama.org/what-is-ayurveda"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline decoration-[#B8532F]/40 underline-offset-4 hover:decoration-[#B8532F] transition-colors"
-                      style={{ color: '#B8532F' }}
-                    >National Ayurvedic Medical Association</a> et la
-                    formation que Krystine a complétée auprès du{' '}
-                    <a
-                      href="https://www.chopra.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline decoration-[#B8532F]/40 underline-offset-4 hover:decoration-[#B8532F] transition-colors"
-                      style={{ color: '#B8532F' }}
-                    >Chopra Center</a> en Ayurvedic Lifestyle.
+                    ménopause, sommeil, transmission générationnelle.
                   </p>
 
                   <h2 className="font-messiri text-2xl md:text-3xl mt-8" style={{ color: '#3A251E' }}>
@@ -1095,11 +1079,7 @@ const App: React.FC = () => {
                       href="/origine"
                       className="underline decoration-[#B8532F]/40 underline-offset-4 hover:decoration-[#B8532F] transition-colors"
                       style={{ color: '#B8532F' }}
-                    >Expérience Origine</a> dure douze semaines en
-                    cohorte fondatrice, avec une partie inédite du
-                    troisième tome de la trilogie (<em>Énergie &amp;
-                    Ayurveda</em>, parution en février 2027) partagée en
-                    avant-première.
+                    >EXPÉRIENCE ORIGINE</a> dure douze semaines.
                   </p>
                 </section>
             </div>
