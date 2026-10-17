@@ -9061,5 +9061,21 @@
       "firebase.json",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-17T16:45:42.855Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f12f59ed",
+    "message": "Vérification du branchement à Search Console (adresse technique qui répond seulement « branché » ou non, sans révéler les recherches)",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/index.ts",
+      "functions/src/rechercheGoogle.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
