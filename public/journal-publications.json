@@ -9091,5 +9091,20 @@
       "public/assets-manifest.json",
       "src/content/nouveauLivre.ts"
     ]
+  },
+  {
+    "quand": "2026-10-17T17:03:42.532Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "e119b2e5",
+    "message": "Bilan du matin : les ventes de la boutique Shopify sont séparées par canal (venues du site krystinestlaurent.ca, sur inspiratanature.com, B2B et commandes manuelles), chaque commande venue du site est marquée; les tests du connecteur Claude exclus",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
