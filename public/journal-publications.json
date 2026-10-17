@@ -9077,5 +9077,19 @@
       "functions/src/rechercheGoogle.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-17T16:58:06.342Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "f0b75143",
+    "message": "/nouveau-livre : la réponse « Où trouver les livres » nomme les librairies (Renaud-Bray, Archambault, Les libraires, indépendantes), sans lien externe",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/content/nouveauLivre.ts"
+    ]
   }
 ]
