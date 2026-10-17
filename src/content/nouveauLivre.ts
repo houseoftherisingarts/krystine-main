@@ -16,6 +16,6 @@ export const NOUVEAU_LIVRE_FAQ: [string, string][] = [
   ],
   [
     'Où trouver les livres de Krystine St-Laurent ?',
-    'Nature & Ayurveda et Féminité & Ayurveda se commandent sur la page Livres et médias du site, krystinestlaurent.ca/medias.',
+    'En librairie (Renaud-Bray, Archambault, Les libraires et les librairies indépendantes) et sur la page Livres et médias du site, krystinestlaurent.ca/medias.',
   ],
 ];
