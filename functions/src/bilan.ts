@@ -4,6 +4,7 @@ import { MAIL_SECRETS, createTransporter, fromAddr, REPLY_TO } from './newslette
 import { assertAdmin } from './newsletter/send';
 import { calculerFilet } from './filet';
 import { jetonShopify, SECRETS_SHOPIFY } from './shopify/jeton';
+import { lireRechercheGoogle } from './rechercheGoogle';
 
 // ─── Le bilan du matin (Krystine, 6 oct. 2026) ──────────────────────────────
 // « Une tâche chaque matin pour s'assurer que tout fonctionne et aller
@@ -539,11 +540,12 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     sur(async () => (await db.collection('bugs').where('statut', '==', 'nouveau').count().get()).data().count),
     sur(async () => (await db.collection('quizTentatives').where('statut', '==', 'a-rattraper').count().get()).data().count),
   ]);
-  const [verif, comm, conferences] = await Promise.all([
+  const [verif, comm, conferences, recherche] = await Promise.all([
     sur(verifComplete),
     // Même fenêtre que le reste du bilan : depuis hier 0 h.
     sur(() => commentaires(debutHier)),
     sur(veilleConferences),
+    sur(lireRechercheGoogle),
   ]);
   const optimiser = await sur(() => aOptimiser(sept, verif));
 
@@ -601,6 +603,7 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
     clicsFrustration: optimiser?.clics ?? null,
     lectureAccueil: optimiser?.accueil ?? null,
     conferences,
+    recherche,
   };
 }
 
@@ -777,6 +780,23 @@ export function texteBilan(b: Bilan): string {
       ? [`Cette nuit : 0 nouvelle occasion (${n(b.conferences.total)} occasions suivies au total).`]
       : b.conferences.nouvelles.map((o) => `• ${o.nom} (${[o.type, o.lieu, o.langue].filter(Boolean).join(', ')}) · date : ${o.date || 'non indiquée'} · date limite : ${o.dateLimite || 'non indiquée'} · ${o.sujet} · ${o.lien}`);
 
+  // ── 7. Ce que l'on cherche sur Krystine dans Google ──
+  const r = b.recherche;
+  const bloc7: string[] = [];
+  if (!r) bloc7.push('Les suggestions de Google n’ont pas pu être lues ce matin.');
+  else {
+    bloc7.push(r.nouvelles.length ? `Nouvelles suggestions depuis hier : ${r.nouvelles.join(' · ')}` : 'Aucune suggestion nouvelle depuis hier.');
+    const sansPage = r.suggestions.filter((x) => !x.page).map((x) => x.s);
+    bloc7.push(`Suggestions de Google pour « krystine st laurent » (${r.suggestions.length}) : ${r.suggestions.map((x) => x.s.replace('krystine st laurent ', '')).join(', ')}.`);
+    if (sansPage.length) bloc7.push(`Sans page qui y répond : ${sansPage.map((x) => x.replace('krystine st laurent ', '')).join(', ')}. Geste : ouvrez Iris et écrivez « crée la page pour… ».`);
+    const sc = r.sc as { requetes?: { q: string; clics: number; vues: number; position: number }[]; periode?: string; sitemap?: string; erreur?: string };
+    if (sc?.requetes) {
+      bloc7.push(`Les vraies recherches qui ont montré le site (Search Console, ${sc.periode}) :`);
+      sc.requetes.slice(0, 12).forEach((x) => bloc7.push(`• « ${x.q} » : ${x.vues} affichages, ${x.clics} clics, rang ${x.position}`));
+      bloc7.push(`Plan du site ${sc.sitemap} à Google ce matin.`);
+    } else bloc7.push('Search Console n’est pas encore branchée au bilan : ajoutez 908806491352-compute@developer.gserviceaccount.com comme utilisateur (Paramètres › Utilisateurs et autorisations › Ajouter, autorisation « Propriétaire »).');
+  }
+
   // ── En bref ──
   const casses = bloc2.filter((l) => l.startsWith('• ')).length;
   const plusVieux = attentes[0];
@@ -809,6 +829,9 @@ export function texteBilan(b: Bilan): string {
     '',
     '6. Occasions de conférences (veille de la nuit)',
     ...bloc6,
+    '',
+    '7. Ce que l’on cherche sur vous dans Google',
+    ...bloc7,
     '',
     'Le même bilan est dans l’admin, au tableau de bord.',
     '',
