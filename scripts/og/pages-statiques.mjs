@@ -97,6 +97,18 @@ try {
   }
 } catch (e) { console.warn('routine du matin non lue :', e.message); }
 
+// Les questions du nouveau livre, lues dans src/content/nouveauLivre.ts (même source que la page).
+try {
+  const nl = readFileSync(resolve(racine, 'src/content/nouveauLivre.ts'), 'utf8');
+  const paires = [...nl.matchAll(/\[\s*'([^']+)',\s*'([^']+)',\s*\]/g)].map((m) => [m[1], m[2]]);
+  if (paires.length >= 3) {
+    DONNEES['/nouveau-livre'] = { '@graph': [
+      { '@type': 'WebPage', name: 'Le nouveau livre de Krystine St-Laurent', inLanguage: 'fr', about: PERSONNE },
+      { '@type': 'FAQPage', mainEntity: paires.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) },
+    ] };
+  }
+} catch (e) { console.warn('questions du nouveau livre non lues :', e.message); }
+
 const jsonLd = (route) => DONNEES[route]
   ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', url: ORIGIN + route, ...DONNEES[route] }).replace(/</g, '\\u003c')}</script>\n</head>`
   : '</head>';

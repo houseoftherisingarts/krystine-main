@@ -104,6 +104,7 @@ const KrystineV3 = lazy(() => import('./src/pages/concepts/KrystineV3'));
 // Formations en langage V2 (magazine crème), même branding que /krystine.
 const FormationsLanding = lazy(() => import('./src/pages/FormationsLanding'));
 const MediasV2 = lazy(() => import('./src/pages/concepts/MediasV2'));
+const NouveauLivre = lazy(() => import('./src/pages/NouveauLivre'));
 const CinqElementsPage = lazy(() => import('./src/pages/CinqElementsPage'));
 const PodcastV2 = lazy(() => import('./src/pages/concepts/PodcastV2'));
 const QuestionLive = lazy(() => import('./src/pages/podcast/QuestionLive'));
@@ -202,6 +203,7 @@ const Footing: React.FC = () => {
     || location.pathname === '/podcast/question'
     || location.pathname === '/direct'
     || location.pathname === '/foyer'
+    || location.pathname === '/nouveau-livre'
   ) return null;
   return (
     <>
@@ -324,6 +326,7 @@ const App: React.FC = () => (
           <Route path="/boutique/produit/:handle" element={<ProduitPage />} />
           <Route path="/boutique/:slug"  element={<BoutiqueCollectionPage />} />
           <Route path="/medias"          element={<MediasV2 />} />
+          <Route path="/nouveau-livre"   element={<NouveauLivre />} />
           <Route path="/medias/tv"       element={<TVPage />} />
           <Route path="/5elements"       element={<CinqElementsPage />} />
           <Route path="/blogue"          element={<BlogueLoeuvre />} />

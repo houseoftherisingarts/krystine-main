@@ -30,6 +30,10 @@ const ROUTES: Record<string, PageMeta> = {
     title: `Formations et expériences · ${SITE}`,
     description: 'Formations, programmes saisonniers et expériences ayurvédiques guidées par Krystine St-Laurent: Origine, Vata, Pitta, Kapha.',
   },
+  '/nouveau-livre': {
+    title: `Le nouveau livre de Krystine St-Laurent · Tome 3, février 2027 · ${SITE}`,
+    description: 'Le troisième tome de la Trilogie d’Origine de Krystine St-Laurent paraît en février 2027 aux Éditions de l’Homme, après Nature & Ayurveda et Féminité & Ayurveda. Recevez la date et un extrait en primeur.',
+  },
   '/medias': {
     title: `Podcasts, médias et livres · ${SITE}`,
     description: 'Le podcast Au-delà des tendances, la trilogie Nature & Ayurveda, les passages télé et les entrevues de Krystine St-Laurent.',

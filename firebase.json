@@ -99,6 +99,10 @@
         "destination": "/og/evenements.html"
       },
       {
+        "source": "/nouveau-livre",
+        "destination": "/og/nouveau-livre.html"
+      },
+      {
         "source": "/conferenciere",
         "destination": "/og/conferenciere.html"
       },
