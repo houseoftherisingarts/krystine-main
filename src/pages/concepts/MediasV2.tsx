@@ -140,6 +140,20 @@ const VideoMedia: React.FC<{ lang: string; src: string; poster: string; label: s
   );
 };
 
+// Les parutions vérifiées en ligne le 16 oct. 2026 (scratchpad parutions-medias.md, liste du coffre
+// 70_pilotage « MÉDIAS — liste classée »). Une parution sans date vérifiée garde seulement l'année connue.
+const PARUTIONS: { quand: string; media: string; sujet: string }[] = [
+  { quand: '23 avril 2024', media: 'MIRACLES, balado de Madeleine Arcand', sujet: 'Une entrevue d’une demi-heure avec Krystine St-Laurent sur l’Ayurveda et la façon de prendre soin de soi.' },
+  { quand: '10 novembre 2021', media: 'Radio Pleine Conscience', sujet: '« Discussion autour de l’Ayurveda avec Krystine St-Laurent », autour de Nature & Ayurveda et de Féminité & Ayurveda.' },
+  { quand: '2021', media: 'Salut Bonjour, TVA', sujet: 'Entrevue pour la sortie de Féminité & Ayurveda.' },
+  { quand: '14 janvier 2019', media: 'Coup de Pouce', sujet: 'Nature & Ayurveda retenu parmi « 14 livres pour égayer les journées froides ».' },
+  { quand: '1er septembre 2018', media: 'Alternative Santé, France', sujet: 'Critique de Nature & Ayurveda (Éditions de l’Homme).' },
+  { quand: '30 avril 2018', media: 'Le Journal de Montréal', sujet: '« Rituels de bien-être au naturel », entrevue de Marie-France Bornais sur Nature & Ayurveda.' },
+  { quand: '19 avril 2018', media: 'La Voix du Sud', sujet: '« Nature & Ayurveda : un livre inspirant signé Krystine St-Laurent ».' },
+  { quand: '2017', media: 'MAtv', sujet: 'Santé la vie, l’émission conçue, produite et animée par Krystine St-Laurent, en troisième saison.' },
+  { quand: 'En ondes', media: '98,5 FM', sujet: 'Entrevue radio avec Krystine St-Laurent.' },
+];
+
 export default function MediasV2() {
   const root = useRef<HTMLDivElement>(null);
   const { lang, addToCart, user } = useApp();
@@ -582,6 +596,28 @@ export default function MediasV2() {
             </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─────────── CHAPITRE 04 · DANS LES MÉDIAS ───────────
+          Les parutions écrites en texte (16 oct. 2026) : Google et les IA ne lisent pas les logos de la
+          bande « Vue et entendue à ». Seulement des parutions vérifiées en ligne (date, titre), sans lien
+          vers les sites des médias. */}
+      <section id="presse" className="relative w-full px-[clamp(1.5rem,5vw,5.5rem)] py-[clamp(6rem,15vh,11rem)] bg-[#f4efe6] border-b border-[#9c7a44]/25 scroll-mt-24">
+        <div data-reveal className="max-w-[980px] mx-auto">
+          <Kicker className="mb-5">Chapitre 04 · Dans les médias</Kicker>
+          <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">Dans la presse et en ondes</h2>
+          <ul className="mt-12 border-t border-[#9c7a44]/35">
+            {PARUTIONS.map((p) => (
+              <li key={`${p.media}-${p.quand}`} className="grid gap-x-8 gap-y-1 py-6 border-b border-[#9c7a44]/25 sm:grid-cols-[minmax(11rem,15rem)_1fr]">
+                <div>
+                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-[#7d6330]">{p.quand}</p>
+                  <p className="mt-1 v2-serif text-[1.25rem] leading-snug text-[#1c1712]">{p.media}</p>
+                </div>
+                <p className="text-[0.98rem] leading-[1.8] text-[#3a2f23]">{p.sujet}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
