@@ -8996,5 +8996,19 @@
       "public/assets-manifest.json",
       "public/telechargements/observer.pdf"
     ]
+  },
+  {
+    "quand": "2026-10-17T16:01:28.849Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "70683421",
+    "message": "Cadeau du quiz « Observer » : carnet des 7 jours refait (toutes les lignes, Jour 1 à 7), éléments sous les pictos, pipette dorée de Krystine sur le bouton des Rituels",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/telechargements/observer.pdf"
+    ]
   }
 ]
