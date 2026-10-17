@@ -73,6 +73,18 @@ try {
   }
 } catch (e) { console.warn('questions de VATA non lues :', e.message); }
 
+// Les questions fréquentes du quiz, lues dans src/content/quizFaq.ts (la même source que la page /quiz).
+try {
+  const faq = readFileSync(resolve(racine, 'src/content/quizFaq.ts'), 'utf8');
+  const paires = [...faq.matchAll(/\[\s*'([^']+)',\s*'([^']+)',\s*\]/g)].map((m) => [m[1], m[2]]);
+  if (paires.length >= 3) {
+    DONNEES['/quiz'] = { '@graph': [
+      { ...DONNEES['/quiz'] },
+      { '@type': 'FAQPage', mainEntity: paires.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) },
+    ] };
+  }
+} catch (e) { console.warn('questions du quiz non lues :', e.message); }
+
 const jsonLd = (route) => DONNEES[route]
   ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', url: ORIGIN + route, ...DONNEES[route] }).replace(/</g, '\\u003c')}</script>\n</head>`
   : '</head>';

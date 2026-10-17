@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FAQ_QUIZ, REFERENCE_QUIZ } from '../content/quizFaq';
 import {
   motion, AnimatePresence, useReducedMotion, useScroll, useTransform,
 } from 'framer-motion';
@@ -1521,6 +1522,27 @@ const QuizLoeuvre: React.FC = () => {
           ))}
         </div>
       </section>
+
+      {/* ─────────── QUESTIONS FRÉQUENTES (16 oct. 2026, pour les recherches « quel est mon dosha ») ─────────── */}
+      {lang === 'FR' && (
+        <section id="questions" className="bg-[#efe6d7] py-[clamp(5rem,12vh,8rem)] px-[clamp(1.5rem,5vw,5.5rem)] scroll-mt-24">
+          <div className="max-w-[980px] mx-auto">
+            <Reveal>
+              <Kicker className="mb-5">Questions fréquentes</Kicker>
+              <h2 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(2.2rem,5vw,4rem)]">Quel est mon dosha ?</h2>
+            </Reveal>
+            <dl className="mt-12 border-t border-[#9c7a44]/35">
+              {FAQ_QUIZ.map(([q, r]) => (
+                <div key={q} className="grid gap-x-10 gap-y-2 py-7 border-b border-[#9c7a44]/25 md:grid-cols-[minmax(14rem,22rem)_1fr]">
+                  <dt className="v2-serif font-light text-[1.3rem] leading-snug text-[#1c1712]">{q}</dt>
+                  <dd className="text-[0.98rem] leading-[1.85] text-[#3a2f23]">{r}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-8 text-[0.8rem] leading-[1.7] text-[#3a2f23]/75">Référence : {REFERENCE_QUIZ}</p>
+          </div>
+        </section>
+      )}
 
       {/* ─────────── CONTACT ─────────── */}
       <section className="bg-[#f4efe6] py-[clamp(4rem,9vh,6rem)] px-[clamp(1.5rem,5vw,5.5rem)] text-center">
