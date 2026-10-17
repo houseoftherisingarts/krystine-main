@@ -8918,5 +8918,20 @@
       "public/assets-manifest.json",
       "src/pages/PaiementFormation.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T13:20:58.403Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "3e757ded",
+    "message": "Bilan du matin : les revenus mois par mois de novembre à août viennent maintenant des vrais chiffres de Shopify (ils affichaient 0 $, la clé du site ne voit que les 60 derniers jours); chaque mois fermé est gardé en photo pour les années suivantes",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
