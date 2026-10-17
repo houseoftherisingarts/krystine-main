@@ -8760,5 +8760,23 @@
       "public/assets-manifest.json",
       "public/sitemap.xml"
     ]
+  },
+  {
+    "quand": "2026-10-17T00:37:54.690Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8c999616",
+    "message": "Google et les IA : chaque page publique (quiz, VATA, Rituels, podcast, /krystine, /medias, boutique, blogue...) porte maintenant son texte complet dans la page servie, lisible sans JavaScript; fiche llms.txt réécrite avec les seuls faits vérifiés (titre du tome 3 retiré, février 2027, douze ans d'écriture, sans Chopra); /podcast sans le lien vers Chopra ni le titre du tome 3",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "package.json",
+      "public/assets-manifest.json",
+      "public/i18n/en.json",
+      "public/llms.txt",
+      "scripts/og/instantanes.mjs",
+      "src/pages/podcast/App.tsx"
+    ]
   }
 ]
