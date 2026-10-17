@@ -8947,5 +8947,24 @@
       "public/assets-manifest.json",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T15:31:57.436Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "1a744665",
+    "message": "Quiz : le cadeau de chaque lecture devient le carnet « Observer » (l'infusion de ce soir, les questions du matin et sept jours d'observation, tirés de Nature & Ayurveda), téléchargé par /observer; le guide Vata reste pour les acheteuses des Rituels et les courriels déjà partis; texte d'annonce provisoire en attendant celui de Krystine",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "functions/src/quizCourriel.ts",
+      "functions/src/telechargement.ts",
+      "public/assets-manifest.json",
+      "public/telechargements/observer.pdf",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
