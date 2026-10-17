@@ -8933,5 +8933,19 @@
       "functions/src/bilan.ts",
       "public/assets-manifest.json"
     ]
+  },
+  {
+    "quand": "2026-10-17T14:09:23.799Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "ee236f79",
+    "message": "/quiz : le premier écran reprend la question de la pub et de l'accueil (« De quoi ai-je besoin en ce moment ? », Quiz Dosha en petit au-dessus) et le bouton plein « Commencer · 3 minutes » monte sous la promesse, visible dès l'arrivée sur tous les téléphones; la citation du livre passe sous le bouton",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
