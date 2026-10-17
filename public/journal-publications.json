@@ -8966,5 +8966,20 @@
       "public/telechargements/observer.pdf",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T15:38:25.584Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "b0b1c094",
+    "message": "Cadeau du quiz « Observer » : pictos plus petits, notes des livres en petit sous le texte, une référence par ligne",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "docs/pdf-cadeau/observer.html",
+      "public/assets-manifest.json",
+      "public/telechargements/observer.pdf"
+    ]
   }
 ]
