@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Observer · Krystine St-Laurent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: 148mm 210mm; margin: 0; }
+  :root {
+    --creme: #f4efe6; --creme2: #efe6d7; --encre: #1c1712; --texte: #3a2f23;
+    --or: #7d6330; --filet: #9c7a44; --sauge: #74824a; --olive: #3f4a27;
+    --vert: #28352F; --cuivre: #BA7B39; --ivoire: #EEE7DB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--creme); color: var(--encre); font-family: Inter, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 148mm; height: 210mm; padding: 16mm 15mm 14mm; position: relative; overflow: hidden; page-break-after: always; background: var(--creme); display: flex; flex-direction: column; }
+  .page.alt { background: var(--creme2); }
+  .tete { display: flex; justify-content: space-between; font-size: 6.4pt; letter-spacing: .2em; text-transform: uppercase; color: var(--or); border-bottom: .5pt solid var(--filet); padding-bottom: 2.2mm; margin-bottom: 9mm; }
+  .pied { position: absolute; bottom: 8mm; left: 15mm; right: 15mm; display: flex; justify-content: space-between; font-size: 6.2pt; letter-spacing: .16em; text-transform: uppercase; color: var(--or); }
+  .serif { font-family: Fraunces, Georgia, serif; font-weight: 300; }
+  .accroche { font-size: 6.8pt; letter-spacing: .22em; text-transform: uppercase; color: var(--or); font-weight: 600; margin-bottom: 3mm; }
+  h2 { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 21pt; line-height: 1.08; margin-bottom: 6mm; color: var(--encre); }
+  p { font-size: 9pt; line-height: 1.75; color: var(--texte); margin-bottom: 3.6mm; }
+  .notes { position: absolute; left: 15mm; right: 15mm; bottom: 13mm; border-top: .4pt solid var(--filet); padding-top: 1.6mm; font-size: 6.3pt; line-height: 1.5; color: #3a2f23; }
+  .notes p { margin: 0; }
+  .sombre .notes { color: rgba(238,231,219,.8); border-color: rgba(186,123,57,.5); }
+  sup { font-size: .62em; line-height: 0; vertical-align: super; }
+  .src { font-size: 6.6pt; letter-spacing: .08em; color: var(--or); margin-top: 1mm; }
+  .filet { width: 18mm; height: .6pt; background: var(--filet); margin: 5mm 0; }
+  .trou { border: .8pt dashed #83322b; color: #83322b; font-size: 8pt; line-height: 1.6; padding: 4mm; margin: 2mm 0 4mm; }
+
+  /* Couverture */
+  .couv { justify-content: space-between; text-align: center; }
+  .couv .picto { width: 52mm; margin: 4mm auto 0; display: block; }
+  .couv h1 { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 40pt; line-height: .95; letter-spacing: .01em; }
+  .couv .sous { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 12.5pt; color: var(--texte); margin-top: 4mm; line-height: 1.35; }
+  .couv .signe { font-size: 7pt; letter-spacing: .26em; text-transform: uppercase; color: var(--or); }
+  .couv .elements { font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: var(--sauge); margin-top: 3mm; font-weight: 600; }
+
+  /* Pleine page sombre (une seule) */
+  .sombre { background: var(--vert); color: var(--ivoire); justify-content: center; text-align: center; }
+  .sombre .tete { color: var(--cuivre); border-color: rgba(186,123,57,.5); position: absolute; top: 16mm; left: 15mm; right: 15mm; }
+  .sombre blockquote { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 25pt; line-height: 1.15; color: var(--ivoire); }
+  .sombre .src { color: var(--cuivre); margin-top: 6mm; font-size: 7pt; letter-spacing: .18em; text-transform: uppercase; }
+  .sombre p { color: rgba(238,231,219,.82); text-align: left; margin-top: 10mm; }
+  .sombre .pied { color: var(--cuivre); }
+
+  /* Listes de gestes */
+  ol.gestes { list-style: none; counter-reset: g; }
+  ol.gestes li { counter-increment: g; display: grid; grid-template-columns: 9mm 1fr; font-size: 8.8pt; line-height: 1.6; color: var(--texte); padding: 2.4mm 0; border-bottom: .4pt solid rgba(156,122,68,.35); }
+  ol.gestes li::before { content: counter(g, decimal-leading-zero); font-family: Fraunces, Georgia, serif; font-size: 12pt; color: var(--sauge); line-height: 1.1; }
+
+  /* Recette */
+  .recette { display: grid; grid-template-columns: 40mm 1fr; gap: 6mm; }
+  .recette h3 { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: var(--olive); font-weight: 600; margin-bottom: 2.5mm; }
+  .recette ul { list-style: none; }
+  .recette ul li { font-size: 8.2pt; line-height: 1.55; color: var(--texte); padding: 1.3mm 0; border-bottom: .4pt solid rgba(156,122,68,.3); }
+  .recette p { font-size: 8.4pt; }
+  .note { font-size: 7.4pt; color: var(--texte); border-left: 1pt solid var(--filet); padding-left: 3mm; margin-top: 3mm; line-height: 1.6; }
+
+  /* Carnet de sept jours */
+  table.carnet { width: 100%; border-collapse: collapse; margin-top: 2mm; }
+  table.carnet th { font-size: 5.8pt; letter-spacing: .12em; text-transform: uppercase; color: var(--or); font-weight: 600; text-align: left; padding: 0 1.5mm 2mm; vertical-align: bottom; }
+  table.carnet td { border-top: .5pt solid rgba(156,122,68,.45); height: 13.5mm; padding: 1.5mm; font-family: Fraunces, Georgia, serif; font-size: 11pt; color: var(--sauge); vertical-align: top; }
+  table.carnet td + td { border-left: .5pt solid rgba(156,122,68,.25); }
+
+  /* Porte */
+  .portrait { font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 11.5pt; line-height: 1.5; color: var(--encre); margin-bottom: 5mm; }
+  .bouton { display: inline-block; background: var(--encre); color: var(--creme); font-size: 7.4pt; letter-spacing: .2em; text-transform: uppercase; padding: 4mm 7mm; text-decoration: none; margin-top: 3mm; }
+  .adresse { font-size: 7.4pt; color: var(--or); margin-top: 3mm; letter-spacing: .04em; }
+
+  /* Quatrième */
+  .quatrieme { background: #34241a; color: var(--ivoire); justify-content: flex-end; }
+  .quatrieme .picto { width: 26mm; opacity: .9; margin-bottom: 8mm; }
+  .quatrieme p { color: rgba(238,231,219,.8); }
+  .quatrieme .ref { font-size: 7.6pt; line-height: 1.7; color: rgba(238,231,219,.75); }
+  .quatrieme .site { font-family: Fraunces, Georgia, serif; font-size: 15pt; color: var(--ivoire); margin-top: 6mm; }
+  .quatrieme .pied { color: var(--cuivre); }
+
+  .photo-page { padding: 0; }
+  .photo-page img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-page::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 55mm; background: linear-gradient(to top, rgba(20,16,12,.72), rgba(20,16,12,0)); }
+  .photo-page .leg { z-index: 1; position: absolute; left: 15mm; right: 15mm; bottom: 12mm; color: var(--ivoire); font-family: Fraunces, Georgia, serif; font-weight: 300; font-size: 15pt; line-height: 1.25; text-shadow: 0 1px 12px rgba(0,0,0,.45); }
+  .photo-page .leg small { display: block; font-family: Inter, sans-serif; font-size: 6.4pt; letter-spacing: .22em; text-transform: uppercase; color: #e9d3ae; margin-bottom: 2mm; font-weight: 600; }
+  .cadre { border: .6pt solid var(--filet); padding: 2mm; margin: 5mm 0 2mm; position: relative; }
+  .cadre img { width: 100%; height: 30mm; object-fit: cover; display: block; }
+  .cadre .etiq { position: absolute; left: 2mm; top: 2mm; background: var(--encre); color: var(--creme); font-size: 5.8pt; letter-spacing: .18em; text-transform: uppercase; padding: 1.2mm 2.2mm; }
+</style>
+</head>
+<body>
+<!-- Brouillon du 17 oct. 2026 : le cadeau du quiz, pour toutes les lectures. Décision de Krystine :
+     un geste pour ce soir (l'infusion) + sept jours d'observation; le réveil de 3 h reste à VATA.
+     Tout le texte est tiré mot pour mot de Nature & Ayurveda; la porte vers les Rituels est à écrire par Krystine. -->
+<section class="page couv">
+  <div class="tete" style="width:100%"><span>Votre lecture</span><span>Québec · MMXXVI</span></div>
+  <div></div>
+  <div>
+    <h1>Observer</h1>
+    <div class="sous">« D’un œil, observer le monde extérieur, de l’autre, regarder au fond de soi-même. »</div>
+    <div class="src" style="margin-top:3mm">Amedeo Modigliani</div>
+  </div>
+  <div class="signe">Krystine St-Laurent</div>
+</section>
+
+<section class="page">
+  <div class="tete"><span>Observer</span><span>Pourquoi observer</span></div>
+  <div class="accroche">I · Un des piliers</div>
+  <h2>Devenir notre meilleure référence</h2>
+  <p>L’observation est un des piliers de l’art de vivre ayurvédique. Par l’observation, une personne est en mesure de noter ce qui nourrit, inspire, apaise son corps ou son esprit, tout autant que ce qui crée des inconforts, des douleurs, du stress et des déséquilibres.<sup>1</sup></p>
+  <p>Souvent, les gens sont portés à chercher à l’extérieur d’eux-mêmes les solutions pour apaiser leurs inconforts, sans tout d’abord examiner leurs habitudes de vie. Prendre le temps d’observer permet d’amasser des informations clés pour ensuite réajuster ses choix.<sup>1</sup></p>
+  <p>L’idée derrière l’observation n’est pas de développer des attitudes hypocondriaques, mais bien de devenir notre meilleure référence pour comprendre ce qui nous fait du bien ou ce qui nous pousse vers le déséquilibre. Développer l’observation, la compassion envers soi-même, aiguiser son intuition et son instinct pour faire de meilleurs choix, un jour à la fois.<sup>2</sup></p>
+  <div class="notes"><p><sup>1</sup> Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p.&nbsp;98-99. <sup>2</sup> Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p.&nbsp;100-101.</p></div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>2</span></div>
+</section>
+
+<section class="page">
+  <div class="tete"><span>Observer</span><span>Ce soir</span></div>
+  <div class="accroche">II · Un geste pour ce soir</div>
+  <h2>Fenouil, cardamome et cannelle<sup>1</sup></h2>
+  <div class="recette">
+    <div>
+      <h3>Ingrédients</h3>
+      <ul>
+        <li>5 à 8 graines de fenouil</li>
+        <li>4 à 6 graines de cardamome (verte)</li>
+        <li>4 ou 5 graines de coriandre</li>
+        <li>1 morceau de gingembre bio pelé, tranché ou râpé (environ 2,5 cm/1 po)</li>
+        <li>1 bâton de cannelle</li>
+        <li>1 sommité fleurie (tige et feuilles) de basilic sacré (ou de basilic vert frais)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Préparation · environ 4 litres</h3>
+      <p>Dans une casserole, porter à ébullition 4 litres (16 tasses) d’eau, puis réduire le feu à doux (pour éviter qu’elle ne bouille de nouveau).</p>
+      <p>Y déposer les graines de fenouil, de cardamome et de coriandre, le gingembre et le bâton de cannelle. Laisser frémir pendant environ 10 minutes. Retirer du feu et ajouter le basilic. Laisser infuser environ 10 minutes.</p>
+      <p>Avant de servir, on peut filtrer le mélange ou le verser directement avec les plantes dans un grand contenant en verre. Se conserve à température ambiante pendant 24 heures ou au réfrigérateur pendant 48 heures.</p>
+      <div class="note">Le bâton de cannelle peut servir plus d’une fois. Utilisez la cannelle avec parcimonie si vous prenez des médicaments anticoagulants.</div>
+    </div>
+  </div>
+  <div class="notes"><p><sup>1</sup> Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, <span style="white-space:nowrap">p.&nbsp;130-131</span>.</p></div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>3</span></div>
+</section>
+
+<section class="page alt">
+  <div class="tete"><span>Observer</span><span>Chaque jour</span></div>
+  <div class="accroche">III · Les questions à se poser</div>
+  <h2>Ce que le corps nous dit</h2>
+  <ol class="gestes">
+    <li>Le matin au réveil, ai-je besoin de quelques heures avant d’entendre mon ventre gargouiller (signe que ma digestion est peut-être un peu lente) ?</li>
+    <li>Au réveil, en regardant ma langue dans le miroir, est-ce que je vois des résidus blancs sur le dessus ?</li>
+    <li>Comment est-ce que je me sens après avoir mangé tel ou tel aliment ? Si je mange des aliments crus, est-ce que je me sens ballonné par la suite ?</li>
+    <li>En cette saison, est-ce que j’ai la peau plus sèche que d’habitude ? Est-ce que mes articulations sont plus sensibles ? Est-ce que j’ai de la difficulté à me réchauffer ?</li>
+  </ol>
+  <p style="margin-top:5mm">Le fait de noter au quotidien certains symptômes et de les quantifier (sur une échelle de 0 à 5, par exemple) permet de faire le suivi, de voir l’évolution et de pointer dans le temps les actions mises en place et leurs effets.<sup>1</sup></p>
+  <div class="notes"><p><sup>1</sup> Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018, p.&nbsp;100-101.</p></div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>4</span></div>
+</section>
+
+<section class="page">
+  <div class="tete"><span>Observer</span><span>Votre carnet</span></div>
+  <div class="accroche">IV · Sept jours d’observation</div>
+  <h2>Ce que vous remarquez</h2>
+  <p style="font-size:8.2pt">Une ligne par jour, de 0 à 5. Il suffit de noter, sans juger.</p>
+  <table class="carnet">
+    <tr><th></th><th>Ventre au réveil</th><th>Langue au miroir</th><th>Peau, chaleur</th><th>Réveil la nuit ?</th><th>Ce que je remarque</th></tr>
+    <tr><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>4</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>5</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>6</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>7</td><td></td><td></td><td></td><td></td><td></td></tr>
+  </table>
+  <div class="pied"><span>Krystine St-Laurent</span><span>5</span></div>
+</section>
+
+<section class="page alt">
+  <div class="tete"><span>Observer</span><span>Aller plus loin</span></div>
+  <div class="accroche">Les Rituels essentiels</div>
+  <h2>Et après sept jours ?</h2>
+  <div class="trou">Texte de la porte, à écrire par Krystine. L’ossature décidée le 17 oct. : nommer ce que la grille a fait voir (les nuits qui se brisent, le mental qui tourne), sans en donner la réponse, puis ouvrir la porte vers les Rituels essentiels (27 $, des gestes de moins de 5 minutes par jour). Le réveil de 3 h reste à VATA Essentiel.</div>
+  <a class="bouton" href="https://www.krystinestlaurent.ca/rituels-essentiels?via=pdf-observer">Découvrir les Rituels essentiels</a>
+  <div class="adresse">krystinestlaurent.ca/rituels-essentiels</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>6</span></div>
+</section>
+
+<!-- 11. Quatrième de couverture -->
+<section class="page quatrieme">
+    <div class="accroche" style="color:var(--cuivre)">La Trilogie d’Origine</div>
+  <div class="ref">Krystine St-Laurent, Nature &amp; Ayurveda, Éditions de l’Homme, 2018.<br>Krystine St-Laurent, Féminité &amp; Ayurveda, Éditions de l’Homme, 2022.</div>
+  <div class="site">krystinestlaurent.ca</div>
+  <div class="pied"><span>Krystine St-Laurent</span><span>INSPIRATA AYURVEDA</span></div>
+</section>
+
+</body>
+</html>
