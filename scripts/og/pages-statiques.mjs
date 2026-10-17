@@ -57,6 +57,22 @@ const DONNEES = {
   '/podcast': { '@type': 'PodcastSeries', name: 'Au-delà des tendances', inLanguage: 'fr', author: PERSONNE, url: `${ORIGIN}/podcast` },
   '/medias': { '@type': 'CollectionPage', name: 'Médias et livres de Krystine St-Laurent', about: PERSONNE },
 };
+// Les questions fréquentes de VATA, lues dans la page elle-même (src/pages/VataExperience.tsx, FAQS) :
+// la même réponse que celle que la visiteuse lit, jamais un texte à part.
+try {
+  const vata = readFileSync(resolve(racine, 'src/pages/VataExperience.tsx'), 'utf8');
+  const bloc = vata.match(/const FAQS = \[([\s\S]*?)\n\];/)?.[1] || '';
+  const chaine = String.raw`(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')`;
+  const paires = [...bloc.matchAll(new RegExp(String.raw`\[\s*` + chaine + String.raw`\s*,\s*` + chaine + String.raw`\s*\]`, 'g'))]
+    .map((m) => [(m[1] ?? m[2]).replace(/\\'/g, "'"), (m[3] ?? m[4]).replace(/\\'/g, "'")]);
+  if (paires.length >= 3) {
+    DONNEES['/vata'] = { '@graph': [
+      { ...DONNEES['/vata'] },
+      { '@type': 'FAQPage', mainEntity: paires.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) },
+    ] };
+  }
+} catch (e) { console.warn('questions de VATA non lues :', e.message); }
+
 const jsonLd = (route) => DONNEES[route]
   ? `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', url: ORIGIN + route, ...DONNEES[route] }).replace(/</g, '\\u003c')}</script>\n</head>`
   : '</head>';
