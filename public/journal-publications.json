@@ -9031,5 +9031,21 @@
       "src/lib/pageMeta.ts",
       "src/pages/NouveauLivre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T16:20:08.023Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "9f1582b7",
+    "message": "Bilan du matin, nouvelle rubrique 7 « Ce que l'on cherche sur vous dans Google » : les suggestions de Google pour krystine st laurent (a à z), les nouvelles depuis la veille, celles sans page; et, dès que Search Console sera branchée, les vraies recherches et le plan du site renvoyé chaque matin",
+    "cibles": [
+      "hosting",
+      "functions"
+    ],
+    "fichiers": [
+      "functions/src/bilan.ts",
+      "functions/src/rechercheGoogle.ts",
+      "public/assets-manifest.json"
+    ]
   }
 ]
