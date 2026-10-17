@@ -1358,9 +1358,11 @@ const QuizLoeuvre: React.FC = () => {
           {/* Masthead + promesse */}
           <div>
             <motion.div {...heroFade(0.1)}>
-              <Kicker className="mb-7">{lang === 'FR' ? 'Connaître votre nature' : 'Know your nature'}</Kicker>
+              <Kicker className="mb-7">{lang === 'FR' ? 'Quiz Dosha' : 'Dosha Quiz'}</Kicker>
             </motion.div>
-            <h1 className="v2-serif font-light leading-[0.92] text-[#1c1712] text-[clamp(2.9rem,6.4vw,6.2rem)]">
+            {/* Le titre reprend la question de la pub et de l'accueil (17 oct. 2026) : la personne qui arrive
+                de la vidéo reconnaît ce qu'on vient de lui promettre; « Quiz Dosha » reste au-dessus pour Google. */}
+            <h1 className="v2-serif font-light leading-[1.02] text-[#1c1712] text-[clamp(1.8rem,9.6vw,2.6rem)] sm:text-[clamp(2.4rem,4vw,3.7rem)]">
               <span className="block overflow-hidden">
                 <motion.span
                   className="block will-change-transform"
@@ -1368,7 +1370,7 @@ const QuizLoeuvre: React.FC = () => {
                   animate={{ y: '0%' }}
                   transition={{ duration: 1.2, ease, delay: 0.15 }}
                 >
-                  {lang === 'FR' ? 'Quiz Dosha' : 'Dosha Quiz'}
+                  {lang === 'FR' ? 'De quoi ai-je besoin en ce moment ?' : 'What do I need right now?'}
                 </motion.span>
               </span>
             </h1>
@@ -1383,10 +1385,24 @@ const QuizLoeuvre: React.FC = () => {
                   ? 'Par Krystine St-Laurent, autrice de Nature & Ayurveda et de Féminité & Ayurveda (Éditions de l’Homme)'
                   : 'By Krystine St-Laurent, author of Nature & Ayurveda and Féminité & Ayurveda (Éditions de l’Homme)'}
               </p>
+            </motion.div>
+            {/* Le premier geste au premier écran, même sur un petit téléphone (17 oct. 2026 : les visiteuses
+                venues de la pub partaient avant de voir « Commencer », caché sous la citation). */}
+            <motion.div {...heroFade(0.5)} className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <a
+                href="#quiz-debut"
+                onClick={() => trackInterne('quiz_commence')}
+                className="group inline-flex min-h-[52px] items-center gap-3 bg-[#1c1712] px-7 text-[0.74rem] font-medium uppercase tracking-[0.2em] text-[#f4efe6] transition-colors duration-300 hover:bg-[#7d6330]"
+              >
+                {lang === 'FR' ? 'Commencer · 3 minutes' : 'Begin · 3 minutes'}
+                <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />
+              </a>
+            </motion.div>
+            <motion.div {...heroFade(0.65)}>
               {/* À quoi cela sert de le savoir, dans les mots du livre (Krystine, 9 oct. 2026) :
                   Nature & Ayurveda, Éditions de l'Homme, 2018, chapitre « Observer », p. 108-109. Citation exacte. */}
               {lang === 'FR' && (
-                <div className="mt-7 max-w-[52ch] rounded-[15px] bg-[#efe6d7] px-5 py-5 sm:px-6">
+                <div className="mt-10 max-w-[52ch] rounded-[15px] bg-[#efe6d7] px-5 py-5 sm:px-6">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#7d6330]">À quoi cela sert de le savoir&nbsp;?</p>
                   <blockquote className="mt-3 v2-serif text-[1.02rem] leading-[1.65] text-[#1c1712]">
                     « Comprendre quelle est sa signature doshique, ou son dosha dominant, permet de mieux comprendre ses besoins et de faire des choix conscients au quotidien en personnalisant les rituels bien-être. C’est une façon de se reconnecter avec sa propre nature, et avec la nature et ses cycles. »
@@ -1394,19 +1410,6 @@ const QuizLoeuvre: React.FC = () => {
                   <p className="mt-3 text-[0.7rem] uppercase tracking-[0.16em] text-[#3a2f23]/80">Krystine St-Laurent · Nature &amp; Ayurveda, p. 108-109</p>
                 </div>
               )}
-            </motion.div>
-            <motion.div {...heroFade(0.55)} className="mt-11 flex flex-wrap items-center gap-x-9 gap-y-4">
-              <a
-                href="#quiz-debut"
-                onClick={() => trackInterne('quiz_commence')}
-                className="group inline-flex items-center gap-2.5 text-[0.72rem] uppercase tracking-[0.2em] text-[#1c1712] border-b border-[#1c1712] pb-1.5 transition-colors duration-300 hover:text-[#7d6330] hover:border-[#9c7a44] min-h-[44px]"
-              >
-                {lang === 'FR' ? 'Commencer le quiz' : 'Begin the quiz'}
-                <ArrowDown size={15} weight="regular" className="transition-transform duration-300 group-hover:translate-y-0.5" />
-              </a>
-              <span className="text-[0.62rem] uppercase tracking-[0.2em] text-[#1c1712]/55">
-                3 minutes
-              </span>
             </motion.div>
           </div>
 
