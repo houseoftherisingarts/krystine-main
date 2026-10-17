@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-17T14:07:35.240Z",
+  "generatedAt": "2026-10-17T15:30:08.132Z",
   "files": [
     {
       "path": "/5elements/couverture.webp",
@@ -3073,6 +3073,13 @@
       "folder": "telechargements",
       "kind": "document",
       "size": 4807419
+    },
+    {
+      "path": "/telechargements/observer.pdf",
+      "name": "observer.pdf",
+      "folder": "telechargements",
+      "kind": "document",
+      "size": 792333
     },
     {
       "path": "/vata/banniere-automne.jpg",

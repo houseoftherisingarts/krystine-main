@@ -39,6 +39,13 @@
         }
       },
       {
+        "source": "/observer",
+        "function": {
+          "functionId": "leVent",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/suite-lecture",
         "function": {
           "functionId": "suiteLecture",

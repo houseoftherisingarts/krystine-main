@@ -8,7 +8,13 @@ import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 // s'écrit. Les robots des boîtes d'entreprise qui ouvrent les liens d'un
 // courriel sont comptés aussi : le chiffre est un ordre de grandeur.
 
-const FICHIER = 'https://www.krystinestlaurent.ca/telechargements/le-vent.pdf';
+// Le cadeau du quiz devient « Observer » le 17 oct. 2026 (décision de Krystine : un geste pour ce
+// soir et sept jours d'observation; le réveil de 3 h reste à VATA). /observer sert le nouveau PDF;
+// /le-vent reste ouvert pour les courriels déjà partis.
+const FICHIERS: Record<string, string> = {
+  'le-vent': 'https://www.krystinestlaurent.ca/telechargements/le-vent.pdf',
+  observer: 'https://www.krystinestlaurent.ca/telechargements/observer.pdf',
+};
 const VIA = /^[a-z0-9-]{1,30}$/;
 
 export const leVent = onRequest(
@@ -16,9 +22,10 @@ export const leVent = onRequest(
   async (req, res) => {
     const brut = String(req.query.via || '');
     const via = VIA.test(brut) ? brut : 'direct';
+    const nom = req.path.replace(/^\/+|\/+$/g, '') === 'observer' ? 'observer' : 'le-vent';
     const jour = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Montreal' }).format(new Date());
     try {
-      await getFirestore().doc('telechargements/le-vent').set({
+      await getFirestore().doc(`telechargements/${nom}`).set({
         total: FieldValue.increment(1),
         parJour: { [jour]: FieldValue.increment(1) },
         parVia: { [via]: FieldValue.increment(1) },
@@ -26,6 +33,6 @@ export const leVent = onRequest(
       }, { merge: true });
     } catch { /* le téléchargement passe avant le compte */ }
     res.set('Cache-Control', 'no-store');
-    res.redirect(302, FICHIER);
+    res.redirect(302, FICHIERS[nom]);
   },
 );

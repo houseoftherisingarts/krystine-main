@@ -137,12 +137,14 @@ export const LIEN_PODCAST = `${SITE}/podcast`;
 // Le PDF « Le Vent », pour toutes les lectures (Krystine, 15 oct. 2026) : Vata
 // est le roi des doshas, il entraîne les deux autres. Le lien passe par
 // /le-vent, qui compte le téléchargement (telechargement.ts).
+// Depuis le 17 oct. 2026, le cadeau est « Observer » (texte provisoire, descriptif, en attendant
+// la phrase de Krystine) : l'infusion de ce soir et sept jours d'observation, tirés de Nature & Ayurveda.
 export const PDF_VENT = {
   libelle: 'Pour vous, dès maintenant',
-  titre: 'Vata (éléments Vent et Espace)',
-  phrase: 'C’est le dosha qui fait courir le mental et qui fragmente les nuits. Vata est le roi des doshas : lorsqu’il s’emballe, il entraîne les deux autres avec lui. Dans ce guide, vous trouverez quoi faire lorsque vous vous réveillez à 3 h du matin, la respiration de l’abeille pour vous rendormir, une infusion qui réchauffe, et un carnet de sept jours pour voir ce qui change.',
-  bouton: 'Télécharger le PDF Vata',
-  lien: `${SITE}/le-vent?via=courriel-quiz`,
+  titre: 'Observer',
+  phrase: 'Un geste pour ce soir, l’infusion fenouil, cardamome et cannelle, puis les questions à se poser chaque matin et un carnet de sept jours pour noter ce que le corps vous dit. Tiré de Nature & Ayurveda.',
+  bouton: 'Télécharger le PDF',
+  lien: `${SITE}/observer?via=courriel-quiz`,
 };
 
 

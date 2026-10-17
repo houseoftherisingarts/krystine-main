@@ -1080,9 +1080,9 @@ const Quiz: React.FC<{ lang: 'FR' | 'EN' }> = ({ lang }) => {
                   <p className="mt-7 text-[0.88rem] leading-relaxed text-[#3a2f23]">
                     {lang === 'FR'
                       ? (SUITE_PRETE[lireProfil(teaser.percentages).d1]
-                        ? 'Votre lecture complète arrive par courriel, avec notre guide sur Vata (éléments Vent et Espace) : quoi faire lorsque vous vous réveillez à 3 h du matin, une infusion qui réchauffe et un carnet de sept jours pour voir ce qui change. Suivent quelques lettres pour comprendre ce dont vous avez besoin en ce moment, et les programmes proposés pour aller plus loin. Vous pouvez vous désabonner en un clic.'
+                        ? 'Votre lecture complète arrive par courriel, avec notre carnet « Observer » : une infusion pour ce soir, les questions à se poser chaque matin et sept jours pour noter ce que le corps vous dit. Suivent quelques lettres pour comprendre ce dont vous avez besoin en ce moment, et les programmes proposés pour aller plus loin. Vous pouvez vous désabonner en un clic.'
                         : PHRASE_FORMULAIRE(lireProfil(teaser.percentages).d1, false))
-                      : 'Your full reading arrives by email with our guide to Vata (Air and Space elements): what to do when you wake at 3 a.m., a warming infusion and a seven-day journal to see what shifts. A few letters follow, with the programs offered to go further. You can unsubscribe in one click.'}
+                      : 'Your full reading arrives by email with our “Observe” journal: an infusion for tonight, the questions to ask each morning and seven days to note what the body tells you. A few letters follow, with the programs offered to go further. You can unsubscribe in one click.'}
                   </p>
                   <p className="mt-3 text-center text-[0.72rem] leading-relaxed text-[#3a2f23]/70">
                     {lang === 'FR' ? 'Krystine St-Laurent · ' : 'Krystine St-Laurent · '}<a href="mailto:teamksl@inspiratanature.com" className="underline underline-offset-2">teamksl@inspiratanature.com</a>{' · '}<a href="/politique-de-confidentialite" className="underline underline-offset-2">{lang === 'FR' ? 'Politique de confidentialité' : 'Privacy policy'}</a>
