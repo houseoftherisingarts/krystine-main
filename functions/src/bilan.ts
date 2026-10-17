@@ -197,6 +197,18 @@ async function commandesShopifyEntre(de: Date, a: Date): Promise<CommandeShopify
   return toutes;
 }
 
+/**
+ * Les mois fermés de l'année financière 2025-2026, lus dans Shopify Analytics le 17 oct. 2026
+ * (ventes totales, taxes et livraison comprises) : la clé du site ne voit plus ces commandes.
+ */
+const MOIS_SHOPIFY_ANALYTICS: Record<string, { n: number; montant: number }> = {
+  '2025-11': { n: 138, montant: 27456.08 }, '2025-12': { n: 135, montant: 21580.8 },
+  '2026-01': { n: 121, montant: 22167.74 }, '2026-02': { n: 85, montant: 18773.12 },
+  '2026-03': { n: 68, montant: 13834.79 }, '2026-04': { n: 47, montant: 13806.73 },
+  '2026-05': { n: 61, montant: 10473.76 }, '2026-06': { n: 47, montant: 14490.56 },
+  '2026-07': { n: 48, montant: 12144.81 }, '2026-08': { n: 19, montant: 2701.09 },
+};
+
 /** Les commandes Shopify d'une fenêtre, prises dans la liste lue directement (sinon dans le webhook). */
 function shopifyDans(liste: CommandeShopify[], de: Date, a: Date) {
   const vraies = liste.filter((o) => o.cree >= de && o.cree < a).sort((x, y) => x.numero - y.numero);
@@ -477,9 +489,25 @@ export async function calculerBilan(filetDeja?: Awaited<ReturnType<typeof calcul
   const debutAnnee = minuit(moisListe[0]);
   const commandesAnnee = await sur(() => commandesShopifyEntre(debutAnnee, debutAujourdhui));
   const shopDirect = (de: Date, a: Date) => (commandesAnnee ? Promise.resolve(shopifyDans(commandesAnnee, de, a)) : shopify(de, a, il30));
+  // Shopify ne rend que les 60 derniers jours de commandes à cette clé : un mois plus ancien
+  // se lit dans sa photo (revenusShopifyMois/{AAAA-MM}), prise pendant qu'il était encore lisible.
+  const lisibleDepuis = new Date(debutAujourdhui.getTime() - 58 * 86400000);
+  const photos = getFirestore().collection('revenusShopifyMois');
+  const boutiqueDuMois = async (debut: string, fin: Date, ferme: boolean) => {
+    const cle = debut.slice(0, 7);
+    if (minuit(debut) < lisibleDepuis) {
+      const d = (await photos.doc(cle).get()).data() as { n: number; montant: number } | undefined;
+      const p = d ?? MOIS_SHOPIFY_ANALYTICS[cle];
+      return p ? { n: p.n, montant: p.montant, commandes: [] } : null;
+    }
+    const b = await shopDirect(minuit(debut), fin);
+    if (b && ferme && commandesAnnee) await photos.doc(cle).set({ n: b.n, montant: b.montant, prisLe: ts(new Date()) });
+    return b;
+  };
   const revenusMensuels = await Promise.all(moisListe.map(async (debut, i) => {
-    const fin = i + 1 < moisListe.length ? minuit(moisListe[i + 1]) : debutAujourdhui;
-    const [site, boutique] = await Promise.all([sur(() => ventes(minuit(debut), fin)), sur(() => shopDirect(minuit(debut), fin))]);
+    const ferme = i + 1 < moisListe.length;
+    const fin = ferme ? minuit(moisListe[i + 1]) : debutAujourdhui;
+    const [site, boutique] = await Promise.all([sur(() => ventes(minuit(debut), fin)), sur(() => boutiqueDuMois(debut, fin, ferme))]);
     return {
       mois: debut.slice(0, 7),
       site: site?.montant ?? null,
