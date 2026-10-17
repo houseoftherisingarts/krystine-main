@@ -8872,5 +8872,20 @@
       "src/content/quizFaq.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T02:40:31.786Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "4cf58540",
+    "message": "/quiz : la citation de Nature & Ayurveda nomme le livre, l'autrice, l'éditeur et l'année (format demandé par Krystine), au lieu du format APA abrégé",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "src/content/quizFaq.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
