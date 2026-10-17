@@ -8798,5 +8798,19 @@
       "scripts/og/pages-statiques.mjs",
       "src/lib/pageMeta.ts"
     ]
+  },
+  {
+    "quand": "2026-10-17T01:48:14.347Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "43fb9565",
+    "message": "Fiche pour les IA (llms.txt) : la bio de présentation du 8 octobre de Krystine, sans le titre d'infirmière ni le titre du tome 3 (février 2027), et sa bio courte approuvée",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "public/llms.txt"
+    ]
   }
 ]
