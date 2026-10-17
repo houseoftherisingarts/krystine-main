@@ -132,13 +132,13 @@ const PaiementFormation: React.FC = () => {
       .catch(() => setEtat('aucun'));
   }, [user, id]);
 
-  const lancer = async (n: number) => {
+  const lancer = async (n: number, auto = false) => {
     setBusy(true); setErreur(null);
     try {
       if (!CLE_STRIPE) { window.location.href = await acheterFormation(id, n); return; }
       setClientSecret(await preparerPaiementIntegre(id, n));
       setBusy(false);
-      haut.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!auto) haut.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch {
       setErreur("Le paiement n'a pas pu démarrer. Réessayez.");
       setBusy(false);
@@ -167,6 +167,19 @@ const PaiementFormation: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, etat]);
+
+  // Un seul paiement possible : la caisse s'ouvre tout de suite, sans l'étape « Choisissez votre façon
+  // de payer » à une seule option (16 oct. 2026 : une acheteuse des Rituels a écrit « Je veux payer? »
+  // depuis cette étape sur iPad et n'a payé qu'une heure plus tard).
+  const autoLance = useRef(false);
+  useEffect(() => {
+    if (autoLance.current || clientSecret || busy || !CLE_STRIPE || !formation || etat !== 'aucun') return;
+    const ok = formation.statut === 'publie' && !!formation.paywall && !!formation.prix && formation.prix > 0 && !formation.listeAttente;
+    if (!ok || versementsPermis(prixEnVigueur(id, formation.prix!)).length !== 1) return;
+    autoLance.current = true;
+    void lancer(1, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formation, etat, clientSecret]);
 
   if (formation === undefined || !authReady || (user && etat === null)) return <Chargement />;
 
