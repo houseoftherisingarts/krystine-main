@@ -86,6 +86,18 @@
   .cadre { border: .6pt solid var(--filet); padding: 2mm; margin: 5mm 0 2mm; position: relative; }
   .cadre img { width: 100%; height: 30mm; object-fit: cover; display: block; }
   .cadre .etiq { position: absolute; left: 2mm; top: 2mm; background: var(--encre); color: var(--creme); font-size: 5.8pt; letter-spacing: .18em; text-transform: uppercase; padding: 1.2mm 2.2mm; }
+
+  /* Pictos et couleurs (17 oct. 2026) : les trois pictos du quiz en couverture; un picto en trait fin et une teinte par section */
+  .trio { display: flex; justify-content: center; gap: 9mm; margin-top: 6mm; }
+  .trio div { text-align: center; }
+  .trio img { height: 27mm; display: block; margin: 0 auto 2.5mm; }
+  .trio span { font-size: 6.2pt; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; }
+  .ico { width: 15mm; height: 15mm; margin-bottom: 4mm; display: block; }
+  .ico * { fill: none; stroke: var(--or); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+  .t-vert .accroche, .t-vert .tete { color: #4f6a3a; } .t-vert .ico * { stroke: #4f6a3a; } .t-vert .gestes li::before { color: #4f6a3a; }
+  .t-rouge .accroche, .t-rouge .tete { color: #8a3a2e; } .t-rouge .ico * { stroke: #8a3a2e; }
+  .t-bleu .accroche, .t-bleu .tete { color: #3e5a73; } .t-bleu .ico * { stroke: #3e5a73; } .t-bleu ol.gestes li::before { color: #3e5a73; }
+  .t-bleu { background: #e9ece9 !important; } .t-vert.alt { background: #eceadb !important; }
 </style>
 </head>
 <body>
@@ -94,7 +106,11 @@
      Tout le texte est tiré mot pour mot de Nature & Ayurveda; la porte vers les Rituels est à écrire par Krystine. -->
 <section class="page couv">
   <div class="tete" style="width:100%"><span>Votre lecture</span><span>Québec · MMXXVI</span></div>
-  <div></div>
+  <div class="trio">
+    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/vata.png" alt=""><span style="color:#4f6a3a">Vata</span></div>
+    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/kapha.png" alt=""><span style="color:#3e5a73">Kapha</span></div>
+    <div><img src="file:///Users/ksl/Documents/Inspira%20Nature/public/quiz/pictos/pitta.png" alt=""><span style="color:#8a3a2e">Pitta</span></div>
+  </div>
   <div>
     <h1>Observer</h1>
     <div class="sous">« D’un œil, observer le monde extérieur, de l’autre, regarder au fond de soi-même. »</div>
@@ -103,8 +119,9 @@
   <div class="signe">Krystine St-Laurent</div>
 </section>
 
-<section class="page">
+<section class="page t-vert">
   <div class="tete"><span>Observer</span><span>Pourquoi observer</span></div>
+  <svg class="ico" viewBox="0 0 48 48"><path d="M4 24c6-9 13-13 20-13s14 4 20 13c-6 9-13 13-20 13S10 33 4 24z"/><circle cx="24" cy="24" r="6.5"/><circle cx="24" cy="24" r="2"/></svg>
   <div class="accroche">I · Un des piliers</div>
   <h2>Devenir notre meilleure référence</h2>
   <p>L’observation est un des piliers de l’art de vivre ayurvédique. Par l’observation, une personne est en mesure de noter ce qui nourrit, inspire, apaise son corps ou son esprit, tout autant que ce qui crée des inconforts, des douleurs, du stress et des déséquilibres.<sup>1</sup></p>
@@ -114,8 +131,9 @@
   <div class="pied"><span>Krystine St-Laurent</span><span>2</span></div>
 </section>
 
-<section class="page">
+<section class="page t-rouge">
   <div class="tete"><span>Observer</span><span>Ce soir</span></div>
+  <svg class="ico" viewBox="0 0 48 48"><path d="M9 21h26v6a12 12 0 0 1-12 12h-2A12 12 0 0 1 9 27z"/><path d="M35 24h3a4 4 0 0 1 0 8h-4"/><path d="M6 43h32"/><path d="M17 15c-2-3 2-4 0-7M23 15c-2-3 2-4 0-7M29 15c-2-3 2-4 0-7"/></svg>
   <div class="accroche">II · Un geste pour ce soir</div>
   <h2>Fenouil, cardamome et cannelle<sup>1</sup></h2>
   <div class="recette">
@@ -142,8 +160,9 @@
   <div class="pied"><span>Krystine St-Laurent</span><span>3</span></div>
 </section>
 
-<section class="page alt">
+<section class="page t-bleu">
   <div class="tete"><span>Observer</span><span>Chaque jour</span></div>
+  <svg class="ico" viewBox="0 0 48 48"><path d="M10 38C10 20 22 9 40 8c0 18-11 30-29 30z"/><path d="M10 38L30 18"/><path d="M19 29h7M23 25v-6"/></svg>
   <div class="accroche">III · Les questions à se poser</div>
   <h2>Ce que le corps nous dit</h2>
   <ol class="gestes">
@@ -157,8 +176,9 @@
   <div class="pied"><span>Krystine St-Laurent</span><span>4</span></div>
 </section>
 
-<section class="page">
+<section class="page t-vert alt">
   <div class="tete"><span>Observer</span><span>Votre carnet</span></div>
+  <svg class="ico" viewBox="0 0 48 48"><path d="M30 8a17 17 0 1 0 11 27A14 14 0 0 1 30 8z"/><path d="M38 10v4M36 12h4M42 20v3M40.5 21.5h3"/></svg>
   <div class="accroche">IV · Sept jours d’observation</div>
   <h2>Ce que vous remarquez</h2>
   <p style="font-size:8.2pt">Une ligne par jour, de 0 à 5. Il suffit de noter, sans juger.</p>
@@ -177,6 +197,7 @@
 
 <section class="page alt">
   <div class="tete"><span>Observer</span><span>Aller plus loin</span></div>
+  <svg class="ico" viewBox="0 0 48 48"><path d="M12 42V12a12 12 0 0 1 24 0v30"/><path d="M6 42h36"/><path d="M24 30v-8M20 26l4-4 4 4"/></svg>
   <div class="accroche">Les Rituels essentiels</div>
   <h2>Et après sept jours ?</h2>
   <div class="trou">Texte de la porte, à écrire par Krystine. L’ossature décidée le 17 oct. : nommer ce que la grille a fait voir (les nuits qui se brisent, le mental qui tourne), sans en donner la réponse, puis ouvrir la porte vers les Rituels essentiels (27 $, des gestes de moins de 5 minutes par jour). Le réveil de 3 h reste à VATA Essentiel.</div>
