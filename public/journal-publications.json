@@ -8887,5 +8887,21 @@
       "src/content/quizFaq.ts",
       "src/pages/QuizLoeuvre.tsx"
     ]
+  },
+  {
+    "quand": "2026-10-17T02:48:47.085Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "be401b0a",
+    "message": "/rituels-essentiels : nouvelle section « Une routine du matin en moins de 5 minutes » (pourquoi le matin, l'ordre des gestes, le petit-déjeuner, le soir, lorsque le temps manque), avec les phrases des livres de Krystine citées par titre, autrice, éditeur et année; aussi en questions-réponses pour Google et les IA; espaces insécables avant ? et : dans les questions du quiz",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/og/pages-statiques.mjs",
+      "src/content/routineMatin.ts",
+      "src/pages/RituelsEssentielsPage.tsx"
+    ]
   }
 ]
