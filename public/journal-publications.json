@@ -8744,5 +8744,21 @@
       "src/vexelhotjar/compte.ts",
       "src/vexelhotjar/statique.ts"
     ]
+  },
+  {
+    "quand": "2026-10-17T00:21:35.812Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "cac18433",
+    "message": "Google : le plan du site ne liste plus d'adresses qui redirigent (l'accueil devient /accueil/, /dimanches retiré tant qu'il n'est pas prêt, /rituels-essentiels et /evenements ajoutés), la balise canonique de l'accueil pointe sur /accueil/, et / mène à l'accueil en une seule étape",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "firebase.json",
+      "public/accueil/index.html",
+      "public/assets-manifest.json",
+      "public/sitemap.xml"
+    ]
   }
 ]
