@@ -8856,5 +8856,21 @@
       "public/assets-manifest.json",
       "scripts/og/pages-statiques.mjs"
     ]
+  },
+  {
+    "quand": "2026-10-17T02:31:09.088Z",
+    "qui": "Krystine St-Laurent",
+    "machine": "Krystines-Laptop",
+    "commit": "8e73b80a",
+    "message": "/quiz : nouvelle section « Questions fréquentes · Quel est mon dosha ? » (cinq questions validées par Krystine, citation de Nature & Ayurveda en format APA avec la maison d'édition), aussi en étiquette de questions-réponses pour Google et les IA",
+    "cibles": [
+      "hosting"
+    ],
+    "fichiers": [
+      "public/assets-manifest.json",
+      "scripts/og/pages-statiques.mjs",
+      "src/content/quizFaq.ts",
+      "src/pages/QuizLoeuvre.tsx"
+    ]
   }
 ]
